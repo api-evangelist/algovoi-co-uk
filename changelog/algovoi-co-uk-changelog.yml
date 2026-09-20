@@ -1,0 +1,76 @@
+generated: '2026-09-19'
+method: searched
+source: https://docs.algovoi.co.uk/changelog (markdown mirror https://docs.algovoi.co.uk/changelog.md fetched 2026-09-19, 28,438 bytes)
+scheme: Date-headed markdown changelog (YYYY-MM-DD sections, newest first) with product version numbers per bullet; REST API itself is unversioned in the URL.
+current_version: 'gateway 1.0.0-phase1c (OpenAPI info.version); MCP server 1.7.0 (packages) / 1.29.0 (hosted clinic); browser extension 2.6.1 (GitHub) / 1.0.x (stores)'
+url: https://docs.algovoi.co.uk/changelog
+window: 2026-05-04 to 2026-08-15 (latest entry); the page also carries entries back to 2026-04-15 and an "Earlier" section
+entries:
+- date: '2026-08-15'
+  kind: additions
+  title: Keystone packages ship Linux-ARM and Windows wheels
+  highlights: [Prebuilt wheels for Linux x86_64/aarch64 and Windows AMD64 across CPython 3.10-3.13 for the keystone verifier, control panel, runtime, agent and ten connectors; sha256(RFC 8785 JCS(payload)) references verify byte-for-byte across platforms.]
+  breaking: false
+- date: '2026-06-19'
+  kind: additions
+  title: Compliance Gate (lite) and Policy Binding published
+  highlights: ['algovoi-compliance-gate-lite 0.1.0 (PyPI + npm): categorical ALLOW/REFER/DENY verdict bound to a no-PII payer_ref and a pinned subject ref.', 'algovoi-policy-binding 0.1.0 (PyPI + npm): binds a policy snapshot hash to a frozen reference; specs in draft-hopley-x402-retention-chain-05 §7.7/7.8.']
+  breaking: false
+- date: '2026-06-17'
+  kind: additions
+  title: Substrate 2 on-premise bundle — ML-DSA-65, ML-KEM-1024, Retention Chain v0.2.0
+  highlights: [Federation validator accepts Falcon-1024 or ML-DSA-65 credentials; ML-KEM-1024 in the PQ core; encrypted offline-verifiable bundle delivered via the suite store.]
+  breaking: false
+- date: '2026-06-02'
+  kind: additions
+  title: ATB Pass Certificate Phase 2 — Bulletproofs ZKP
+  highlights: [atb_cert_version "2" zero-knowledge range-proof certificates presented via X-ATB-ZK-Credential; same 20% discount as Phase 1 X-ATB-Credential; header_name field tells the client which to use.]
+  breaking: false
+- date: '2026-06-01'
+  kind: additions
+  title: algovoi-atb 0.1.1, ALGOVOI_MODE documented, ATB Hub Registry and multi-hub federation
+  highlights: ['Official Agent Trust Bench client on PyPI and npm (@algovoi/atb).', 'MCP server standard vs substrate response model documented.', 'ATB hub application form at /atb-hubs/apply (returned 404 on 2026-09-19) and joint-harness conformance gate made mandatory.', 'Falcon-1024 cross-implementation validation (Python pqcrypto, Rust pqcrypto-falcon, Java BouncyCastle).']
+  breaking: false
+- date: '2026-05-22'
+  kind: ecosystem
+  title: Vauban-authored IETF I-D draft-vauban-x402-stark-receipts-00
+  highlights: [Third-party receipt-format extension anchoring to the AlgoVoi JCS canonicalisation discipline.]
+  breaking: false
+- date: '2026-05-21'
+  kind: additions
+  title: Chrome extension v2.6.1 (EIP-6963) and JCS Canonicalisation Substrate docs
+  highlights: [Multi-wallet discovery via EIP-6963; six-chain coverage; substrate reference page with 53 vectors and 5 implementations.]
+  breaking: false
+- date: '2026-05-20'
+  kind: additions
+  title: MCP Server v1.5.0 — 28 tools, 8 chains, MPP subscription support
+  highlights: ['New tools create_mpp_subscription, get_mpp_subscription, cancel_mpp_subscription; published to PyPI (algovoi-mcp) and npm (@algovoi/mcp-server).']
+  breaking: false
+- date: '2026-05-17'
+  kind: additions
+  title: Agent Trust Bench spans all 8 chains; MCP Server v1.4.3
+  highlights: ['Every bench 402 returns 8 accepts[] legs.', 'ARC testnet added (26 network keys); VOI aUSDC description corrected.']
+  breaking: false
+- date: '2026-05-12'
+  kind: fix
+  title: MCP Server v1.4.2 (Python) — Cloudflare compatibility
+  highlights: ['algovoi-mcp now sends User-Agent algovoi-mcp/1.4.2; the default Python-urllib UA was blocked (HTTP 403 / error 1010) on api.algovoi.co.uk.']
+  breaking: false
+- date: '2026-05-10'
+  kind: additions
+  title: MCP Server v1.4.1 — 25 tools, 7 chains
+  highlights: [Twelve new tools including try_mpp_endpoint, verify_x402_proof, generate_x402_challenge, generate_ap2_mandate, verify_ap2_payment, discover_resources, screen_recipient, get_compliance_attestation and eight recurring-authority tools.]
+  breaking: false
+- date: '2026-05-06'
+  kind: additions
+  title: Compliance attestation, screening endpoints and audit chain live
+  highlights: ['GET /compliance/attestation and POST /compliance/screen.', 'SHA-384 hash-chained receipts archived to Backblaze B2 Object Lock (COMPLIANCE mode, 7-year retention).', 'nginx DNS-caching fix for Docker restarts.']
+  breaking: false
+- date: '2026-05-05'
+  kind: additions
+  title: Checkout abandonment, pay-skills catalog, CSP nonces, Stellar and Solana xChain
+  highlights: ['POST /checkout/{token}/abandon emits payment.cancelled immediately.', '/.well-known/pay-skills.json published (first multi-chain entry in solana-foundation/pay-skills).', 'Stellar xChain live on mainnet; Circle CCTP V2 Fast Transfer default for Solana xChain.']
+  breaking: false
+notes:
+- No entry is marked breaking; the introduction page commits breaking changes to a feature flag plus prior changelog notice, and webhook schema changes to an api_version bump.
+- The page's newest entry (2026-08-15) predates the hosted rail's 12-lane expansion and the Arc lane go-live (16 September 2026) that the llms.txt and homepage describe, so the changelog lags the live surface by roughly a month.

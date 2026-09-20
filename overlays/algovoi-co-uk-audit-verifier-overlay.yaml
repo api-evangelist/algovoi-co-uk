@@ -1,0 +1,54 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the AlgoVoi Audit Verifier OpenAPI
+  version: 1.0.0
+  description: 'Generated 2026-09-19 (method: generated). Extends openapi/algovoi-co-uk-audit-verifier-openapi.yml (verbatim
+    copy of https://verify.algovoi.co.uk/openapi.json in openapi/_original/). This overlay adds the missing servers[] block;
+    adds tags and surfaces the X-Audit-Bundle-Key header the prose documents and stamps provenance. It never mutates the original.'
+extends: openapi/algovoi-co-uk-audit-verifier-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: algovoi-co-uk
+    x-apievangelist-harvested: '2026-09-19'
+    x-apievangelist-source: https://verify.algovoi.co.uk/openapi.json
+    x-apievangelist-artifacts:
+      authentication: authentication/algovoi-co-uk-authentication.yml
+      conventions: conventions/algovoi-co-uk-conventions.yml
+      errors: errors/algovoi-co-uk-problem-types.yml
+      lifecycle: lifecycle/algovoi-co-uk-lifecycle.yml
+      rate_limits: rate-limits/algovoi-co-uk-rate-limits.yml
+      mcp: mcp/algovoi-co-uk-mcp.yml
+      crosswalk: mcp/algovoi-co-uk-tool-crosswalk.yml
+      a2a: a2a/algovoi-co-uk-a2a.yml
+      webhooks: asyncapi/algovoi-co-uk-webhooks.yml
+- target: $
+  update:
+    servers:
+    - url: https://verify.algovoi.co.uk
+      description: Production — the host the document was fetched from; the providers spec declares no servers[] (added here,
+        never in the original)
+- target: $
+  update:
+    tags:
+    - name: Verification
+    - name: Meta
+- target: $.paths['/verify'].post
+  update:
+    tags:
+    - Verification
+    parameters:
+    - name: X-Audit-Bundle-Key
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Signing key to verify bundle_signature (described in the operation prose, not declared in the original)
+- target: $.paths['/health'].get
+  update:
+    tags:
+    - Meta
+- target: $.paths['/'].get
+  update:
+    tags:
+    - Meta

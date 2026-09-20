@@ -1,0 +1,55 @@
+openapi: 3.1.0
+info:
+  title: AlgoVoi Audit Verifier
+  description: Standalone reference verifier for AlgoVoi selective-disclosure audit bundles. The server is stateless and does not retain submitted bundles.
+  version: 0.1.0
+paths:
+  /:
+    get:
+      summary: Root
+      operationId: root__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Root  Get
+  /health:
+    get:
+      summary: Health
+      operationId: health_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+                title: Response Health Health Get
+  /verify:
+    post:
+      summary: Verify
+      description: 'Verify an audit bundle.
+
+
+        The request body MUST be JSON. The bundle is verified in-memory and the
+
+        result is returned; nothing is persisted. If the bundle is signed and
+
+        you want bundle_signature verified, pass the signing key in the
+
+        `X-Audit-Bundle-Key` header; otherwise the signature step is skipped
+
+        (the structural checks 1 and 2 still run).'
+      operationId: verify_verify_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}

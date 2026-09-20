@@ -1,0 +1,116 @@
+generated: '2026-09-19'
+method: derived
+source: >-
+  Derived by binding the MCP tools in mcp/algovoi-co-uk-mcp.yml (the three live tools returned by tools/list on
+  agents.algovoi.co.uk/mcp, and the 27 stdio-package tool names published on docs.algovoi.co.uk/integrations/mcp-server)
+  to the operationIds in openapi/algovoi-co-uk-gateway-openapi.yml (115 operations), openapi/algovoi-co-uk-clinic-openapi.yml
+  (9) and openapi/algovoi-co-uk-pay-openapi.yml (17). The A2A skills on the three graded cards are bound in a2a_skills[].
+  Confidence is high where the provider's own tool description names the endpoint, medium where the semantics match one
+  operation, low where the tool composes a header locally and the REST operation is a server-side equivalent.
+purpose: >-
+  Make the MCP tool the first-class discovery unit and bind it to its backing REST operation. AlgoVoi's REST, A2A and MCP
+  surfaces are overlapping-but-divergent projections of one payment core: the hosted clinic MCP is verify-only, the stdio
+  MCP wraps the tenant gateway, the pay rail is REST/A2A only, and the ulu MCP's tool set is behind an x402 paywall.
+surfaces:
+  rest_openapi:
+    gateway: openapi/algovoi-co-uk-gateway-openapi.yml        # https://api.algovoi.co.uk/openapi.json — tenant Bearer + X-Tenant-Id
+    pay: openapi/algovoi-co-uk-pay-openapi.yml                # https://pay.algovoi.co.uk/openapi.json — payment is the auth
+    clinic: openapi/algovoi-co-uk-clinic-openapi.yml          # https://agents.algovoi.co.uk/openapi.json — anonymous
+    agent_trust_bench: openapi/algovoi-co-uk-agent-trust-bench-openapi.yml
+    audit_verifier: openapi/algovoi-co-uk-audit-verifier-openapi.yml
+  mcp:
+    clinic_remote: https://agents.algovoi.co.uk/mcp           # anonymous; tools/list open (3 tools)
+    ulu_remote: https://mcp.algovoi.co.uk/mcp                 # tools/list gated by an x402 402 — tools unknown, not crosswalked
+    stdio: npx -y @algovoi/mcp-server                         # 29 tools per docs; schemas not introspected here
+  a2a:
+    pay: https://pay.algovoi.co.uk/a2a                        # live JSON-RPC; 5 skills
+    clinic: https://agents.algovoi.co.uk/a2a                  # live JSON-RPC; 3 skills
+    gateway: https://api.algovoi.co.uk/a2a/jsonrpc            # 401 anonymously; 5 skills
+crosswalk:
+# --- hosted clinic MCP (live tools/list) ---
+- tool: verify_rfc9421
+  server: clinic-remote
+  category: verification
+  rest: [verify_verify_rfc9421_post]
+  also: [verify_rfc9421_verify_rfc9421_post, pay_verify_rfc9421_pay_v1_verify_rfc9421_post]
+  binding: rest
+  confidence: high
+  note: The tool runs the same shipped verifier (algovoi-rfc9421-verifier 0.4.4) offline; POST /verify/rfc9421 on the clinic host is the REST twin, the gateway exposes the same verifier under tenant auth, and the pay rail sells it at $0.01 with a signed receipt.
+- tool: explain_rfc9421
+  server: clinic-remote
+  category: diagnostics
+  rest: [explain_verify_rfc9421_explain_post]
+  binding: rest
+  confidence: high
+  note: Same output fields (valid, errors, signature_base, content_digest, covered_components, diagnosis) as POST /verify/rfc9421/explain.
+- tool: list_networks
+  server: clinic-remote
+  category: reference
+  rest: []
+  binding: none
+  confidence: high
+  note: Offline by the provider's own description; the nearest REST reads are GET /pay/v1/negotiate (lanes with CAIP-2 ids) and GET /discovery/resources.
+# --- stdio package (names from docs; bindings by semantics) ---
+- {tool: create_payment_link, server: stdio-package, category: payments, rest: [create_dynamic_payment_link_v1_payment_links_post], binding: rest, confidence: high}
+- {tool: verify_payment, server: stdio-package, category: payments, rest: [verify_checkout_checkout__token__verify_post, checkout_status_checkout__token__status_get], binding: rest, confidence: high, note: 'Verify with a tx_id maps to POST /checkout/{token}/verify; status polling to GET /checkout/{token}/status.'}
+- {tool: prepare_extension_payment, server: stdio-package, category: payments, rest: [checkout_build_txn_checkout__token__build_txn_get], binding: rest, confidence: medium}
+- {tool: list_networks, server: stdio-package, category: reference, rest: [], binding: none, confidence: high, note: Offline}
+- {tool: verify_webhook, server: stdio-package, category: webhooks, rest: [], binding: none, confidence: high, note: 'Local HMAC-SHA256 check of X-AlgoVoi-Signature using ALGOVOI_WEBHOOK_SECRET; no REST operation.'}
+- {tool: generate_mpp_challenge, server: stdio-package, category: protocols, rest: [mpp_challenge_mpp_challenge_post], binding: rest, confidence: low, note: 'The tool composes the WWW-Authenticate: Payment header locally; POST /mpp/challenge is the gateway-side issuer.'}
+- {tool: verify_mpp_receipt, server: stdio-package, category: protocols, rest: [mpp_verify_v1_verify_post], binding: rest, confidence: medium, note: 'Docs say "via direct indexer (no API call)"; POST /v1/verify is the gateway equivalent.'}
+- {tool: try_mpp_endpoint, server: stdio-package, category: protocols, rest: [], binding: none, confidence: high, note: 'Probes an arbitrary third-party URL; GET /mpp/probe on the gateway is a self-test target, not the backing operation.'}
+- {tool: verify_x402_proof, server: stdio-package, category: protocols, rest: [verify_x402_verify_post], binding: rest, confidence: medium}
+- {tool: generate_x402_challenge, server: stdio-package, category: protocols, rest: [challenge_x402_challenge_post], binding: rest, confidence: low, note: Composes the header locally}
+- {tool: generate_ap2_mandate, server: stdio-package, category: protocols, rest: [], binding: none, confidence: high, note: Local composition of an AP2 PaymentMandate}
+- {tool: verify_ap2_payment, server: stdio-package, category: protocols, rest: [ap2_verify_v1_ap2_verify_post], binding: rest, confidence: medium}
+- {tool: fetch_agent_card, server: stdio-package, category: a2a, rest: [], binding: none, confidence: high, note: Fetches a third-party agent card}
+- {tool: send_a2a_message, server: stdio-package, category: a2a, rest: [], binding: none, confidence: high, note: 'Calls a third-party agent''s /message:send; the gateway''s own send_message_message_send_post is one such target.'}
+- {tool: create_recurring_authority, server: stdio-package, category: recurring, rest: [create_authority_endpoint_v1_recurring_authorities_post], binding: rest, confidence: high}
+- {tool: get_authority, server: stdio-package, category: recurring, rest: [get_authority_endpoint_v1_recurring_authorities__authority_id__get], binding: rest, confidence: high}
+- {tool: list_authorities, server: stdio-package, category: recurring, rest: [list_authorities_endpoint_v1_recurring_authorities_get], binding: rest, confidence: high}
+- {tool: confirm_authority, server: stdio-package, category: recurring, rest: [confirm_authority_endpoint_v1_recurring_authorities__authority_id__confirm_post], binding: rest, confidence: high}
+- {tool: revoke_authority, server: stdio-package, category: recurring, rest: [revoke_authority_endpoint_v1_recurring_authorities__authority_id__revoke_post], binding: rest, confidence: high}
+- {tool: pause_authority, server: stdio-package, category: recurring, rest: [pause_authority_endpoint_v1_recurring_authorities__authority_id__pause_post], binding: rest, confidence: high}
+- {tool: resume_authority, server: stdio-package, category: recurring, rest: [resume_authority_endpoint_v1_recurring_authorities__authority_id__resume_post], binding: rest, confidence: high}
+- {tool: manual_pull, server: stdio-package, category: recurring, rest: [manual_pull_endpoint_v1_recurring_pulls_post], binding: rest, confidence: high}
+- {tool: try_mpp_subscription, server: stdio-package, category: subscriptions, rest: [mpp_subscription_resource_mpp_sub__resource_id__post], binding: rest, confidence: medium, note: 'The public URL shape in the docs (/mpp/sub/{tenant_short_id}/{resource_id}) differs from the spec path (/mpp/sub/{resource_id}); the 402 envelope is the same.'}
+- {tool: list_mpp_subscriptions, server: stdio-package, category: subscriptions, rest: [list_subscriptions_endpoint_v1_subscriptions_get], binding: rest, confidence: medium}
+- {tool: cancel_mpp_subscription, server: stdio-package, category: subscriptions, rest: [cancel_subscription_endpoint_v1_subscriptions__subscription_id__cancel_post], binding: rest, confidence: medium}
+- {tool: discover_resources, server: stdio-package, category: discovery, rest: [discovery_resources_discovery_resources_get], binding: rest, confidence: high}
+- {tool: screen_recipient, server: stdio-package, category: compliance, rest: [screen_compliance_screen_post], binding: rest, confidence: high}
+- {tool: get_compliance_attestation, server: stdio-package, category: compliance, rest: [attestation_compliance_attestation_get], binding: rest, confidence: high}
+- {tool: compliance_trust_query, server: stdio-package, category: compliance, rest: [trust_query_compliance_trust_query_post], binding: rest, confidence: high}
+a2a_skills:
+- {card: payable-rail, skill: pay-verify-receipt, rest: [pay_verify_receipt_pay_v1_verify_receipt_post], free_tier: [verify_receipt_post_v1_receipt_verify_post], confidence: high}
+- {card: payable-rail, skill: pay-verify-rfc9421, rest: [pay_verify_rfc9421_pay_v1_verify_rfc9421_post], confidence: high}
+- {card: payable-rail, skill: pay-url-screen, rest: [pay_screen_url_pay_v1_screen_url_post], confidence: high}
+- {card: payable-rail, skill: pay-compliance-receipt, rest: [pay_compliance_receipt_pay_v1_compliance_receipt_post], confidence: high, note: 'Card says "wave 2, not yet enabled"; the REST operation returned 503 on 2026-09-19.'}
+- {card: payable-rail, skill: negotiate-payment-lane, rest: [negotiate_pay_v1_negotiate_post, negotiate_capabilities_pay_v1_negotiate_get], confidence: high}
+- {card: verifiable-comms-agent, skill: verify-rfc9421, rest: [verify_verify_rfc9421_post], mcp: [verify_rfc9421], confidence: high}
+- {card: verifiable-comms-agent, skill: rfc9421-clinic, rest: [explain_verify_rfc9421_explain_post], mcp: [explain_rfc9421], confidence: high}
+- {card: verifiable-comms-agent, skill: conformance-vectors, rest: [], confidence: high, note: Points at the public vector corpus on GitHub / docs; no operation.}
+- {card: payment-agent-gateway, skill: verify-payment, rest: [mpp_verify_v1_verify_post, verify_x402_verify_post, ap2_verify_v1_ap2_verify_post], confidence: medium}
+- {card: payment-agent-gateway, skill: create-checkout, rest: [create_dynamic_payment_link_v1_payment_links_post], confidence: high}
+- {card: payment-agent-gateway, skill: check-status, rest: [checkout_status_checkout__token__status_get], confidence: high}
+- {card: payment-agent-gateway, skill: post-twitter-checkout, rest: [], confidence: low, note: No public REST operation posts to X; composite of create_dynamic_payment_link plus a tenant-side X bot.}
+- {card: payment-agent-gateway, skill: agent-trust-bench, rest: [get_profile, list_resources, get_freebie], confidence: high, note: Operations live in openapi/algovoi-co-uk-agent-trust-bench-openapi.yml.}
+mcp_only:
+- {tool: list_networks, reason: Offline reference table shipped inside both MCP servers.}
+- {tool: verify_webhook, reason: Local HMAC verification of inbound webhooks.}
+- {tool: try_mpp_endpoint, reason: Probes third-party URLs.}
+- {tool: generate_ap2_mandate, reason: Local composition.}
+- {tool: fetch_agent_card, reason: Third-party discovery.}
+- {tool: send_a2a_message, reason: Third-party A2A call.}
+- {tool: '(ulu-mcp tools)', reason: 'tools/list on mcp.algovoi.co.uk/mcp is behind an x402 402; the tool set is unknown and nothing here maps to it.'}
+rest_only:
+  gateway: [health_health_get, exchange_atb_cert_auth_token_post, session_status_auth_token_status_get, create_payout_v1_payouts_post, mpp_probe_mpp_probe_delete, mpp_resource_mpp__resource_id__get, submit_intent_ap2_intent_post, submit_cart_ap2_cart_post, initiate_payment_ap2_pay_post, confirm_payment_ap2_confirm_post, get_status_ap2_status__cart_id__get, list_extensions_ap2_extensions_get, _scoped_auth_receipts_profile_ext_scoped_authorization_receipts_v1_head, extended_agent_card_extendedAgentCard_get, send_message_message_send_post, message_stream_message_stream_post, push_notification_config_tasks__task_id__pushNotificationConfigs__config_id__get, push_notification_config_tasks__task_id__pushNotificationConfigs_post, get_task_tasks__task_id__get, cancel_task_tasks__task_id__cancel_post, list_tasks_tasks_get, a2a_jsonrpc_a2a_jsonrpc_post, a2a_gibberlink_a2a_gibberlink_post, create_customer_endpoint_v1_customers_post, list_customers_endpoint_v1_customers_get, create_subscription_endpoint_v1_subscriptions_post, get_subscription_endpoint_v1_subscriptions__subscription_id__get, update_subscription_endpoint_v1_subscriptions__subscription_id__patch, pause_subscription_endpoint_v1_subscriptions__subscription_id__pause_post, resume_subscription_endpoint_v1_subscriptions__subscription_id__resume_post, list_subscription_invoices_endpoint_v1_subscriptions__subscription_id__invoices_get, public_cancel_page_subscription__cancel_secret__cancel_get, public_cancel_commit_subscription__cancel_secret__cancel_post, challenge_endpoint_v1_recurr_auth_challenge_post, verify_endpoint_v1_recurr_auth_verify_post, my_subscriptions_v1_recurr_me_subscriptions_get, my_subscription_detail_v1_recurr_me_subscriptions__subscription_id__get, my_subscription_cancel_v1_recurr_me_subscriptions__subscription_id__cancel_post, my_invoices_v1_recurr_me_invoices_get, portal_page_recurr_portal_get, public_cancel_page_recurr_cancel__cancel_secret__get, public_cancel_commit_recurr_cancel__cancel_secret__post, resolve_token_v1_recurring_auth__token__get, confirm_token_v1_recurring_auth__token__confirm_post, get_algorand_spending_cap_vault_v1_v1_recurring_contracts_algorand_spending_cap_vault_v1_get, get_protected_resource_protected__resource_id__get, get_resource_resources__resource_id__get, checkout_qr_checkout__token__qr_get, checkout_submit_txn_checkout__token__submit_txn_post, detect_payment_checkout__token__detect_get, submit_sponsored_checkout__token__submit_sponsored_post, abandon_checkout_checkout__token__abandon_post, cancel_checkout_checkout__token__cancel_post, xchain_bridge_info_checkout__token__xchain_bridge_info_get, xchain_bridge_send_checkout__token__xchain_bridge_send_post, xchain_source_tx_recorded_checkout__token__xchain_source_tx_recorded_post, xchain_bridge_status_checkout__token__xchain_bridge_status__tx_hash__get, xchain_prepare_checkout__token__xchain_prepare_post, xchain_prepare_optin_checkout__token__xchain_prepare_optin_post, xchain_optin_submit_checkout__token__xchain_optin_submit_post, xchain_submit_checkout__token__xchain_submit_post, suite_store_checkout_suite_store_checkout_post, suite_store_settled_suite_store_settled_post, suite_store_activate_suite_store_order__token__activate_post, suite_store_order_status_suite_store_order__token__status_get, provision_suite_store_mesh_fed_provision_post, info_suite_store_mesh_fed_info_get, activate_atb_license_activate_post, verify_receipt_v1_receipt_verify_post, get_settlement_evidence_v1_receipt_settlement_evidence__settled_payment_ref__get, action_ref_info_verify_action_ref_get, verify_action_ref_verify_action_ref_post, rfc9421_info_verify_rfc9421_get, public_resource_r__tenant_short_id___resource_id__get, signup_proxy_signup_create_post, cloud_signup_proxy_cloud_signup_create_post, mandate_pay_mandate_pay_post, get_mandate_portal_mandate_portal__mandate_id__get, portal_topup_initiate_mandate_portal__mandate_id__topup_initiate_post, portal_topup_capture_mandate_portal__mandate_id__topup_capture_post]
+  pay: [payable_index_pay_v1_index_get, probe_receipt_pay_v1_verify_receipt_get, probe_rfc9421_pay_v1_verify_rfc9421_get, probe_url_screen_pay_v1_screen_url_get, probe_compliance_pay_v1_compliance_receipt_get, a2a_jsonrpc_a2a_post, mpp_verify_receipt_mpp_verify_receipt_post, mpp_verify_rfc9421_mpp_verify_rfc9421_post, ap2_cart_ap2_cart_post, ap2_pay_ap2_pay_post]
+  clinic: [agent_card__well_known_agent_card_json_get, agent_card_legacy__well_known_agent_json_get, health_health_get, sign_demo_verify_rfc9421_sign_post, a2a_hint_a2a_get, a2a_a2a_post, landing__get]
+coverage:
+  mcp_tools_total: 30
+  mcp_tools_bound_to_rest: 21
+  mcp_tools_mcp_only: 9
+  a2a_skills_total: 13
+  a2a_skills_bound: 11
+  rest_operations_total: 141
+  rest_operations_with_a_tool_or_skill: 33

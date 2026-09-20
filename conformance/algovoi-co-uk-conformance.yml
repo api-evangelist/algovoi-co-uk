@@ -1,0 +1,133 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  The five OpenAPIs (openapi/), the five agent cards (a2a/), the well-known documents (well-known/), the docs
+  (security, compliance, protocols, conformance-vectors pages) and live probes on 2026-09-19. Every entry names the exact
+  document or response that carries the evidence; prose-only claims are marked as such.
+standards:
+- id: openapi-3.1
+  name: OpenAPI 3.1.0
+  conforms: true
+  evidence: 'Five first-party documents all declare "openapi": "3.1.0" — https://pay.algovoi.co.uk/openapi.json (17 operations, 24 schemas), https://api.algovoi.co.uk/openapi.json (115 operations, 99 schemas), https://agents.algovoi.co.uk/openapi.json (9), https://agent-trust-bench.algovoi.co.uk/openapi.json (7, the only one with servers[]), https://verify.algovoi.co.uk/openapi.json (3). None declares securitySchemes; the gateway and pay specs are FastAPI-generated with auto operationIds.'
+- id: x402-v2
+  name: x402 (HTTP 402 Payment Required) v2
+  conforms: true
+  evidence: 'GET https://pay.algovoi.co.uk/pay/v1/verify/receipt → 402 with body {"x402Version":2,"resource":{...},"accepts":[12 lanes]} and a base64 payment-required header; https://pay.algovoi.co.uk/.well-known/x402 descriptor; x-payment-info {protocols:[x402], price} on every paid operation in the pay OpenAPI; agent card extension https://github.com/google-agentic-commerce/a2a-x402/blob/main/spec/v0.2 declared required.'
+- id: x402-v1
+  name: x402 v1 (legacy header form)
+  conforms: true
+  evidence: 'POST tools/list on https://mcp.algovoi.co.uk/mcp → 402 {"x402Version":1,"accepts":[{scheme exact, network avm:voi-mainnet, facilitator https://mcp.ilovechicken.co.uk}]}; the gateway x-payment-info blocks name both x402 and mpp.'
+- id: mpp
+  name: Machine Payments Protocol (HTTP "Payment" authentication scheme)
+  conforms: true
+  evidence: 'GET https://api.algovoi.co.uk/mpp/probe → 402 with WWW-Authenticate: Payment realm="api.algovoi.co.uk", id="algovoi-mpp-probe-static-v1", method="tempo", intent="charge", expires, request=<base64>; gateway operations /mpp/challenge, /mpp/{resource_id}, /mpp/sub/{resource_id}, /v1/verify with PAYMENT-SIGNATURE header parameter; pay spec /mpp/verify/receipt and /mpp/verify/rfc9421.'
+- id: ap2
+  name: AP2 (Agent Payments Protocol) — IntentMandate / CartMandate / PaymentMandate with W3C Payment Request shapes
+  conforms: true
+  evidence: 'Gateway OpenAPI paths /ap2/intent, /ap2/cart, /ap2/pay, /ap2/confirm, /ap2/status/{cart_id}, /ap2/extensions and schemas IntentMandate, CartMandate, CartContents, PaymentMandate, PaymentMandateContents, PaymentRequest, PaymentDetailsInit, PaymentMethodData, PaymentResponse, ContactAddress; pay OpenAPI /ap2/cart and /ap2/pay with the same schema family. Docs: https://docs.algovoi.co.uk/protocols/ap2.'
+- id: a2a-0.3
+  name: Agent2Agent protocol 0.3.0 (Agent Card + JSON-RPC binding)
+  conforms: true
+  evidence: 'Cards at https://pay.algovoi.co.uk/.well-known/agent-card.json and https://agents.algovoi.co.uk/.well-known/agent-card.json declare protocolVersion 0.3.0, capabilities objects, skills arrays and preferredTransport JSONRPC; both /a2a endpoints answer JSON-RPC 2.0 (the clinic also advertises SendMessage for A2A 1.0.1). The api./cloud. cards omit protocolVersion and grade flavored. Graded in a2a/algovoi-co-uk-a2a.yml.'
+- id: a2a-x402-extension
+  name: a2a-x402 extension (google-agentic-commerce) v0.2
+  conforms: true
+  evidence: 'capabilities.extensions[0].uri https://github.com/google-agentic-commerce/a2a-x402/blob/main/spec/v0.2 with required true and params.lanes[] in the pay card; docs describe the payment-required task state.'
+- id: mcp-2025-06-18
+  name: Model Context Protocol (Streamable HTTP, revision 2025-06-18)
+  conforms: true
+  evidence: 'POST initialize on https://agents.algovoi.co.uk/mcp → protocolVersion 2025-06-18, serverInfo algovoi-mcp-server 1.29.0; tools/list → 3 tools with inputSchema. POST initialize on https://mcp.algovoi.co.uk/mcp → protocolVersion 2025-06-18, serverInfo ulu-mcp 0.0.1, mcp-session-id issued (tools/list x402-gated).'
+- id: mcp-registry-server-json
+  name: MCP Registry server.json (schemas/2025-12-11) + official registry listing
+  conforms: true
+  evidence: 'https://registry.modelcontextprotocol.io/v0/servers?search=algovoi lists io.github.chopmob-cloud/algovoi-mcp-server 1.1.1-1.1.3 with npm and pypi stdio packages; mcp-server/server.json in AlgoVoi-Platform-Adapters declares the 2025-12-11 $schema.'
+- id: rfc9421
+  name: RFC 9421 HTTP Message Signatures (+ RFC 9530 Content-Digest)
+  conforms: true
+  evidence: 'Verification endpoints POST /verify/rfc9421 on agents.algovoi.co.uk (schema names Signature-Input / Signature / Content-Digest), /verify/rfc9421 on api.algovoi.co.uk, and the paid /pay/v1/verify/rfc9421; MCP tools verify_rfc9421 / explain_rfc9421 with inputSchema fields headers, body_b64, public_key_hex, did_key; published verifier packages algovoi-rfc9421-verifier 0.4.4 on PyPI/npm, crates.io 0.1.0, Go v0.1.0; conformance battery https://github.com/chopmob-cloud/algovoi-rfc9421-conformance.'
+- id: rfc8785-jcs
+  name: RFC 8785 JSON Canonicalization Scheme
+  conforms: true
+  evidence: 'receipts.settled_payment_ref_recipe and JWS receipts in /pay/v1/index; docs https://docs.algovoi.co.uk/canonicalisation-substrate and /conformance-vectors; vector corpus https://github.com/chopmob-cloud/algovoi-jcs-conformance-vectors; packages algovoi-substrate 0.5.1.'
+- id: did-web
+  name: did:web (W3C DID Core, JsonWebKey2020)
+  conforms: true
+  evidence: 'https://pay.algovoi.co.uk/.well-known/did.json (id did:web:pay.algovoi.co.uk, @context did/v1 + jws-2020/v1, Ed25519 JsonWebKey2020 verificationMethod, three service entries) and https://api.algovoi.co.uk/.well-known/did.json (did:web:api.algovoi.co.uk, alsoKnownAs did:web:algovoi.co.uk, seven services). Saved in well-known/.'
+- id: jose-jws-eddsa
+  name: JWS / JWK (RFC 7515 / 7517) with EdDSA
+  conforms: true
+  evidence: 'JWK sets at /.well-known/jwks.json on pay. and api. (kty OKP, crv Ed25519, alg EdDSA, use sig); receipts described as Ed25519 JWS; PayableReceiptVerifyRequest.jws in the pay spec.'
+- id: caip-2
+  name: CAIP-2 chain identifiers (+ CAIP-10/19 in the substrate)
+  conforms: true
+  evidence: 'Every lane in the pay card, /pay/v1/index and the 402 accepts[] uses CAIP-2 ids (algorand:wGHE2Pwdvd7S12BL5FaOP20EGYesN73k, eip155:8453, solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp, stellar:pubnet, hedera:mainnet, voi:mainnet, eip155:4217/143/137/42161/10/5042); NegotiateRequest.chains accepts CAIP-2 ids. Docs https://docs.algovoi.co.uk/caip-identifiers.'
+- id: eip-3009
+  name: EIP-3009 transferWithAuthorization (EIP-712 typed data) on EVM lanes
+  conforms: true
+  evidence: 'Six EVM lanes in the card and index declare binding eip3009-authorization with an eip712_domain {name, version, chainId, verifyingContract} and authorization_weld rules; the docs state stock x402 clients can pay these lanes.'
+- id: rfc9116-security-txt
+  name: RFC 9116 security.txt
+  conforms: true
+  evidence: 'https://algovoi.co.uk/.well-known/security.txt, https://api.algovoi.co.uk/.well-known/security.txt and https://cloud.algovoi.co.uk/.well-known/security.txt all return 200 text/plain with Contact, Expires, Preferred-Languages, Canonical and Policy fields (the Policy URLs are 404 — see security/). Saved verbatim in well-known/.'
+- id: agent-skills-discovery-0.2.0
+  name: Agent Skills discovery index (schemas.agentskills.io/discovery/0.2.0)
+  conforms: true
+  evidence: 'https://docs.algovoi.co.uk/.well-known/agent-skills/index.json declares the 0.2.0 $schema and one skill-md entry whose sha256 digest (310da030…) matches the fetched SKILL.md byte-for-byte. Hosted by the Mintlify docs platform.'
+- id: x402-bazaar-discovery
+  name: x402 Bazaar-shaped resource catalog (/discovery/resources)
+  conforms: true
+  evidence: 'https://pay.algovoi.co.uk/discovery/resources, https://api.algovoi.co.uk/discovery/resources and https://agent-trust-bench.algovoi.co.uk/discovery/resources return {"items":[{resource, type, x402Version, accepts[]...}]}; the api x402 descriptor names resourcesCatalog.'
+- id: pay-skills-catalog
+  name: solana-foundation pay-skills catalog entry
+  conforms: true
+  evidence: 'https://api.algovoi.co.uk/.well-known/pay-skills.json (200, 5,729 bytes) — saved as well-known/algovoi-co-uk-api-pay-skills.json.'
+- id: content-signal
+  name: Content-Signal robots.txt directive (Cloudflare)
+  conforms: true
+  evidence: 'robots.txt on algovoi.co.uk and pay.algovoi.co.uk both carry "Content-Signal: search=yes, ai-input=yes, ai-train=no".'
+- id: rfc9457
+  name: RFC 9457 Problem Details
+  conforms: false
+  evidence: 'Errors use a custom {error, message, request_id} envelope and FastAPI {detail} bodies; no application/problem+json anywhere (errors/algovoi-co-uk-problem-types.yml).'
+- id: oauth2
+  name: OAuth 2.0
+  conforms: false
+  evidence: 'No oauth2 securityScheme in any spec; /.well-known/oauth-authorization-server and /oauth-protected-resource are 404/405 on all eleven hosts; authentication is static Bearer keys or payment.'
+- id: oidc
+  name: OpenID Connect
+  conforms: false
+  evidence: '/.well-known/openid-configuration 404/405 on every host probed.'
+- id: rfc9727-api-catalog
+  name: RFC 9727 api-catalog
+  conforms: false
+  evidence: '/.well-known/api-catalog 404/405 on every host.'
+- id: apis-json
+  name: APIs.json
+  conforms: false
+  evidence: '/apis.json, /apis.yml and /.well-known/apis.json 404 on every host.'
+- id: scim-2.0
+  name: SCIM 2.0 (RFC 7643/7644)
+  conforms: false
+  evidence: 'Documented ONLY for the self-hosted Compliance Command Center add-on (https://docs.algovoi.co.uk/scim-provisioning: "/scim/v2" on the customer''s own console host, licence-gated). No hosted host serves a SCIM endpoint and no harvested contract declares urn:ietf:params:scim:schemas:*, so no domain-standard credit is claimed.'
+domain_standard_signature:
+  sector: payments / agentic commerce
+  regime_shortlist_checked: [pci-dss, 3-d-secure, iso-20022, confirmation-of-payee, emv, psd2-sca, open-payments]
+  found_in_contract: []
+  found_but_not_on_the_shortlist:
+  - {standard: x402 v2, location: 'openapi/algovoi-co-uk-pay-openapi.yml → paths./pay/v1/verify/receipt.post.responses.402 + x-payment-info; pay card capabilities.extensions[0]'}
+  - {standard: AP2 (W3C Payment Request shapes), location: 'openapi/algovoi-co-uk-gateway-openapi.yml → components.schemas.PaymentRequest / PaymentMandate / CartMandate; paths /ap2/*'}
+  - {standard: MPP, location: 'openapi/algovoi-co-uk-gateway-openapi.yml → paths /mpp/* (PAYMENT-SIGNATURE header parameter); live WWW-Authenticate: Payment'}
+  - {standard: A2A 0.3.0, location: 'a2a/algovoi-co-uk-pay-agent-card.json protocolVersion; openapi pay paths./a2a.post'}
+  note: >-
+    None of the payments-regime standards in scoring.yml (card-network and bank-rail standards) appears in the contract,
+    which is consistent with a crypto-settlement rail that touches no card or fiat scheme; the docs mention PSD2 and
+    Consumer Rights only as the legal motivation for the refund/cancellation receipt enumerations. The agentic-payment
+    protocols above are declared in the contract itself and are recorded as the honest domain signature; no shortlist
+    credit is claimed.
+compliance_program:
+  published: true
+  url: https://algovoi.co.uk/compliance.html
+  certifications_held: []
+  statement: '"We do not claim certifications we do not hold, and this page carries none." (trust.html). Targets published: Cyber Essentials planned Q3 2026, SOC 2 Type I targeted Q2 2027, Type II Q4 2027, ISO 27001 roadmap Q4 2026 if demanded; ICO registration in preparation.'
+  frameworks_aligned: [UK MLRs 2017 (voluntary alignment), UK GDPR / DPA 2018 (aligned), SAMLA 2018 s.20 (compliant), FCA PS19/22 (self-assessed out of scope)]
+  machine_readable: https://api.algovoi.co.uk/compliance/attestation

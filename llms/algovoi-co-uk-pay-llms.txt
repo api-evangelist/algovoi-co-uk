@@ -1,0 +1,23 @@
+# AlgoVoi Pay (hosted payable rail)
+
+> A hosted, tenant-free, chain-agnostic pay-per-call verification rail for AI agents. Pay per request
+> over x402 in USDC, live across twelve mainnet chains (Algorand, Base, Monad, Polygon, Arbitrum,
+> OP Mainnet, Arc, Solana, Stellar, Hedera, Voi, Tempo; Arc is Circle's USDC-native L1, live since
+> 16 September 2026), with no account and no API key: the payment is the
+> authentication. Every response returns an offline-verifiable Ed25519 receipt that recomputes from its
+> own bytes.
+
+Provider: AlgoVoi (did:web:pay.algovoi.co.uk). Docs: https://docs.algovoi.co.uk/algovoi-pay.
+
+## Live skills (0.01 USDC per call)
+- [Verify an x402/AP2 payment receipt](https://pay.algovoi.co.uk/pay/v1/verify/receipt)
+- [Verify an RFC 9421 HTTP message signature](https://pay.algovoi.co.uk/pay/v1/verify/rfc9421)
+
+## Chain-agnostic negotiation
+- [Negotiate a lane](https://pay.algovoi.co.uk/pay/v1/negotiate): POST {chains, protocols} -> shared lanes + a recommended pick, across twelve chains and x402/MPP/AP2/A2A. Read-only.
+
+## Discovery
+- [Agent card](https://pay.algovoi.co.uk/.well-known/agent-card.json)
+- [x402 index](https://pay.algovoi.co.uk/pay/v1/index)
+- [x402 descriptor](https://pay.algovoi.co.uk/.well-known/x402)
+- [Bazaar-shaped catalog](https://pay.algovoi.co.uk/discovery/resources)

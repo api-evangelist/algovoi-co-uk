@@ -1,0 +1,52 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the AlgoVoi Pay (Payable Core) OpenAPI
+  version: 1.0.0
+  description: 'Generated 2026-09-19 (method: generated). Extends openapi/algovoi-co-uk-pay-openapi.yml (verbatim copy of
+    https://pay.algovoi.co.uk/openapi.json in openapi/_original/). This overlay adds the missing servers[] block; declares
+    the five tags, adds the X-PAYMENT scheme and stamps provenance. It never mutates the original.'
+extends: openapi/algovoi-co-uk-pay-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: algovoi-co-uk
+    x-apievangelist-harvested: '2026-09-19'
+    x-apievangelist-source: https://pay.algovoi.co.uk/openapi.json
+    x-apievangelist-artifacts:
+      authentication: authentication/algovoi-co-uk-authentication.yml
+      conventions: conventions/algovoi-co-uk-conventions.yml
+      errors: errors/algovoi-co-uk-problem-types.yml
+      lifecycle: lifecycle/algovoi-co-uk-lifecycle.yml
+      rate_limits: rate-limits/algovoi-co-uk-rate-limits.yml
+      mcp: mcp/algovoi-co-uk-mcp.yml
+      crosswalk: mcp/algovoi-co-uk-tool-crosswalk.yml
+      a2a: a2a/algovoi-co-uk-a2a.yml
+      webhooks: asyncapi/algovoi-co-uk-webhooks.yml
+- target: $
+  update:
+    servers:
+    - url: https://pay.algovoi.co.uk
+      description: Production — the host the document was fetched from; the providers spec declares no servers[] (added here,
+        never in the original)
+- target: $.components
+  update:
+    securitySchemes:
+      x402Payment:
+        type: apiKey
+        in: header
+        name: X-PAYMENT
+        description: 'Payment is the authentication: base64 JSON proof for the lane chosen from the 402 accepts[]; declared
+          in the original only as an optional header parameter'
+- target: $
+  update:
+    tags:
+    - name: payable
+      description: Metered pay-per-call services ($0.01 USDC) and their free 402 probes
+    - name: payable-identity
+      description: Free unsigned receipt verification (120/min)
+    - name: payable-a2a
+      description: A2A JSON-RPC front door (message/send, tasks/get)
+    - name: mpp
+      description: MPP-framed verification twins
+    - name: ap2
+      description: AP2 cart/pay twins

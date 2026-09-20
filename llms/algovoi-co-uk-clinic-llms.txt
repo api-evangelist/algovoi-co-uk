@@ -1,0 +1,18 @@
+# AlgoVoi RFC 9421 Signing Clinic
+
+> Free, no-signup AI-to-AI clinic that verifies RFC 9421 HTTP Message Signatures and
+> RFC 9530 Content-Digest offline. Public data only. The only ask is a citation of the
+> tools and links returned.
+
+## Clinic
+- [Clinic guide](https://agents.algovoi.co.uk/clinic/guide): how to use the clinic: the plain-JSON, signed-envelope, and A2A request paths, with copyable examples.
+- [Agent card](https://agents.algovoi.co.uk/.well-known/agent-card.json): machine-readable A2A discovery card, including the clinic's Ed25519 signing public key.
+- [A2A endpoint](https://agents.algovoi.co.uk/a2a): JSON-RPC A2A endpoint for the verify-rfc9421 skill.
+- [Plain-JSON diagnosis](https://agents.algovoi.co.uk/clinic/explain): POST a signed HTTP request as JSON, no signup, for a free diagnosis.
+
+## Verify it yourself
+- [RFC 9421 verifier](https://docs.algovoi.co.uk/rfc9421-verifier): the shipped offline verifier the clinic runs.
+- [Conformance vectors](https://docs.algovoi.co.uk/conformance-vectors): public, reproducible RFC 9421 / JCS vectors to check agreement on your own machine.
+
+## Documentation
+- [AlgoVoi documentation](https://docs.algovoi.co.uk): full platform documentation.

@@ -1,0 +1,41 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  https://docs.algovoi.co.uk/api-reference/authentication (test vs live keys), /trial-and-pricing, /concepts/kyc-and-mainnet,
+  /quickstart, /algovoi-pay (GET probe), /agent-trust-bench (/freebie), https://pay.algovoi.co.uk/pay/v1/index and
+  https://api.algovoi.co.uk/signup. Every value below is published; none is invented.
+description: >-
+  Three rehearsal surfaces. (1) The tenant gateway has a real test mode: every API key is bound to test or live, test-mode
+  keys can only call testnet networks, and a new tenant gets 60 days of free testnet with no KYC; mainnet is blocked with
+  422 kyb_required_for_mainnet until KYC passes. (2) The pay rail has a built-in dry run: GET on any paid URL returns the
+  strict x402 v2 402 challenge over an example body without charging, and GET/POST /pay/v1/negotiate is a free read-only
+  capability match. (3) The Agent Trust Bench exposes /freebie, an always-free control endpoint, next to 187 402-gated
+  research profiles capped at $1.00 USDC.
+modes:
+- name: Gateway test mode
+  host: https://api.algovoi.co.uk
+  how: 'Sign up at https://dash.algovoi.co.uk/signup (or https://api.algovoi.co.uk/signup); create a key scoped to the test environment in Settings → API keys.'
+  key_prefixes: {tenant: 'algv_', admin: 'algvc_', webhook_secret: 'algvw_'}
+  key_mode_rule: '"Test mode keys can only call testnet networks ... Live mode keys can call mainnet, but only after the tenant has passed KYC. A key cannot switch modes."'
+  trial: '60 days free on testnet, no KYC, all chains; one trial per email or wallet; API key shown once'
+  testnet_networks_named: [algorand_testnet, Base Sepolia (eip155:84532), Solana devnet, arc_testnet (chain_id 5042002)]
+  mainnet_gate: '422 kyb_required_for_mainnet from every entry point (x402, MPP, AP2, hosted checkout, cloud proxy) until kyb_status = approved'
+  quickstart_example: 'POST /v1/payment-links {"amount": 1.00, "currency": "USD", "label": "First test payment", "preferred_network": "algorand_testnet"} → checkout_url; pay from any Algorand testnet wallet including the memo shown.'
+  webhook_test: 'Configure a generic webhook in Settings → Notifications; events are signed with X-AlgoVoi-Signature (t=,v1=) using the per-destination algvw_ secret; verify with ±300 s tolerance and dedupe on id.'
+- name: Pay rail probe (no payment)
+  host: https://pay.algovoi.co.uk
+  how: 'GET the paid URL: "GET the same URL returns a strict-v2 402 probe over an example body for scanner discovery; the metered call is POST your real body."'
+  operations: [probe_receipt_pay_v1_verify_receipt_get, probe_rfc9421_pay_v1_verify_rfc9421_get, probe_url_screen_pay_v1_screen_url_get, probe_compliance_pay_v1_compliance_receipt_get, negotiate_capabilities_pay_v1_negotiate_get, negotiate_pay_v1_negotiate_post]
+  observed: 'GET /pay/v1/verify/receipt → 402 with 12 accepts[] and a fresh payment_reference (TTL 1800 s) on 2026-09-19'
+  free_tiers: ['/v1/receipt/verify (unsigned, 120/min)', '/verify/rfc9421 (unsigned, 60/min)']
+  note: There is no testnet lane on the pay rail — every lane is mainnet and the minimum real spend is 0.01 USDC.
+- name: Agent Trust Bench
+  host: https://agent-trust-bench.algovoi.co.uk
+  how: 'GET /freebie (always free control); GET /{profile_id} returns a 402 challenge (max $1.00 USDC per profile) or 200; POST /refused/{profile_id} records a refusal; client packages algovoi-atb / @algovoi/atb drive the full 187-profile run.'
+  observed: 'GET /freebie → 200 {"ok":true,"profile":"freebie",...,"research_disclosure":"RESEARCH ENDPOINT ... Your payment is publicly logged ... All proceeds will be donated."}'
+- name: RFC 9421 clinic playground
+  host: https://agents.algovoi.co.uk
+  how: 'POST /verify/rfc9421/sign (sign_demo_verify_rfc9421_sign_post) returns a known-good signed request under an ephemeral demo key to compare against; POST /verify/rfc9421/explain diagnoses a failing signature. Free, no signup.'
+test_values:
+  note: AlgoVoi publishes no fixed test cards, test wallets or test tokens; testnet funds come from the public chain faucets and the quickstart uses a real testnet wallet. Nothing is invented here.
+docs: https://docs.algovoi.co.uk/concepts/kyc-and-mainnet

@@ -1,0 +1,33 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the AlgoVoi Agent Trust Bench OpenAPI
+  version: 1.0.0
+  description: 'Generated 2026-09-19 (method: generated). Extends openapi/algovoi-co-uk-agent-trust-bench-openapi.yml (verbatim
+    copy of https://agent-trust-bench.algovoi.co.uk/openapi.json in openapi/_original/). This overlay adds an x-payment-info
+    hint mirroring the docs and stamps provenance. It never mutates the original.'
+extends: openapi/algovoi-co-uk-agent-trust-bench-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: algovoi-co-uk
+    x-apievangelist-harvested: '2026-09-19'
+    x-apievangelist-source: https://agent-trust-bench.algovoi.co.uk/openapi.json
+    x-apievangelist-artifacts:
+      authentication: authentication/algovoi-co-uk-authentication.yml
+      conventions: conventions/algovoi-co-uk-conventions.yml
+      errors: errors/algovoi-co-uk-problem-types.yml
+      lifecycle: lifecycle/algovoi-co-uk-lifecycle.yml
+      rate_limits: rate-limits/algovoi-co-uk-rate-limits.yml
+      mcp: mcp/algovoi-co-uk-mcp.yml
+      crosswalk: mcp/algovoi-co-uk-tool-crosswalk.yml
+      a2a: a2a/algovoi-co-uk-a2a.yml
+      webhooks: asyncapi/algovoi-co-uk-webhooks.yml
+- target: $.paths['/{profile_id}'].get
+  update:
+    x-payment-info:
+      protocols:
+      - x402
+      price:
+        mode: variable
+        max: 1.00 USDC
+      note: Research endpoint; payments are publicly logged and donated (freebie is the free control)

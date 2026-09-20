@@ -1,23 +1,459 @@
 aid: algovoi-co-uk
 name: AlgoVoi
-description: 'AlgoVoi is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  AlgoVoi (AlgoVoi Ltd, UK; founder Christopher Hopley) builds compliance-aware, offline-verifiable payment and evidence
+  infrastructure for AI agents across twelve mainnet chains, answering all four agent-payment protocols — x402, A2A, MPP and
+  AP2 — from one settlement core. It runs two hosted doors: AlgoVoi Pay at pay.algovoi.co.uk, a tenant-free rail that
+  charges 0.01 USDC per call with no account or API key (payment is the credential) and returns an Ed25519 receipt anyone
+  can verify offline, and the multi-tenant Gateway at api.algovoi.co.uk (Bearer key + X-Tenant-Id, hosted checkout,
+  recurring authorities, sanctions screening, hash-chained audit trail, Stripe-shaped signed webhooks). Around them sit an
+  anonymous RFC 9421 signing clinic reachable over REST, A2A and a hosted MCP server, the Agent Trust Bench (187
+  adversarial x402 research profiles), an audit-bundle verifier, five OpenAPI 3.1 contracts, A2A agent cards on five hosts,
+  a published Agent Skill, llms.txt on four hosts, did:web identities, and a large Apache-2.0 reference layer on npm and
+  PyPI (RFC 9421 signer/verifier, JCS substrate, receipt formats, an MCP server). Self-hosted products (Payment Rails,
+  Verifiable Compliance Suite, post-quantum Reseal and Evidence Auditor) sell on perpetual licences paid in USDC.
+image: https://algovoi.co.uk/apple-touch-icon.png
 url: https://raw.githubusercontent.com/api-evangelist/algovoi-co-uk/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:a2a-registry
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-09-19 (local-v3; was a2a-registry harvest stub)
 specificationVersion: '0.20'
 created: '2026-09-19'
 modified: '2026-09-19'
 tags:
-- Company
-apis: []
+- Payments
+- Agentic Commerce
+- x402
+- A2A
+- MCP
+- Stablecoins
+- Cryptocurrency
+- Blockchain
+- Compliance
+- Digital Signatures
+- Post-Quantum Cryptography
+- Verification
+- Fintech
+- Agent-native
+- Algorand
+- United Kingdom
+apis:
+- aid: algovoi-co-uk:algovoi-pay-payable-core-api
+  name: AlgoVoi Pay (Payable Core) API
+  description: >-
+    Tenant-free, pay-per-call verification rail (OpenAPI 3.1.0 "AlgoVoi Payable Core" 1.0.0, 17 operations). No account and
+    no API key: each paid operation (verify an x402/AP2 receipt JWS, verify an RFC 9421 HTTP message signature, screen a URL;
+    a compliance receipt is "coming soon") answers a strict x402 v2 402 challenge with one accept per lane across twelve
+    mainnet chains, and the resubmitted call with X-PAYMENT returns the result plus an offline-verifiable Ed25519 payable
+    receipt binding request hash, response hash and settled payment. GET on any paid URL is a free 402 probe; GET/POST
+    /pay/v1/negotiate is a free chain-agnostic lane negotiation; /v1/receipt/verify is a free unsigned tier (120/min). The
+    same host serves the A2A JSON-RPC door (/a2a), MPP and AP2 twins, a did:web document, the receipt JWKS and an x402
+    descriptor.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - x402
+  - Payments
+  - Verification
+  - Agent-native
+  - A2A
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-pay-openapi.yml
+  - type: OpenAPI
+    name: OpenAPI (provider-hosted)
+    url: https://pay.algovoi.co.uk/openapi.json
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    name: Agent card (provider-hosted)
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    name: llms.txt (provider-hosted)
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Overlay
+    url: overlays/algovoi-co-uk-pay-overlay.yaml
+  - type: AgentSkill
+    url: skills/algovoi-co-uk-pay-per-call-verification.md
+  image: https://algovoi.co.uk/apple-touch-icon.png
+- aid: algovoi-co-uk:algovoi-gateway-api
+  name: AlgoVoi Gateway API
+  description: >-
+    The multi-tenant payment gateway (OpenAPI 3.1.0 "AlgoVoi Gateway" 1.0.0-phase1c, 115 operations, 99 schemas) at
+    api.algovoi.co.uk: hosted checkout links and the checkout lifecycle (QR, build/submit txn, detect, status, cancel,
+    abandon, cross-chain bridge), x402 and MPP gated resources and subscriptions, the AP2 mandate chain
+    (intent/cart/pay/confirm/status), an A2A surface (message:send, tasks, pushNotificationConfigs, /a2a/jsonrpc,
+    /a2a/gibberlink), customers, subscriptions, Tier 2 recurring authorities and hosted authorisation, payouts, compliance
+    screening and a public compliance attestation, receipt and RFC 9421 verification, the suite store, signup proxies and
+    the Agentic Payment Mandates portal. Authenticated with a tenant Bearer key (algv_) plus X-Tenant-Id; 300 req/min per
+    tenant with X-RateLimit-* headers; Idempotency-Key on creates; Stripe-shaped HMAC-signed webhooks.
+  humanURL: https://docs.algovoi.co.uk/api-reference/introduction
+  baseURL: https://api.algovoi.co.uk
+  tags:
+  - Payments
+  - Agentic Commerce
+  - x402
+  - MPP
+  - AP2
+  - A2A
+  - Compliance
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-gateway-openapi.yml
+  - type: OpenAPI
+    name: OpenAPI (provider-hosted)
+    url: https://api.algovoi.co.uk/openapi.json
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Authentication
+    name: Authentication (provider docs)
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: ErrorCodes
+    name: API errors and status codes (provider docs)
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: RateLimits
+    name: Rate limits (provider docs)
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    name: Outbound webhooks (provider docs)
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: Overlay
+    url: overlays/algovoi-co-uk-gateway-overlay.yaml
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    name: Agent card (provider-hosted, graded flavored)
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: AgentSkill
+    url: skills/algovoi-co-uk-algovoi.md
+  - type: AgentSkill
+    url: skills/algovoi-co-uk-hosted-checkout.md
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  image: https://algovoi.co.uk/apple-touch-icon.png
+- aid: algovoi-co-uk:algovoi-rfc9421-clinic-api
+  name: AlgoVoi RFC 9421 Clinic (Verifiable-Comms Agent) API
+  description: >-
+    Free, anonymous, verify-only service at agents.algovoi.co.uk (OpenAPI 3.1.0 "AlgoVoi Verifiable-Comms Agent" 0.1.0, 9
+    operations): verify an RFC 9421 HTTP message signature with RFC 9530 Content-Digest offline against a supplied Ed25519
+    key or did:key, get a diagnosis with the exact canonical signature base, or fetch a known-good signed request from an
+    ephemeral demo key. Reachable over plain HTTP, A2A JSON-RPC (/a2a; message/send for 0.3.0 and SendMessage for 1.0.1) and
+    an anonymous Streamable HTTP MCP server (/mcp) exposing the same tools. Backed by the shipped algovoi-rfc9421-verifier
+    0.4.4 package.
+  humanURL: https://agents.algovoi.co.uk/clinic/guide
+  baseURL: https://agents.algovoi.co.uk
+  tags:
+  - Digital Signatures
+  - Verification
+  - A2A
+  - MCP
+  - Agent-native
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-clinic-openapi.yml
+  - type: OpenAPI
+    name: OpenAPI (provider-hosted)
+    url: https://agents.algovoi.co.uk/openapi.json
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    name: RFC 9421 verifier reference
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    name: Agent card (provider-hosted)
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: MCPServer
+    url: mcp/algovoi-co-uk-mcp.yml
+  - type: MCPServer
+    name: MCP endpoint (Streamable HTTP, anonymous)
+    url: https://agents.algovoi.co.uk/mcp
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    name: llms.txt (provider-hosted)
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Overlay
+    url: overlays/algovoi-co-uk-clinic-overlay.yaml
+  - type: AgentSkill
+    url: skills/algovoi-co-uk-rfc9421-clinic.md
+  image: https://algovoi.co.uk/apple-touch-icon.png
+- aid: algovoi-co-uk:algovoi-agent-trust-bench-api
+  name: AlgoVoi Agent Trust Bench API
+  description: >-
+    Open, provider-neutral x402 research surface (OpenAPI 3.1.0 "AlgoVoi Agent Trust Bench" 0.1.0, 7 operations, servers[]
+    https://agent-trust-bench.algovoi.co.uk, MIT): GET /{profile_id} presents one of 187 adversarial or benign payment
+    profiles as a 402 challenge (max $1.00 USDC, publicly logged, proceeds donated), /freebie is the always-free control,
+    /discovery/resources is a Bazaar-format catalog of every profile, /.well-known/x402.json the discovery manifest and
+    /stats.json aggregate statistics. Agents that pass can fetch a Falcon-1024 or Bulletproofs ATB Pass Certificate that
+    earns a 20% discount at participating x402 gateways.
+  humanURL: https://docs.algovoi.co.uk/agent-trust-bench
+  baseURL: https://agent-trust-bench.algovoi.co.uk
+  tags:
+  - x402
+  - Agent Safety
+  - Research
+  - Agent-native
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-agent-trust-bench-openapi.yml
+  - type: OpenAPI
+    name: OpenAPI (provider-hosted)
+    url: https://agent-trust-bench.algovoi.co.uk/openapi.json
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    name: Live bench statistics
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Overlay
+    url: overlays/algovoi-co-uk-agent-trust-bench-overlay.yaml
+  image: https://algovoi.co.uk/apple-touch-icon.png
+- aid: algovoi-co-uk:algovoi-audit-verifier-api
+  name: AlgoVoi Audit Verifier API
+  description: >-
+    Stateless reference verifier for AlgoVoi selective-disclosure audit bundles at verify.algovoi.co.uk (OpenAPI 3.1.0
+    "AlgoVoi Audit Verifier" 0.1.0, 3 operations): POST /verify checks a bundle in memory and persists nothing; an optional
+    X-Audit-Bundle-Key header verifies the bundle signature. Open source (algovoi-audit-verifier on GitHub); Swagger UI at
+    /docs.
+  humanURL: https://docs.algovoi.co.uk/audit-verifier
+  baseURL: https://verify.algovoi.co.uk
+  tags:
+  - Verification
+  - Compliance
+  - Audit
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-audit-verifier-openapi.yml
+  - type: OpenAPI
+    name: OpenAPI (provider-hosted)
+    url: https://verify.algovoi.co.uk/openapi.json
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: Overlay
+    url: overlays/algovoi-co-uk-audit-verifier-overlay.yaml
+  image: https://algovoi.co.uk/apple-touch-icon.png
+- aid: algovoi-co-uk:algovoi-mcp-server
+  name: AlgoVoi MCP Server
+  description: >-
+    Model Context Protocol access to AlgoVoi three ways. A hosted anonymous Streamable HTTP endpoint at
+    https://agents.algovoi.co.uk/mcp (algovoi-mcp-server 1.29.0, protocol 2025-06-18; tools/list returns three offline RFC
+    9421 tools with inputSchema); a hosted x402-gated endpoint at https://mcp.algovoi.co.uk/mcp (ulu-mcp 0.0.1, initialize
+    succeeds, tools/list answers 402 with a 1 VOI challenge — tool set unknown); and a local stdio package published to npm
+    (@algovoi/mcp-server 1.7.0) and PyPI (algovoi-mcp 1.7.0), listed in the official MCP Registry, exposing 29 tenant-gateway
+    tools (payment links, x402/MPP/AP2 challenges and verification, A2A pay-and-call, recurring authorities, MPP
+    subscriptions, Bazaar discovery, sanctions screening, compliance attestation) with an algv_ API key.
+  humanURL: https://docs.algovoi.co.uk/integrations/mcp-server
+  baseURL: https://agents.algovoi.co.uk/mcp
+  tags:
+  - MCP
+  - Agent-native
+  - Payments
+  properties:
+  - type: MCPServer
+    url: mcp/algovoi-co-uk-mcp.yml
+  - type: MCPServer
+    name: MCP endpoint (hosted, anonymous)
+    url: https://agents.algovoi.co.uk/mcp
+  - type: MCPServer
+    name: MCP endpoint (hosted, x402-gated)
+    url: https://mcp.algovoi.co.uk/mcp
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-gateway-openapi.yml
+  image: https://algovoi.co.uk/apple-touch-icon.png
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/algovoi-co-uk-domain-security.yml
+- type: AgenticAccess
+  url: agentic-access/algovoi-co-uk-agentic-access.yml
 - type: Website
   url: https://algovoi.co.uk/
+- type: DeveloperPortal
+  url: https://docs.algovoi.co.uk
+- type: Documentation
+  url: https://docs.algovoi.co.uk/introduction
+- type: APIReference
+  url: https://docs.algovoi.co.uk/api-reference/introduction
+- type: GettingStarted
+  url: https://docs.algovoi.co.uk/quickstart
+- type: Support
+  url: https://docs.algovoi.co.uk/support
+- type: GitHubOrganization
+  url: https://github.com/chopmob-cloud
+- type: Pricing
+  url: https://algovoi.co.uk/pricing.html
+- type: Pricing
+  name: Trial and pricing (gateway)
+  url: https://docs.algovoi.co.uk/trial-and-pricing
+- type: SignUp
+  url: https://dash.algovoi.co.uk/signup
+- type: Login
+  url: https://dash.algovoi.co.uk
+- type: TermsOfService
+  url: https://algovoi.co.uk/terms.html
+- type: PrivacyPolicy
+  url: https://algovoi.co.uk/privacy-policy.html
+- type: Compliance
+  url: https://algovoi.co.uk/compliance.html
+- type: Compliance
+  name: Machine-readable compliance attestation
+  url: https://api.algovoi.co.uk/compliance/attestation
+- type: Security
+  url: https://docs.algovoi.co.uk/security
+- type: SecurityTxt
+  url: well-known/algovoi-co-uk-security.txt
+- type: SecurityTxt
+  name: security.txt (provider-hosted)
+  url: https://algovoi.co.uk/.well-known/security.txt
+- type: VulnerabilityDisclosure
+  url: security/algovoi-co-uk-vulnerability-disclosure.yml
+- type: ChangeLog
+  url: changelog/algovoi-co-uk-changelog.yml
+- type: ChangeLog
+  name: Changelog (provider-hosted)
+  url: https://docs.algovoi.co.uk/changelog
+- type: Lifecycle
+  url: lifecycle/algovoi-co-uk-lifecycle.yml
+- type: LLMsTxt
+  url: llms/algovoi-co-uk-llms.txt
+- type: LLMsTxt
+  name: llms.txt (provider-hosted, apex)
+  url: https://algovoi.co.uk/llms.txt
+- type: LLMsTxt
+  name: llms.txt (docs)
+  url: llms/algovoi-co-uk-docs-llms.txt
+- type: LLMsTxt
+  name: llms.txt (provider-hosted, docs)
+  url: https://docs.algovoi.co.uk/llms.txt
+- type: AgentCard
+  url: a2a/algovoi-co-uk-a2a.yml
+- type: MCPServer
+  url: mcp/algovoi-co-uk-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/algovoi-co-uk-tool-crosswalk.yml
+- type: WellKnown
+  url: well-known/algovoi-co-uk-well-known.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: AgentSkill
+  name: Agent Skill (provider-hosted)
+  url: https://docs.algovoi.co.uk/.well-known/agent-skills/algovoi/skill.md
+- type: Conformance
+  url: conformance/algovoi-co-uk-conformance.yml
+- type: ErrorCatalog
+  url: errors/algovoi-co-uk-problem-types.yml
+- type: Authentication
+  url: authentication/algovoi-co-uk-authentication.yml
+- type: Conventions
+  url: conventions/algovoi-co-uk-conventions.yml
+- type: Idempotency
+  url: conventions/algovoi-co-uk-conventions.yml
+- type: Webhooks
+  url: asyncapi/algovoi-co-uk-webhooks.yml
+- type: RateLimits
+  url: rate-limits/algovoi-co-uk-rate-limits.yml
+- type: Plans
+  url: plans/algovoi-co-uk-plans-pricing.yml
+- type: Sandbox
+  url: sandbox/algovoi-co-uk-sandbox.yml
+- type: Packages
+  url: packages/algovoi-co-uk-packages.yml
+- type: SDKs
+  url: packages/algovoi-co-uk-packages.yml
+- type: SDKs
+  name: Native SDKs (Go, PHP, Python, Rust)
+  url: https://docs.algovoi.co.uk/integrations/native-sdks
+- type: Components
+  url: components/algovoi-co-uk-components.yml
+- type: DataModel
+  url: data-model/algovoi-co-uk-data-model.yml
+- type: Overlay
+  url: overlays/algovoi-co-uk-gateway-overlay.yaml
+- type: Subprocessors
+  url: https://docs.algovoi.co.uk/compliance#subprocessors
+- type: IncidentNotification
+  url: https://docs.algovoi.co.uk/security#incident-response
+- type: DataSubjectRequest
+  url: https://algovoi.co.uk/privacy-policy.html#your-rights
+- type: AITransparency
+  url: https://algovoi.co.uk/run-by-a-secure-agent-workforce.html
+- type: RegulatoryPosture
+  url: regulatory/algovoi-co-uk-regulatory-posture.yml
+- type: Store
+  name: Suite store
+  url: https://api.algovoi.co.uk/suite-store
+x-enrichment:
+  date: '2026-09-19'
+  status: enriched
+  artifacts_added: 69
+  pass: local-v3

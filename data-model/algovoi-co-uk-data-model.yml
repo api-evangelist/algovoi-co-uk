@@ -1,0 +1,1773 @@
+generated: '2026-09-19'
+method: derived
+source: Derived from the 99 component schemas of openapi/algovoi-co-uk-gateway-openapi.yml and the 24 of openapi/algovoi-co-uk-pay-openapi.yml
+  — their $ref links (has_one / has_many) and *_id / token / reference fields (belongs_to, matched by schema-name prefix) — plus the operation
+  usage of each schema. The clinic, bench and verifier specs carry two, zero and zero schemas respectively and are omitted. Identifier formats
+  are quoted from the docs where stated.
+docs: https://docs.algovoi.co.uk/platform-schema
+notation: relationships use has_one / has_many / belongs_to with the referencing field; direction is from the entity that owns the reference.
+  belongs_to rows are name-prefix inferences (medium confidence).
+identifiers:
+- field: tenant_id
+  format: UUID (X-Tenant-Id header)
+  docs: https://docs.algovoi.co.uk/api-reference/authentication
+- field: token (checkout)
+  format: opaque URL slug, e.g. uW9MJN-abc123 — "NOT the UUID id field" (A2A check-status skill); appears in checkout_url https://api.algovoi.co.uk/checkout/{token}
+- field: cancel_secret
+  format: merchant-only secret returned at link creation; never embedded in the public checkout page
+- field: tx_id / tx_hash
+  format: chain-native transaction id (Algorand 52-char, EVM 0x…, Solana signature, Hedera 0.0.x@…, Stellar hash)
+- field: chain / network
+  format: CAIP-2 (eip155:8453, algorand:mainnet, solana:<genesis>, stellar:pubnet, hedera:mainnet, voi:mainnet) or the SDK short form algorand_mainnet
+    / base_mainnet
+- field: asset.id
+  format: ASA id, HTS token id, ERC-20 contract, SPL mint, or USDC:{issuer} on Stellar
+- field: amount_microunits / amount_minor
+  format: string integer in minor units (6 dp USDC, 7 dp Stellar, 18 dp Arc gas USDC)
+- field: evt_ id
+  format: evt_<uuid> webhook event id — dedupe key
+- field: request_id
+  format: req_… echoed from X-Request-Id
+- field: payment_reference (pay rail)
+  format: <unix>:<hex16>:<sha256hex> challenge token, TTL 1800 s
+- field: settled_payment_ref
+  format: sha256:hex(sha256('algovoi-payable-core:'+tx_id+':<internal_network>'))
+- field: api key prefixes
+  format: algv_ tenant, algvc_ admin, algvw_ webhook secret
+entities:
+- name: AP2CartRequest
+  spec: gateway
+  domain: ap2
+  fields: 2
+  required: 2
+  id_fields:
+  - intent_id
+  used_by:
+  - submit_cart_ap2_cart_post
+  description: POST /ap2/cart — agent submits a merchant-signed CartMandate.
+- name: AP2CartResponse
+  spec: gateway
+  domain: ap2
+  fields: 3
+  required: 3
+  id_fields:
+  - cart_id
+  used_by:
+  - submit_cart_ap2_cart_post
+  description: AP2CartResponse
+- name: AP2ConfirmRequest
+  spec: gateway
+  domain: ap2
+  fields: 3
+  required: 3
+  id_fields:
+  - payment_id
+  - tx_id
+  used_by:
+  - confirm_payment_ap2_confirm_post
+  description: POST /ap2/confirm — agent confirms on-chain tx_id.
+- name: AP2ConfirmResponse
+  spec: gateway
+  domain: ap2
+  fields: 5
+  required: 1
+  id_fields: []
+  used_by:
+  - confirm_payment_ap2_confirm_post
+  description: AP2ConfirmResponse
+- name: AP2ExtensionInfo
+  spec: gateway
+  domain: ap2
+  fields: 4
+  required: 4
+  id_fields: []
+  used_by: []
+  description: Single extension entry for GET /ap2/extensions discovery response.
+- name: AP2ExtensionsResponse
+  spec: gateway
+  domain: ap2
+  fields: 2
+  required: 1
+  id_fields: []
+  used_by:
+  - list_extensions_ap2_extensions_get
+  description: GET /ap2/extensions — list of extensions this gateway supports.
+- name: AP2IntentRequest
+  spec: gateway
+  domain: ap2
+  fields: 2
+  required: 1
+  id_fields: []
+  used_by:
+  - submit_intent_ap2_intent_post
+  description: POST /ap2/intent — agent submits a signed IntentMandate.
+- name: AP2IntentResponse
+  spec: gateway
+  domain: ap2
+  fields: 3
+  required: 1
+  id_fields:
+  - intent_id
+  used_by:
+  - submit_intent_ap2_intent_post
+  description: AP2IntentResponse
+- name: AP2PayRequest
+  spec: gateway
+  domain: ap2
+  fields: 2
+  required: 2
+  id_fields:
+  - cart_id
+  used_by:
+  - initiate_payment_ap2_pay_post
+  description: POST /ap2/pay — agent submits a PaymentMandate with user_authorization.
+- name: AP2PayResponse
+  spec: gateway
+  domain: ap2
+  fields: 7
+  required: 5
+  id_fields:
+  - payment_id
+  used_by:
+  - initiate_payment_ap2_pay_post
+  description: 'x402-style payment challenge returned to the agent.
+
+
+    For AlgoVoi crypto payments, this echoes the crypto extension data
+
+    (network, receiver, amount_microunits) s'
+- name: AP2StatusResponse
+  spec: gateway
+  domain: ap2
+  fields: 6
+  required: 2
+  id_fields:
+  - cart_id
+  - intent_id
+  - tx_id
+  used_by:
+  - get_status_ap2_status__cart_id__get
+  description: GET /ap2/status/{cart_id}
+- name: ActionRefRequest
+  spec: gateway
+  domain: receipts
+  fields: 4
+  required: 4
+  id_fields:
+  - agent_id
+  used_by:
+  - verify_action_ref_verify_action_ref_post
+  description: ActionRefRequest
+- name: ActionRefResponse
+  spec: gateway
+  domain: receipts
+  fields: 7
+  required: 7
+  id_fields: []
+  used_by:
+  - verify_action_ref_verify_action_ref_post
+  description: ActionRefResponse
+- name: ActivateBody
+  spec: gateway
+  domain: store
+  fields: 1
+  required: 1
+  id_fields: []
+  used_by:
+  - suite_store_activate_suite_store_order__token__activate_post
+  description: ActivateBody
+- name: ActivateRequest
+  spec: gateway
+  domain: store
+  fields: 2
+  required: 2
+  id_fields: []
+  used_by:
+  - activate_atb_license_activate_post
+  description: ActivateRequest
+- name: ActivateResponse
+  spec: gateway
+  domain: store
+  fields: 3
+  required: 3
+  id_fields:
+  - token
+  used_by:
+  - activate_atb_license_activate_post
+  description: ActivateResponse
+- name: Ap2VerifyRequest
+  spec: gateway
+  domain: ap2
+  fields: 3
+  required: 1
+  id_fields:
+  - merchant_id
+  - tenant_id
+  used_by:
+  - ap2_verify_v1_ap2_verify_post
+  description: Ap2VerifyRequest
+- name: Ap2VerifyResponse
+  spec: gateway
+  domain: ap2
+  fields: 2
+  required: 1
+  id_fields: []
+  used_by:
+  - ap2_verify_v1_ap2_verify_post
+  description: Ap2VerifyResponse
+- name: AuthorityConfirmRequest
+  spec: gateway
+  domain: recurring
+  fields: 2
+  required: 1
+  id_fields: []
+  used_by:
+  - confirm_authority_endpoint_v1_recurring_authorities__authority_id__confirm_post
+  description: 'POST /v1/recurring/authorities/{id}/confirm request body.
+
+
+    Submitted after the customer signs the on-chain authorisation. Carries
+
+    the on-chain identifier (e.g. '
+- name: AuthorityCreate
+  spec: gateway
+  domain: recurring
+  fields: 8
+  required: 6
+  id_fields:
+  - subscription_id
+  used_by:
+  - create_authority_endpoint_v1_recurring_authorities_post
+  description: POST /v1/recurring/authorities request body.
+- name: AuthorityCreateResponse
+  spec: gateway
+  domain: recurring
+  fields: 3
+  required: 2
+  id_fields: []
+  used_by:
+  - create_authority_endpoint_v1_recurring_authorities_post
+  description: 'POST /v1/recurring/authorities response.
+
+
+    Wraps the server-recorded authority + the chain-specific payload the
+
+    customer''s wallet signs to land the authorisation'
+- name: AuthorityResponse
+  spec: gateway
+  domain: recurring
+  fields: 24
+  required: 24
+  id_fields:
+  - tenant_id
+  - subscription_id
+  used_by:
+  - confirm_authority_endpoint_v1_recurring_authorities__authority_id__confirm_post
+  - get_authority_endpoint_v1_recurring_authorities__authority_id__get
+  - list_authorities_endpoint_v1_recurring_authorities_get
+  - manual_pull_endpoint_v1_recurring_pulls_post
+  - pause_authority_endpoint_v1_recurring_authorities__authority_id__pause_post
+  - resume_authority_endpoint_v1_recurring_authorities__authority_id__resume_post
+  description: Standard authority response. Returned by GET / POST creates.
+- name: AuthorityResumeRequest
+  spec: gateway
+  domain: recurring
+  fields: 1
+  required: 0
+  id_fields: []
+  used_by:
+  - resume_authority_endpoint_v1_recurring_authorities__authority_id__resume_post
+  description: POST /v1/recurring/authorities/{id}/resume request body.
+- name: CancelCheckoutRequest
+  spec: gateway
+  domain: checkout
+  fields: 1
+  required: 1
+  id_fields: []
+  used_by:
+  - cancel_checkout_checkout__token__cancel_post
+  description: 'Body for POST /checkout/{token}/cancel (gateway-side).
+
+
+    F5 security fix: the cancel endpoint now requires cancel_secret so that
+
+    only the merchant (who received '
+- name: CancelSubscriptionBody
+  spec: gateway
+  domain: recurring
+  fields: 1
+  required: 0
+  id_fields: []
+  used_by:
+  - cancel_subscription_endpoint_v1_subscriptions__subscription_id__cancel_post
+  description: CancelSubscriptionBody
+- name: CartContents
+  spec: gateway
+  domain: ap2
+  fields: 5
+  required: 5
+  id_fields: []
+  used_by: []
+  description: 'The detailed contents of a cart.
+
+
+    This object is signed by the merchant to create a CartMandate (the
+
+    signature travels in CartMandate.merchant_authorization as '
+- name: CartMandate
+  spec: gateway
+  domain: mandates
+  fields: 2
+  required: 1
+  id_fields: []
+  used_by: []
+  description: 'A cart whose contents have been digitally signed by the merchant.
+
+
+    merchant_authorization is a base64url-encoded JWT (typically RS256) with
+
+    claims: iss, sub, au'
+- name: ChainBinding
+  spec: gateway
+  domain: receipts
+  fields: 3
+  required: 2
+  id_fields: []
+  used_by: []
+  description: Offline-verifiable chain evidence for a settled payment.
+- name: ChargeItemPublic
+  spec: gateway
+  domain: mandates
+  fields: 7
+  required: 7
+  id_fields: []
+  used_by: []
+  description: ChargeItemPublic
+- name: CheckoutBody
+  spec: gateway
+  domain: checkout
+  fields: 5
+  required: 2
+  id_fields: []
+  used_by:
+  - suite_store_checkout_suite_store_checkout_post
+  description: CheckoutBody
+- name: CheckoutVerifyRequest
+  spec: gateway
+  domain: checkout
+  fields: 2
+  required: 1
+  id_fields:
+  - tx_id
+  used_by:
+  - verify_checkout_checkout__token__verify_post
+  description: Body for POST /checkout/{token}/verify (gateway-side, unauthenticated).
+- name: CheckoutVerifyResponse
+  spec: gateway
+  domain: checkout
+  fields: 5
+  required: 1
+  id_fields:
+  - payment_ledger_id
+  used_by:
+  - verify_checkout_checkout__token__verify_post
+  description: Successful verification response.
+- name: ContactAddress
+  spec: gateway
+  domain: ap2
+  fields: 10
+  required: 0
+  id_fields: []
+  used_by: []
+  description: 'Subset of W3C ContactAddress used by AP2 for shipping + payer info.
+
+
+    Spec: https://www.w3.org/TR/contact-picker/#contactaddress'
+- name: CustomerCreate
+  spec: gateway
+  domain: recurring
+  fields: 3
+  required: 0
+  id_fields: []
+  used_by:
+  - create_customer_endpoint_v1_customers_post
+  description: CustomerCreate
+- name: CustomerRef
+  spec: gateway
+  domain: recurring
+  fields: 3
+  required: 0
+  id_fields: []
+  used_by: []
+  description: 'Embedded customer ref accepted by subscription create. Either email or
+
+    wallet_address is required; both is fine.'
+- name: CustomerResponse
+  spec: gateway
+  domain: recurring
+  fields: 7
+  required: 7
+  id_fields:
+  - tenant_id
+  used_by:
+  - create_customer_endpoint_v1_customers_post
+  - list_customers_endpoint_v1_customers_get
+  description: CustomerResponse
+- name: DynamicPaymentLinkCreate
+  spec: gateway
+  domain: payments
+  fields: 6
+  required: 3
+  id_fields: []
+  used_by:
+  - create_dynamic_payment_link_v1_payment_links_post
+  description: DynamicPaymentLinkCreate
+- name: DynamicPaymentLinkResponse
+  spec: gateway
+  domain: payments
+  fields: 9
+  required: 9
+  id_fields:
+  - token
+  - asset_id
+  used_by:
+  - create_dynamic_payment_link_v1_payment_links_post
+  description: DynamicPaymentLinkResponse
+- name: FailedPaymentPolicy
+  spec: gateway
+  domain: payments
+  fields: 3
+  required: 0
+  id_fields: []
+  used_by: []
+  description: FailedPaymentPolicy
+- name: HTTPValidationError
+  spec: gateway
+  domain: platform
+  fields: 1
+  required: 0
+  id_fields: []
+  used_by:
+  - a2a_gibberlink_a2a_gibberlink_post
+  - a2a_jsonrpc_a2a_jsonrpc_post
+  - abandon_checkout_checkout__token__abandon_post
+  - activate_atb_license_activate_post
+  - ap2_verify_v1_ap2_verify_post
+  - cancel_checkout_checkout__token__cancel_post
+  description: HTTPValidationError
+- name: HostedAuthConfirmRequest
+  spec: gateway
+  domain: recurring
+  fields: 3
+  required: 1
+  id_fields:
+  - on_chain_tx_id
+  used_by:
+  - confirm_token_v1_recurring_auth__token__confirm_post
+  description: HostedAuthConfirmRequest
+- name: HostedAuthConfirmResponse
+  spec: gateway
+  domain: recurring
+  fields: 5
+  required: 4
+  id_fields:
+  - authority_id
+  used_by:
+  - confirm_token_v1_recurring_auth__token__confirm_post
+  description: HostedAuthConfirmResponse
+- name: HostedAuthMerchant
+  spec: gateway
+  domain: recurring
+  fields: 4
+  required: 1
+  id_fields: []
+  used_by: []
+  description: Subset of merchant info safe to expose on a public endpoint.
+- name: HostedAuthResolveResponse
+  spec: gateway
+  domain: recurring
+  fields: 13
+  required: 12
+  id_fields:
+  - authority_id
+  used_by:
+  - resolve_token_v1_recurring_auth__token__get
+  description: HostedAuthResolveResponse
+- name: IntentMandate
+  spec: gateway
+  domain: mandates
+  fields: 6
+  required: 2
+  id_fields: []
+  used_by: []
+  description: 'Represents the user''s purchase intent.
+
+
+    For human-present flows this contains the core shopping bounds. For
+
+    human-not-present flows additional fields will be ad'
+- name: MandatePayRequest
+  spec: gateway
+  domain: mandates
+  fields: 4
+  required: 2
+  id_fields:
+  - tenant_id
+  - resource_id
+  used_by:
+  - mandate_pay_mandate_pay_post
+  description: MandatePayRequest
+- name: MandatePayResponse
+  spec: gateway
+  domain: mandates
+  fields: 7
+  required: 7
+  id_fields:
+  - charge_id
+  - tx_id
+  used_by:
+  - mandate_pay_mandate_pay_post
+  description: MandatePayResponse
+- name: MandatePortalResponse
+  spec: gateway
+  domain: mandates
+  fields: 12
+  required: 11
+  id_fields:
+  - mandate_id
+  - token
+  used_by:
+  - get_mandate_portal_mandate_portal__mandate_id__get
+  description: MandatePortalResponse
+- name: MppChallengeRequest
+  spec: gateway
+  domain: mpp
+  fields: 2
+  required: 1
+  id_fields:
+  - resource_id
+  used_by:
+  - mpp_challenge_mpp_challenge_post
+  description: MppChallengeRequest
+- name: MppChallengeResponse
+  spec: gateway
+  domain: mpp
+  fields: 2
+  required: 2
+  id_fields: []
+  used_by:
+  - mpp_challenge_mpp_challenge_post
+  description: MppChallengeResponse
+- name: MppVerifyRequest
+  spec: gateway
+  domain: mpp
+  fields: 4
+  required: 3
+  id_fields:
+  - tx_id
+  - resource_id
+  - tenant_id
+  used_by:
+  - mpp_verify_v1_verify_post
+  description: MppVerifyRequest
+- name: MppVerifyResponse
+  spec: gateway
+  domain: mpp
+  fields: 5
+  required: 1
+  id_fields: []
+  used_by:
+  - mpp_verify_v1_verify_post
+  description: MppVerifyResponse
+- name: PaymentCurrencyAmount
+  spec: gateway
+  domain: payments
+  fields: 2
+  required: 2
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentCurrencyAmount — monetary value with ISO 4217 currency code.
+
+
+    Spec: https://www.w3.org/TR/payment-request/#dom-paymentcurrencyamount'
+- name: PaymentDetailsInit
+  spec: gateway
+  domain: payments
+  fields: 5
+  required: 3
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentDetailsInit — the details of the payment being requested.
+
+
+    Spec: https://www.w3.org/TR/payment-request/#dom-paymentdetailsinit'
+- name: PaymentDetailsModifier
+  spec: gateway
+  domain: payments
+  fields: 4
+  required: 1
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentDetailsModifier — method-specific price adjustments.
+
+
+    Spec: https://www.w3.org/TR/payment-request/#dom-paymentdetailsmodifier'
+- name: PaymentItem
+  spec: gateway
+  domain: payments
+  fields: 4
+  required: 2
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentItem — an item for purchase and its price.
+
+
+    Spec: https://www.w3.org/TR/payment-request/#dom-paymentitem'
+- name: PaymentMandate
+  spec: gateway
+  domain: mandates
+  fields: 2
+  required: 1
+  id_fields: []
+  used_by: []
+  description: 'User''s instructions and authorization for payment.
+
+
+    user_authorization is a base64url-encoded SD-JWT-VC (Selective Disclosure
+
+    Verifiable Credential) containing '
+- name: PaymentMandateContents
+  spec: gateway
+  domain: mandates
+  fields: 6
+  required: 5
+  id_fields:
+  - payment_mandate_id
+  - payment_details_id
+  used_by: []
+  description: 'The data contents of a PaymentMandate.
+
+
+    Spec source: ap2/types/mandate.py'
+- name: PaymentMethodData
+  spec: gateway
+  domain: payments
+  fields: 2
+  required: 1
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentMethodData — identifies a payment method and method-specific data.
+
+
+    For AlgoVoi crypto payments, `supported_methods` is set to the AlgoVoi
+
+    crypto ext'
+- name: PaymentOptions
+  spec: gateway
+  domain: payments
+  fields: 5
+  required: 0
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentOptions — which payer details to collect.
+
+
+    Spec: https://www.w3.org/TR/payment-request/#dom-paymentoptions'
+- name: PaymentRequest
+  spec: gateway
+  domain: payments
+  fields: 4
+  required: 2
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentRequest — the top-level request for payment.
+
+
+    Spec: https://www.w3.org/TR/payment-request/#paymentrequest-interface'
+- name: PaymentResponse
+  spec: gateway
+  domain: payments
+  fields: 8
+  required: 2
+  id_fields:
+  - request_id
+  used_by: []
+  description: 'W3C PaymentResponse — user''s chosen payment method + approval.
+
+
+    For AlgoVoi crypto payments, `details` contains a CryptoPaymentResponse
+
+    struct (see ap2_ext_cryp'
+- name: PaymentShippingOption
+  spec: gateway
+  domain: payments
+  fields: 4
+  required: 3
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentShippingOption.
+
+
+    Spec: https://www.w3.org/TR/payment-request/#dom-paymentshippingoption'
+- name: PayoutCreate
+  spec: gateway
+  domain: payouts
+  fields: 5
+  required: 5
+  id_fields:
+  - reference
+  used_by:
+  - create_payout_v1_payouts_post
+  description: PayoutCreate
+- name: PayoutCreateResponse
+  spec: gateway
+  domain: payouts
+  fields: 5
+  required: 5
+  id_fields:
+  - payout_id
+  - tx_id
+  used_by:
+  - create_payout_v1_payouts_post
+  description: PayoutCreateResponse
+- name: ProvisionRequest
+  spec: gateway
+  domain: store
+  fields: 5
+  required: 3
+  id_fields:
+  - federation_id
+  used_by:
+  - provision_suite_store_mesh_fed_provision_post
+  description: ProvisionRequest
+- name: PullCreate
+  spec: gateway
+  domain: recurring
+  fields: 3
+  required: 2
+  id_fields:
+  - authority_id
+  used_by:
+  - manual_pull_endpoint_v1_recurring_pulls_post
+  description: POST /v1/recurring/pulls request body — manual pull trigger.
+- name: ReceiptVerifyRequest
+  spec: gateway
+  domain: receipts
+  fields: 4
+  required: 1
+  id_fields: []
+  used_by:
+  - verify_receipt_v1_receipt_verify_post
+  description: Request body for POST /v1/receipt/verify.
+- name: ReceiptVerifyResponse
+  spec: gateway
+  domain: receipts
+  fields: 12
+  required: 1
+  id_fields: []
+  used_by:
+  - verify_receipt_v1_receipt_verify_post
+  description: Verification result.
+- name: ResourceResponse
+  spec: gateway
+  domain: resources
+  fields: 13
+  required: 8
+  id_fields:
+  - resource_id
+  - asset_id
+  used_by:
+  - get_resource_resources__resource_id__get
+  description: ResourceResponse
+- name: Rfc9421VerifyRequest
+  spec: gateway
+  domain: verification
+  fields: 9
+  required: 5
+  id_fields: []
+  used_by:
+  - verify_rfc9421_verify_rfc9421_post
+  description: Rfc9421VerifyRequest
+- name: Rfc9421VerifyResponse
+  spec: gateway
+  domain: verification
+  fields: 10
+  required: 10
+  id_fields: []
+  used_by:
+  - verify_rfc9421_verify_rfc9421_post
+  description: Rfc9421VerifyResponse
+- name: ScreenRequest
+  spec: gateway
+  domain: compliance
+  fields: 4
+  required: 2
+  id_fields: []
+  used_by:
+  - screen_compliance_screen_post
+  description: ScreenRequest
+- name: ScreenResponse
+  spec: gateway
+  domain: compliance
+  fields: 19
+  required: 8
+  id_fields:
+  - verdict_id
+  used_by:
+  - screen_compliance_screen_post
+  description: ScreenResponse
+- name: SessionStatusResponse
+  spec: gateway
+  domain: auth
+  fields: 5
+  required: 5
+  id_fields: []
+  used_by:
+  - session_status_auth_token_status_get
+  description: SessionStatusResponse
+- name: SettlementEvidenceResponse
+  spec: gateway
+  domain: receipts
+  fields: 7
+  required: 2
+  id_fields: []
+  used_by:
+  - get_settlement_evidence_v1_receipt_settlement_evidence__settled_payment_ref__get
+  description: Status of chain-evidence capture for a settled payment.
+- name: SubscriptionCreate
+  spec: gateway
+  domain: recurring
+  fields: 19
+  required: 3
+  id_fields:
+  - customer_id
+  used_by:
+  - create_subscription_endpoint_v1_subscriptions_post
+  description: Request body for POST /v1/subscriptions.
+- name: SubscriptionInvoiceResponse
+  spec: gateway
+  domain: recurring
+  fields: 15
+  required: 15
+  id_fields:
+  - subscription_id
+  - paid_tx_id
+  used_by:
+  - list_subscription_invoices_endpoint_v1_subscriptions__subscription_id__invoices_get
+  - my_invoices_v1_recurr_me_invoices_get
+  description: SubscriptionInvoiceResponse
+- name: SubscriptionResponse
+  spec: gateway
+  domain: recurring
+  fields: 24
+  required: 23
+  id_fields:
+  - tenant_id
+  - customer_id
+  used_by:
+  - cancel_subscription_endpoint_v1_subscriptions__subscription_id__cancel_post
+  - create_subscription_endpoint_v1_subscriptions_post
+  - get_subscription_endpoint_v1_subscriptions__subscription_id__get
+  - list_subscriptions_endpoint_v1_subscriptions_get
+  - my_subscription_cancel_v1_recurr_me_subscriptions__subscription_id__cancel_post
+  - my_subscription_detail_v1_recurr_me_subscriptions__subscription_id__get
+  description: SubscriptionResponse
+- name: SubscriptionUpdate
+  spec: gateway
+  domain: recurring
+  fields: 5
+  required: 0
+  id_fields: []
+  used_by:
+  - update_subscription_endpoint_v1_subscriptions__subscription_id__patch
+  description: 'PATCH-style partial update. Some fields (chain, currency, cadence) are
+
+    deliberately immutable post-creation — change those by cancelling and
+
+    creating a new subs'
+- name: TokenRequest
+  spec: gateway
+  domain: auth
+  fields: 4
+  required: 0
+  id_fields: []
+  used_by:
+  - exchange_atb_cert_auth_token_post
+  description: TokenRequest
+- name: TokenResponse
+  spec: gateway
+  domain: auth
+  fields: 5
+  required: 4
+  id_fields:
+  - token
+  used_by:
+  - exchange_atb_cert_auth_token_post
+  description: TokenResponse
+- name: TopupCaptureResponse
+  spec: gateway
+  domain: mandates
+  fields: 4
+  required: 4
+  id_fields:
+  - mandate_id
+  - paypal_order_id
+  used_by:
+  - portal_topup_capture_mandate_portal__mandate_id__topup_capture_post
+  description: TopupCaptureResponse
+- name: TopupInitiateRequest
+  spec: gateway
+  domain: mandates
+  fields: 3
+  required: 3
+  id_fields: []
+  used_by:
+  - portal_topup_initiate_mandate_portal__mandate_id__topup_initiate_post
+  description: TopupInitiateRequest
+- name: TopupInitiateResponse
+  spec: gateway
+  domain: mandates
+  fields: 4
+  required: 4
+  id_fields:
+  - mandate_id
+  - paypal_order_id
+  used_by:
+  - portal_topup_initiate_mandate_portal__mandate_id__topup_initiate_post
+  description: TopupInitiateResponse
+- name: TrustQueryRequest
+  spec: gateway
+  domain: compliance
+  fields: 1
+  required: 0
+  id_fields: []
+  used_by:
+  - trust_query_compliance_trust_query_post
+  description: TrustQueryRequest
+- name: TrustQueryResponse
+  spec: gateway
+  domain: compliance
+  fields: 5
+  required: 3
+  id_fields: []
+  used_by:
+  - trust_query_compliance_trust_query_post
+  description: TrustQueryResponse
+- name: ValidationError
+  spec: gateway
+  domain: platform
+  fields: 5
+  required: 3
+  id_fields: []
+  used_by: []
+  description: ValidationError
+- name: _Message
+  spec: gateway
+  domain: a2a
+  fields: 6
+  required: 0
+  id_fields: []
+  used_by: []
+  description: _Message
+- name: _Part
+  spec: gateway
+  domain: a2a
+  fields: 9
+  required: 0
+  id_fields: []
+  used_by: []
+  description: _Part
+- name: _SendMessageRequest
+  spec: gateway
+  domain: a2a
+  fields: 2
+  required: 1
+  id_fields: []
+  used_by:
+  - send_message_message_send_post
+  description: _SendMessageRequest
+- name: gateway__app__routers__verify__ChallengeRequest
+  spec: gateway
+  domain: protocols
+  fields: 1
+  required: 1
+  id_fields:
+  - resource_id
+  used_by:
+  - challenge_x402_challenge_post
+  description: ChallengeRequest
+- name: gateway__app__routers__verify__ChallengeResponse
+  spec: gateway
+  domain: protocols
+  fields: 8
+  required: 5
+  id_fields:
+  - resource_id
+  used_by:
+  - challenge_x402_challenge_post
+  description: ChallengeResponse
+- name: gateway__app__routers__verify__VerifyRequest
+  spec: gateway
+  domain: protocols
+  fields: 4
+  required: 3
+  id_fields:
+  - resource_id
+  - tx_id
+  used_by:
+  - verify_x402_verify_post
+  description: VerifyRequest
+- name: gateway__app__routers__verify__VerifyResponse
+  spec: gateway
+  domain: protocols
+  fields: 5
+  required: 1
+  id_fields: []
+  used_by:
+  - verify_x402_verify_post
+  description: VerifyResponse
+- name: shared__schemas__recurr__ChallengeRequest
+  spec: gateway
+  domain: protocols
+  fields: 2
+  required: 2
+  id_fields: []
+  used_by:
+  - challenge_endpoint_v1_recurr_auth_challenge_post
+  description: "Tenant-agnostic. Wallet alone is the identity for Recurr customer auth.\n\nPer-chain address shapes:\n  - EVM (Base, Tempo, etc.):\
+    \  0x + 40 hex chars   (42 total)\n"
+- name: shared__schemas__recurr__ChallengeResponse
+  spec: gateway
+  domain: protocols
+  fields: 3
+  required: 3
+  id_fields: []
+  used_by:
+  - challenge_endpoint_v1_recurr_auth_challenge_post
+  description: ChallengeResponse
+- name: shared__schemas__recurr__VerifyRequest
+  spec: gateway
+  domain: protocols
+  fields: 2
+  required: 2
+  id_fields: []
+  used_by:
+  - verify_endpoint_v1_recurr_auth_verify_post
+  description: VerifyRequest
+- name: shared__schemas__recurr__VerifyResponse
+  spec: gateway
+  domain: protocols
+  fields: 5
+  required: 4
+  id_fields: []
+  used_by:
+  - verify_endpoint_v1_recurr_auth_verify_post
+  description: VerifyResponse
+- name: Ap2CartRequest
+  spec: pay
+  domain: ap2
+  fields: 2
+  required: 1
+  id_fields:
+  - service_id
+  used_by:
+  - ap2_cart_ap2_cart_post
+  description: Ap2CartRequest
+- name: Ap2PayRequest
+  spec: pay
+  domain: ap2
+  fields: 4
+  required: 2
+  id_fields: []
+  used_by:
+  - ap2_pay_ap2_pay_post
+  description: Ap2PayRequest
+- name: CartContents
+  spec: pay
+  domain: ap2
+  fields: 5
+  required: 5
+  id_fields: []
+  used_by: []
+  description: 'The detailed contents of a cart.
+
+
+    This object is signed by the merchant to create a CartMandate (the
+
+    signature travels in CartMandate.merchant_authorization as '
+- name: CartMandate
+  spec: pay
+  domain: mandates
+  fields: 2
+  required: 1
+  id_fields: []
+  used_by: []
+  description: 'A cart whose contents have been digitally signed by the merchant.
+
+
+    merchant_authorization is a base64url-encoded JWT (typically RS256) with
+
+    claims: iss, sub, au'
+- name: ContactAddress
+  spec: pay
+  domain: ap2
+  fields: 10
+  required: 0
+  id_fields: []
+  used_by: []
+  description: 'Subset of W3C ContactAddress used by AP2 for shipping + payer info.
+
+
+    Spec: https://www.w3.org/TR/contact-picker/#contactaddress'
+- name: HTTPValidationError
+  spec: pay
+  domain: platform
+  fields: 1
+  required: 0
+  id_fields: []
+  used_by:
+  - ap2_cart_ap2_cart_post
+  - ap2_pay_ap2_pay_post
+  - mpp_verify_receipt_mpp_verify_receipt_post
+  - mpp_verify_rfc9421_mpp_verify_rfc9421_post
+  - negotiate_pay_v1_negotiate_post
+  - pay_screen_url_pay_v1_screen_url_post
+  description: HTTPValidationError
+- name: NegotiateRequest
+  spec: pay
+  domain: negotiation
+  fields: 3
+  required: 0
+  id_fields:
+  - service_id
+  used_by:
+  - negotiate_pay_v1_negotiate_post
+  description: NegotiateRequest
+- name: PayableReceiptVerifyRequest
+  spec: pay
+  domain: receipts
+  fields: 4
+  required: 1
+  id_fields: []
+  used_by:
+  - mpp_verify_receipt_mpp_verify_receipt_post
+  - pay_verify_receipt_pay_v1_verify_receipt_post
+  description: PayableReceiptVerifyRequest
+- name: PayableRfc9421VerifyRequest
+  spec: pay
+  domain: verification
+  fields: 9
+  required: 5
+  id_fields: []
+  used_by:
+  - mpp_verify_rfc9421_mpp_verify_rfc9421_post
+  - pay_verify_rfc9421_pay_v1_verify_rfc9421_post
+  description: PayableRfc9421VerifyRequest
+- name: PayableUrlScreenRequest
+  spec: pay
+  domain: compliance
+  fields: 4
+  required: 1
+  id_fields: []
+  used_by:
+  - pay_screen_url_pay_v1_screen_url_post
+  description: PayableUrlScreenRequest
+- name: PaymentCurrencyAmount
+  spec: pay
+  domain: payments
+  fields: 2
+  required: 2
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentCurrencyAmount: monetary value with ISO 4217 currency code.
+
+
+    Spec: https://www.w3.org/TR/payment-request/#dom-paymentcurrencyamount'
+- name: PaymentDetailsInit
+  spec: pay
+  domain: payments
+  fields: 5
+  required: 3
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentDetailsInit: the details of the payment being requested.
+
+
+    Spec: https://www.w3.org/TR/payment-request/#dom-paymentdetailsinit'
+- name: PaymentDetailsModifier
+  spec: pay
+  domain: payments
+  fields: 4
+  required: 1
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentDetailsModifier: method-specific price adjustments.
+
+
+    Spec: https://www.w3.org/TR/payment-request/#dom-paymentdetailsmodifier'
+- name: PaymentItem
+  spec: pay
+  domain: payments
+  fields: 4
+  required: 2
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentItem: an item for purchase and its price.
+
+
+    Spec: https://www.w3.org/TR/payment-request/#dom-paymentitem'
+- name: PaymentMandate
+  spec: pay
+  domain: mandates
+  fields: 2
+  required: 1
+  id_fields: []
+  used_by: []
+  description: 'User''s instructions and authorization for payment.
+
+
+    user_authorization is a base64url-encoded SD-JWT-VC (Selective Disclosure
+
+    Verifiable Credential) containing '
+- name: PaymentMandateContents
+  spec: pay
+  domain: mandates
+  fields: 6
+  required: 5
+  id_fields:
+  - payment_mandate_id
+  - payment_details_id
+  used_by: []
+  description: 'The data contents of a PaymentMandate.
+
+
+    Spec source: ap2/types/mandate.py'
+- name: PaymentMethodData
+  spec: pay
+  domain: payments
+  fields: 2
+  required: 1
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentMethodData: identifies a payment method and method-specific data.
+
+
+    For AlgoVoi crypto payments, `supported_methods` is set to the AlgoVoi
+
+    crypto exte'
+- name: PaymentOptions
+  spec: pay
+  domain: payments
+  fields: 5
+  required: 0
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentOptions: which payer details to collect.
+
+
+    Spec: https://www.w3.org/TR/payment-request/#dom-paymentoptions'
+- name: PaymentRequest
+  spec: pay
+  domain: payments
+  fields: 4
+  required: 2
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentRequest: the top-level request for payment.
+
+
+    Spec: https://www.w3.org/TR/payment-request/#paymentrequest-interface'
+- name: PaymentResponse
+  spec: pay
+  domain: payments
+  fields: 8
+  required: 2
+  id_fields:
+  - request_id
+  used_by: []
+  description: 'W3C PaymentResponse: user''s chosen payment method + approval.
+
+
+    For AlgoVoi crypto payments, `details` contains a CryptoPaymentResponse
+
+    struct (see ap2_ext_crypt'
+- name: PaymentShippingOption
+  spec: pay
+  domain: payments
+  fields: 4
+  required: 3
+  id_fields: []
+  used_by: []
+  description: 'W3C PaymentShippingOption.
+
+
+    Spec: https://www.w3.org/TR/payment-request/#dom-paymentshippingoption'
+- name: ReceiptVerifyRequest
+  spec: pay
+  domain: receipts
+  fields: 4
+  required: 1
+  id_fields: []
+  used_by:
+  - verify_receipt_post_v1_receipt_verify_post
+  description: Request body for POST /v1/receipt/verify.
+- name: ReceiptVerifyResponse
+  spec: pay
+  domain: receipts
+  fields: 15
+  required: 1
+  id_fields:
+  - service_id
+  used_by:
+  - verify_receipt_post_v1_receipt_verify_post
+  description: Verification result.
+- name: ValidationError
+  spec: pay
+  domain: platform
+  fields: 5
+  required: 3
+  id_fields: []
+  used_by: []
+  description: ValidationError
+relationships:
+- from: AP2CartRequest
+  to: CartMandate
+  kind: has_one
+  via: mandate
+  spec: gateway
+- from: AP2CartRequest
+  to: IntentMandate
+  kind: belongs_to
+  via: intent_id
+  spec: gateway
+- from: AP2CartResponse
+  to: CartContents
+  kind: belongs_to
+  via: cart_id
+  spec: gateway
+- from: AP2ConfirmRequest
+  to: PaymentCurrencyAmount
+  kind: belongs_to
+  via: payment_id
+  spec: gateway
+- from: AP2ExtensionsResponse
+  to: AP2ExtensionInfo
+  kind: has_many
+  via: extensions
+  spec: gateway
+- from: AP2IntentRequest
+  to: IntentMandate
+  kind: has_one
+  via: mandate
+  spec: gateway
+- from: AP2IntentResponse
+  to: IntentMandate
+  kind: belongs_to
+  via: intent_id
+  spec: gateway
+- from: AP2PayRequest
+  to: PaymentMandate
+  kind: has_one
+  via: mandate
+  spec: gateway
+- from: AP2PayRequest
+  to: CartContents
+  kind: belongs_to
+  via: cart_id
+  spec: gateway
+- from: AP2PayResponse
+  to: PaymentCurrencyAmount
+  kind: belongs_to
+  via: payment_id
+  spec: gateway
+- from: AP2StatusResponse
+  to: CartContents
+  kind: belongs_to
+  via: cart_id
+  spec: gateway
+- from: AP2StatusResponse
+  to: IntentMandate
+  kind: belongs_to
+  via: intent_id
+  spec: gateway
+- from: ActivateResponse
+  to: TokenResponse
+  kind: belongs_to
+  via: token
+  spec: gateway
+- from: AuthorityCreate
+  to: SubscriptionInvoiceResponse
+  kind: belongs_to
+  via: subscription_id
+  spec: gateway
+- from: AuthorityCreateResponse
+  to: AuthorityResponse
+  kind: has_one
+  via: authority
+  spec: gateway
+- from: AuthorityResponse
+  to: SubscriptionInvoiceResponse
+  kind: belongs_to
+  via: subscription_id
+  spec: gateway
+- from: CartContents
+  to: PaymentRequest
+  kind: has_one
+  via: payment_request
+  spec: gateway
+- from: CartMandate
+  to: CartContents
+  kind: has_one
+  via: contents
+  spec: gateway
+- from: DynamicPaymentLinkResponse
+  to: TokenResponse
+  kind: belongs_to
+  via: token
+  spec: gateway
+- from: HTTPValidationError
+  to: ValidationError
+  kind: has_many
+  via: detail
+  spec: gateway
+- from: HostedAuthConfirmResponse
+  to: AuthorityCreateResponse
+  kind: belongs_to
+  via: authority_id
+  spec: gateway
+- from: HostedAuthResolveResponse
+  to: HostedAuthMerchant
+  kind: has_one
+  via: merchant
+  spec: gateway
+- from: HostedAuthResolveResponse
+  to: AuthorityCreateResponse
+  kind: belongs_to
+  via: authority_id
+  spec: gateway
+- from: MandatePayRequest
+  to: ResourceResponse
+  kind: belongs_to
+  via: resource_id
+  spec: gateway
+- from: MandatePayResponse
+  to: ChargeItemPublic
+  kind: belongs_to
+  via: charge_id
+  spec: gateway
+- from: MandatePortalResponse
+  to: ChargeItemPublic
+  kind: has_many
+  via: recent_charges
+  spec: gateway
+- from: MandatePortalResponse
+  to: MandatePayResponse
+  kind: belongs_to
+  via: mandate_id
+  spec: gateway
+- from: MandatePortalResponse
+  to: TokenResponse
+  kind: belongs_to
+  via: token
+  spec: gateway
+- from: MppChallengeRequest
+  to: ResourceResponse
+  kind: belongs_to
+  via: resource_id
+  spec: gateway
+- from: MppVerifyRequest
+  to: ResourceResponse
+  kind: belongs_to
+  via: resource_id
+  spec: gateway
+- from: PaymentDetailsInit
+  to: PaymentDetailsModifier
+  kind: has_one
+  via: modifiers
+  spec: gateway
+- from: PaymentDetailsInit
+  to: PaymentItem
+  kind: has_many
+  via: display_items, total
+  spec: gateway
+- from: PaymentDetailsInit
+  to: PaymentShippingOption
+  kind: has_one
+  via: shipping_options
+  spec: gateway
+- from: PaymentDetailsModifier
+  to: PaymentItem
+  kind: has_one
+  via: total, additional_display_items
+  spec: gateway
+- from: PaymentItem
+  to: PaymentCurrencyAmount
+  kind: has_one
+  via: amount
+  spec: gateway
+- from: PaymentMandate
+  to: PaymentMandateContents
+  kind: has_one
+  via: payment_mandate_contents
+  spec: gateway
+- from: PaymentMandateContents
+  to: PaymentItem
+  kind: has_one
+  via: payment_details_total
+  spec: gateway
+- from: PaymentMandateContents
+  to: PaymentResponse
+  kind: has_one
+  via: payment_response
+  spec: gateway
+- from: PaymentMandateContents
+  to: PaymentMandate
+  kind: belongs_to
+  via: payment_mandate_id
+  spec: gateway
+- from: PaymentMandateContents
+  to: PaymentDetailsInit
+  kind: belongs_to
+  via: payment_details_id
+  spec: gateway
+- from: PaymentRequest
+  to: ContactAddress
+  kind: has_one
+  via: shipping_address
+  spec: gateway
+- from: PaymentRequest
+  to: PaymentDetailsInit
+  kind: has_one
+  via: details
+  spec: gateway
+- from: PaymentRequest
+  to: PaymentMethodData
+  kind: has_many
+  via: method_data
+  spec: gateway
+- from: PaymentRequest
+  to: PaymentOptions
+  kind: has_one
+  via: options
+  spec: gateway
+- from: PaymentResponse
+  to: ContactAddress
+  kind: has_one
+  via: shipping_address
+  spec: gateway
+- from: PaymentResponse
+  to: PaymentShippingOption
+  kind: has_one
+  via: shipping_option
+  spec: gateway
+- from: PaymentShippingOption
+  to: PaymentCurrencyAmount
+  kind: has_one
+  via: amount
+  spec: gateway
+- from: PullCreate
+  to: AuthorityCreateResponse
+  kind: belongs_to
+  via: authority_id
+  spec: gateway
+- from: SettlementEvidenceResponse
+  to: ChainBinding
+  kind: has_one
+  via: chain_binding
+  spec: gateway
+- from: SubscriptionCreate
+  to: CustomerRef
+  kind: has_one
+  via: customer
+  spec: gateway
+- from: SubscriptionCreate
+  to: FailedPaymentPolicy
+  kind: has_one
+  via: failed_payment_policy
+  spec: gateway
+- from: SubscriptionCreate
+  to: CustomerRef
+  kind: belongs_to
+  via: customer_id
+  spec: gateway
+- from: SubscriptionInvoiceResponse
+  to: SubscriptionResponse
+  kind: belongs_to
+  via: subscription_id
+  spec: gateway
+- from: SubscriptionResponse
+  to: CustomerRef
+  kind: belongs_to
+  via: customer_id
+  spec: gateway
+- from: SubscriptionUpdate
+  to: FailedPaymentPolicy
+  kind: has_one
+  via: failed_payment_policy
+  spec: gateway
+- from: TopupCaptureResponse
+  to: MandatePayResponse
+  kind: belongs_to
+  via: mandate_id
+  spec: gateway
+- from: TopupInitiateResponse
+  to: MandatePayResponse
+  kind: belongs_to
+  via: mandate_id
+  spec: gateway
+- from: _Message
+  to: _Part
+  kind: has_many
+  via: parts
+  spec: gateway
+- from: _SendMessageRequest
+  to: _Message
+  kind: has_one
+  via: message
+  spec: gateway
+- from: gateway__app__routers__verify__ChallengeRequest
+  to: ResourceResponse
+  kind: belongs_to
+  via: resource_id
+  spec: gateway
+- from: gateway__app__routers__verify__ChallengeResponse
+  to: ResourceResponse
+  kind: belongs_to
+  via: resource_id
+  spec: gateway
+- from: gateway__app__routers__verify__VerifyRequest
+  to: ResourceResponse
+  kind: belongs_to
+  via: resource_id
+  spec: gateway
+- from: Ap2PayRequest
+  to: CartMandate
+  kind: has_one
+  via: cart
+  spec: pay
+- from: Ap2PayRequest
+  to: PaymentMandate
+  kind: has_one
+  via: mandate
+  spec: pay
+- from: CartContents
+  to: PaymentRequest
+  kind: has_one
+  via: payment_request
+  spec: pay
+- from: CartMandate
+  to: CartContents
+  kind: has_one
+  via: contents
+  spec: pay
+- from: HTTPValidationError
+  to: ValidationError
+  kind: has_many
+  via: detail
+  spec: pay
+- from: PaymentDetailsInit
+  to: PaymentDetailsModifier
+  kind: has_one
+  via: modifiers
+  spec: pay
+- from: PaymentDetailsInit
+  to: PaymentItem
+  kind: has_many
+  via: display_items, total
+  spec: pay
+- from: PaymentDetailsInit
+  to: PaymentShippingOption
+  kind: has_one
+  via: shipping_options
+  spec: pay
+- from: PaymentDetailsModifier
+  to: PaymentItem
+  kind: has_one
+  via: total, additional_display_items
+  spec: pay
+- from: PaymentItem
+  to: PaymentCurrencyAmount
+  kind: has_one
+  via: amount
+  spec: pay
+- from: PaymentMandate
+  to: PaymentMandateContents
+  kind: has_one
+  via: payment_mandate_contents
+  spec: pay
+- from: PaymentMandateContents
+  to: PaymentItem
+  kind: has_one
+  via: payment_details_total
+  spec: pay
+- from: PaymentMandateContents
+  to: PaymentResponse
+  kind: has_one
+  via: payment_response
+  spec: pay
+- from: PaymentMandateContents
+  to: PaymentMandate
+  kind: belongs_to
+  via: payment_mandate_id
+  spec: pay
+- from: PaymentMandateContents
+  to: PaymentDetailsInit
+  kind: belongs_to
+  via: payment_details_id
+  spec: pay
+- from: PaymentRequest
+  to: ContactAddress
+  kind: has_one
+  via: shipping_address
+  spec: pay
+- from: PaymentRequest
+  to: PaymentDetailsInit
+  kind: has_one
+  via: details
+  spec: pay
+- from: PaymentRequest
+  to: PaymentMethodData
+  kind: has_many
+  via: method_data
+  spec: pay
+- from: PaymentRequest
+  to: PaymentOptions
+  kind: has_one
+  via: options
+  spec: pay
+- from: PaymentResponse
+  to: ContactAddress
+  kind: has_one
+  via: shipping_address
+  spec: pay
+- from: PaymentResponse
+  to: PaymentShippingOption
+  kind: has_one
+  via: shipping_option
+  spec: pay
+- from: PaymentShippingOption
+  to: PaymentCurrencyAmount
+  kind: has_one
+  via: amount
+  spec: pay
+summary:
+  entities: 123
+  relationships: 84
+  domains:
+  - a2a
+  - ap2
+  - auth
+  - checkout
+  - compliance
+  - mandates
+  - mpp
+  - negotiation
+  - payments
+  - payouts
+  - platform
+  - protocols
+  - receipts
+  - recurring
+  - resources
+  - store
+  - verification

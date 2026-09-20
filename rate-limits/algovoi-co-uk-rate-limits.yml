@@ -1,0 +1,55 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: AlgoVoi
+providerId: algovoi-co-uk
+generated: '2026-09-19'
+method: searched
+source: https://docs.algovoi.co.uk/api-reference/rate-limits
+created: '2026-09-19'
+modified: '2026-09-19'
+tags: [Rate Limiting, Payments, Agentic Commerce]
+description: >-
+  The tenant gateway (api.algovoi.co.uk) publishes its limits and the runtime signal: per-tenant 300 requests per minute
+  with a burst window of 60, per-IP 120 per minute (burst 30) on unauthenticated public endpoints, per-checkout-token 60
+  per minute on the checkout polling path, and 5 per hour per client IP on the two signup proxies (from the OpenAPI
+  operation descriptions). Every response carries X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset (unix
+  seconds); exhaustion returns 429 with Retry-After in seconds and the envelope {"error":"rate_limited", ...}; the errors
+  page says the default Retry-After on 5xx is 30 seconds. The pay rail (pay.algovoi.co.uk) is metered by payment rather
+  than rate, but its machine index publishes limits on the two free unsigned tiers — 120/min for /v1/receipt/verify and
+  60/min for /verify/rfc9421 — and a 1800-second challenge TTL. GET /compliance/attestation is documented as "no rate
+  limit (cached server-side)". Observed 2026-09-19: the anonymous 401/402/422 responses on api. and pay. did NOT carry
+  X-RateLimit-* headers (only x-trace-id on api.), so the headers are documented for authenticated tenant traffic and
+  were not observable without a key.
+sources:
+- https://docs.algovoi.co.uk/api-reference/rate-limits
+- https://docs.algovoi.co.uk/api-reference/errors
+- https://pay.algovoi.co.uk/pay/v1/index
+- openapi/algovoi-co-uk-gateway-openapi.yml (signup_proxy_signup_create_post, cloud_signup_proxy_cloud_signup_create_post, attestation_compliance_attestation_get descriptions)
+limit_count: 7
+headers:
+  limit: X-RateLimit-Limit
+  remaining: X-RateLimit-Remaining
+  reset: X-RateLimit-Reset
+  retryAfter: Retry-After
+  requestId: X-Request-Id
+  traceId: x-trace-id
+responseCodes:
+  throttled: 429
+  throttledError: rate_limited
+  retryAfterSeconds: 30
+limits:
+- {name: Per-tenant (authenticated API), scope: tenant, metric: requests_per_minute, limit: 300, burst: 60, timeFrame: minute, host: api.algovoi.co.uk}
+- {name: Per-IP (unauthenticated public endpoints), scope: ip, metric: requests_per_minute, limit: 120, burst: 30, timeFrame: minute, host: api.algovoi.co.uk, note: Checkout pages and public chain-status pages; applied before per-tenant accounting.}
+- {name: Per-checkout polling, scope: checkout_token, metric: requests_per_minute, limit: 60, timeFrame: minute, host: api.algovoi.co.uk, note: 'Protects the indexer-polling path behind GET /checkout/{token}/status and /detect.'}
+- {name: Signup proxies, scope: ip, metric: requests_per_hour, limit: 5, timeFrame: hour, host: api.algovoi.co.uk, applies_to: [signup_proxy_signup_create_post, cloud_signup_proxy_cloud_signup_create_post]}
+- {name: Free unsigned receipt verify, scope: per caller (unspecified), metric: requests_per_minute, limit: 120, timeFrame: minute, host: pay.algovoi.co.uk, applies_to: [verify_receipt_post_v1_receipt_verify_post]}
+- {name: Free unsigned RFC 9421 verify, scope: per caller (unspecified), metric: requests_per_minute, limit: 60, timeFrame: minute, host: pay.algovoi.co.uk, applies_to: ['/verify/rfc9421 free tier named in the index']}
+- {name: Paid pay-rail calls, scope: payment, metric: calls_per_payment, limit: 1, timeFrame: usage, host: pay.algovoi.co.uk, note: 'Each (network, tx_id) buys exactly one call; an identical re-POST replays the stored response; a different request on the same tx is 409. Challenge TTL 1800 s; body limit 65536 bytes.'}
+policies:
+- {name: Back-off, description: 'Documented exponential back-off with 0.5x jitter starting from Retry-After; 4xx should not be retried unchanged, 5xx retried with backoff.'}
+- {name: Raise the cap, description: 'Higher tenant limits on request via support@algovoi.co.uk "without negotiation overhead".'}
+- {name: Unlimited, description: 'GET /compliance/attestation — "Free, no rate limit (cached server-side)".'}
+declared_in_openapi:
+  operations_with_429: []
+  note: None of the five OpenAPIs declares a 429 response or the X-RateLimit-* headers; overlays/algovoi-co-uk-gateway-overlay.yaml documents them.

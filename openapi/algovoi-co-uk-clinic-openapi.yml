@@ -1,0 +1,197 @@
+openapi: 3.1.0
+info:
+  title: AlgoVoi Verifiable-Comms Agent
+  description: 'Support-first agent: verify signed agent messages offline. Free.'
+  version: 0.1.0
+paths:
+  /.well-known/agent-card.json:
+    get:
+      summary: Agent Card
+      operationId: agent_card__well_known_agent_card_json_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /.well-known/agent.json:
+    get:
+      summary: Agent Card Legacy
+      operationId: agent_card_legacy__well_known_agent_json_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /health:
+    get:
+      summary: Health
+      operationId: health_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Health Health Get
+  /verify/rfc9421:
+    post:
+      summary: Verify
+      description: 'Verify a signed message offline. Caller supplies the envelope + the key they
+
+        EXPECT the signer to hold (anchoring). Returns valid/errors -- never throws on a
+
+        verification failure, only on a malformed request.'
+      operationId: verify_verify_rfc9421_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Payload
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Verify Verify Rfc9421 Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /verify/rfc9421/explain:
+    post:
+      summary: Explain
+      description: 'Debug a signed message: pass/fail PLUS why -- the exact canonical signing base, covered components,
+
+        params, a Content-Digest recomputation, and human ''how to fix'' notes. Free. This is the #1 thing agent
+
+        builders asked us to ship. public_key_hex/did_key is optional; without it you still get the signing base.'
+      operationId: explain_verify_rfc9421_explain_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Payload
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Explain Verify Rfc9421 Explain Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /verify/rfc9421/sign:
+    post:
+      summary: Sign Demo
+      description: 'Known-good signer/playground: give raw request inputs, get a correctly-signed request + the
+
+        signing base + an EPHEMERAL demo key to verify it with. NEVER send a private key — it signs with a
+
+        fresh throwaway key so you can diff your own signer against a reference. Free.'
+      operationId: sign_demo_verify_rfc9421_sign_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Payload
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Sign Demo Verify Rfc9421 Sign Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /a2a:
+    get:
+      summary: A2A Hint
+      description: A GET probe gets a helpful pointer rather than a bare 405; the real transport is POST.
+      operationId: a2a_hint_a2a_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      summary: A2A
+      operationId: a2a_a2a_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /:
+    get:
+      summary: Landing
+      operationId: landing__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

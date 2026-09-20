@@ -1,0 +1,1189 @@
+openapi: 3.1.0
+info:
+  title: AlgoVoi Payable Core
+  description: Tenant-free metered signed-verification service (/pay/v1).
+  version: 1.0.0
+paths:
+  /pay/v1/index:
+    get:
+      tags:
+      - payable
+      summary: Payable Index
+      operationId: payable_index_pay_v1_index_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /pay/v1/negotiate:
+    get:
+      tags:
+      - payable
+      summary: Negotiate Capabilities
+      operationId: negotiate_capabilities_pay_v1_negotiate_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      tags:
+      - payable
+      summary: Negotiate
+      operationId: negotiate_pay_v1_negotiate_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NegotiateRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /pay/v1/verify/receipt:
+    get:
+      tags:
+      - payable
+      summary: Probe Receipt
+      operationId: probe_receipt_pay_v1_verify_receipt_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      tags:
+      - payable
+      summary: Pay Verify Receipt
+      operationId: pay_verify_receipt_pay_v1_verify_receipt_post
+      parameters:
+      - name: x-payment
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayableReceiptVerifyRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '402':
+          description: 'Payment Required: strict x402 v2 challenge (accepts[]).'
+          content:
+            application/json:
+              schema:
+                type: object
+      x-payment-info:
+        protocols:
+        - x402
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.01'
+  /pay/v1/verify/rfc9421:
+    get:
+      tags:
+      - payable
+      summary: Probe Rfc9421
+      operationId: probe_rfc9421_pay_v1_verify_rfc9421_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      tags:
+      - payable
+      summary: Pay Verify Rfc9421
+      operationId: pay_verify_rfc9421_pay_v1_verify_rfc9421_post
+      parameters:
+      - name: x-payment
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayableRfc9421VerifyRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '402':
+          description: 'Payment Required: strict x402 v2 challenge (accepts[]).'
+          content:
+            application/json:
+              schema:
+                type: object
+      x-payment-info:
+        protocols:
+        - x402
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.01'
+  /pay/v1/screen/url:
+    get:
+      tags:
+      - payable
+      summary: Probe Url Screen
+      operationId: probe_url_screen_pay_v1_screen_url_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      tags:
+      - payable
+      summary: Pay Screen Url
+      operationId: pay_screen_url_pay_v1_screen_url_post
+      parameters:
+      - name: x-payment
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayableUrlScreenRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '402':
+          description: 'Payment Required: strict x402 v2 challenge (accepts[]).'
+          content:
+            application/json:
+              schema:
+                type: object
+      x-payment-info:
+        protocols:
+        - x402
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.01'
+  /pay/v1/compliance/receipt:
+    get:
+      tags:
+      - payable
+      summary: Probe Compliance
+      operationId: probe_compliance_pay_v1_compliance_receipt_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      tags:
+      - payable
+      summary: Pay Compliance Receipt
+      operationId: pay_compliance_receipt_pay_v1_compliance_receipt_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /v1/receipt/verify:
+    post:
+      tags:
+      - payable-identity
+      summary: Verify Receipt Post
+      operationId: verify_receipt_post_v1_receipt_verify_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiptVerifyRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptVerifyResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /a2a:
+    post:
+      tags:
+      - payable-a2a
+      summary: A2A Jsonrpc
+      operationId: a2a_jsonrpc_a2a_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /mpp/verify/receipt:
+    post:
+      tags:
+      - mpp
+      summary: Mpp Verify Receipt
+      operationId: mpp_verify_receipt_mpp_verify_receipt_post
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayableReceiptVerifyRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /mpp/verify/rfc9421:
+    post:
+      tags:
+      - mpp
+      summary: Mpp Verify Rfc9421
+      operationId: mpp_verify_rfc9421_mpp_verify_rfc9421_post
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayableRfc9421VerifyRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /ap2/cart:
+    post:
+      tags:
+      - ap2
+      summary: Ap2 Cart
+      operationId: ap2_cart_ap2_cart_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ap2CartRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /ap2/pay:
+    post:
+      tags:
+      - ap2
+      summary: Ap2 Pay
+      operationId: ap2_pay_ap2_pay_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ap2PayRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    Ap2CartRequest:
+      properties:
+        service_id:
+          type: string
+          title: Service Id
+        network:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Network
+      additionalProperties: false
+      type: object
+      required:
+      - service_id
+      title: Ap2CartRequest
+    Ap2PayRequest:
+      properties:
+        cart:
+          $ref: '#/components/schemas/CartMandate'
+        mandate:
+          $ref: '#/components/schemas/PaymentMandate'
+        input:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Input
+        x_payment:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X Payment
+      additionalProperties: false
+      type: object
+      required:
+      - cart
+      - mandate
+      title: Ap2PayRequest
+    CartContents:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: A unique identifier for this cart.
+        user_cart_confirmation_required:
+          type: boolean
+          title: User Cart Confirmation Required
+          description: If true, the merchant requires the user to confirm the cart before the purchase can be completed.
+        payment_request:
+          $ref: '#/components/schemas/PaymentRequest'
+          description: The W3C PaymentRequest object to initiate payment. This contains the items being purchased, prices, and the set of payment methods accepted by the merchant for this cart.
+        cart_expiry:
+          type: string
+          title: Cart Expiry
+          description: When this cart expires, in ISO 8601 format.
+        merchant_name:
+          type: string
+          title: Merchant Name
+          description: The name of the merchant.
+      type: object
+      required:
+      - id
+      - user_cart_confirmation_required
+      - payment_request
+      - cart_expiry
+      - merchant_name
+      title: CartContents
+      description: 'The detailed contents of a cart.
+
+
+        This object is signed by the merchant to create a CartMandate (the
+
+        signature travels in CartMandate.merchant_authorization as a base64url JWT).
+
+
+        Spec source: ap2/types/mandate.py'
+    CartMandate:
+      properties:
+        contents:
+          $ref: '#/components/schemas/CartContents'
+          description: The contents of the cart.
+        merchant_authorization:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Merchant Authorization
+          description: 'A base64url-encoded JSON Web Token (JWT) that digitally signs the cart contents. Header: alg + kid. Payload: iss, sub, aud, iat, exp, jti, cart_hash (RFC 8785 JCS hash of CartContents).'
+      type: object
+      required:
+      - contents
+      title: CartMandate
+      description: 'A cart whose contents have been digitally signed by the merchant.
+
+
+        merchant_authorization is a base64url-encoded JWT (typically RS256) with
+
+        claims: iss, sub, aud, iat, exp (5-15 min), jti, cart_hash. The cart_hash
+
+        is computed via RFC 8785 JCS over CartContents.
+
+
+        Spec source: ap2/types/mandate.py'
+    ContactAddress:
+      properties:
+        country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Country
+        address_line:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Address Line
+        region:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Region
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        dependent_locality:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Dependent Locality
+        postal_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Postal Code
+        sorting_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sorting Code
+        organization:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Organization
+        recipient:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Recipient
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone
+      type: object
+      title: ContactAddress
+      description: 'Subset of W3C ContactAddress used by AP2 for shipping + payer info.
+
+
+        Spec: https://www.w3.org/TR/contact-picker/#contactaddress'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    NegotiateRequest:
+      properties:
+        chains:
+          items:
+            type: string
+            maxLength: 128
+          type: array
+          maxItems: 64
+          title: Chains
+        protocols:
+          anyOf:
+          - items:
+              type: string
+              maxLength: 128
+            type: array
+            maxItems: 8
+          - type: 'null'
+          title: Protocols
+        service_id:
+          anyOf:
+          - type: string
+            maxLength: 128
+          - type: 'null'
+          title: Service Id
+      additionalProperties: false
+      type: object
+      title: NegotiateRequest
+    PayableReceiptVerifyRequest:
+      properties:
+        jws:
+          type: string
+          title: Jws
+        expected_payment_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expected Payment Hash
+        receipt_required:
+          type: boolean
+          title: Receipt Required
+          default: false
+        jwks:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Jwks
+      additionalProperties: false
+      type: object
+      required:
+      - jws
+      title: PayableReceiptVerifyRequest
+    PayableRfc9421VerifyRequest:
+      properties:
+        method:
+          type: string
+          title: Method
+        authority:
+          type: string
+          title: Authority
+        path:
+          type: string
+          title: Path
+        scheme:
+          type: string
+          title: Scheme
+          default: https
+        headers:
+          additionalProperties:
+            type: string
+          type: object
+          title: Headers
+        body_b64:
+          type: string
+          title: Body B64
+          default: ''
+        public_key_hex:
+          type: string
+          title: Public Key Hex
+        require_content_digest:
+          type: boolean
+          title: Require Content Digest
+          default: true
+        mode:
+          type: string
+          title: Mode
+          default: rfc9421
+      additionalProperties: false
+      type: object
+      required:
+      - method
+      - authority
+      - path
+      - headers
+      - public_key_hex
+      title: PayableRfc9421VerifyRequest
+    PayableUrlScreenRequest:
+      properties:
+        url:
+          type: string
+          maxLength: 2048
+          minLength: 1
+          title: Url
+        follow_redirects:
+          type: boolean
+          title: Follow Redirects
+          default: true
+        do_tls:
+          type: boolean
+          title: Do Tls
+          default: true
+        do_rdap:
+          type: boolean
+          title: Do Rdap
+          default: true
+      additionalProperties: false
+      type: object
+      required:
+      - url
+      title: PayableUrlScreenRequest
+    PaymentCurrencyAmount:
+      properties:
+        currency:
+          type: string
+          title: Currency
+          description: Three-letter ISO 4217 currency code.
+        value:
+          type: number
+          title: Value
+          description: The monetary value.
+      type: object
+      required:
+      - currency
+      - value
+      title: PaymentCurrencyAmount
+      description: 'W3C PaymentCurrencyAmount: monetary value with ISO 4217 currency code.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentcurrencyamount'
+    PaymentDetailsInit:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the payment request.
+        display_items:
+          items:
+            $ref: '#/components/schemas/PaymentItem'
+          type: array
+          title: Display Items
+          description: Items displayed to the user.
+        shipping_options:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/PaymentShippingOption'
+            type: array
+          - type: 'null'
+          title: Shipping Options
+        modifiers:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/PaymentDetailsModifier'
+            type: array
+          - type: 'null'
+          title: Modifiers
+        total:
+          $ref: '#/components/schemas/PaymentItem'
+          description: The total payment amount.
+      type: object
+      required:
+      - id
+      - display_items
+      - total
+      title: PaymentDetailsInit
+      description: 'W3C PaymentDetailsInit: the details of the payment being requested.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentdetailsinit'
+    PaymentDetailsModifier:
+      properties:
+        supported_methods:
+          type: string
+          title: Supported Methods
+          description: The payment method ID that this modifier applies to.
+        total:
+          anyOf:
+          - $ref: '#/components/schemas/PaymentItem'
+          - type: 'null'
+          description: Overrides the original item total.
+        additional_display_items:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/PaymentItem'
+            type: array
+          - type: 'null'
+          title: Additional Display Items
+        data:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Data
+      type: object
+      required:
+      - supported_methods
+      title: PaymentDetailsModifier
+      description: 'W3C PaymentDetailsModifier: method-specific price adjustments.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentdetailsmodifier'
+    PaymentItem:
+      properties:
+        label:
+          type: string
+          title: Label
+          description: Human-readable description of the item.
+        amount:
+          $ref: '#/components/schemas/PaymentCurrencyAmount'
+          description: The monetary amount of the item.
+        pending:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Pending
+          description: If true, the amount is not final.
+        refund_period:
+          type: integer
+          title: Refund Period
+          description: The refund duration for this item, in days.
+          default: 30
+      type: object
+      required:
+      - label
+      - amount
+      title: PaymentItem
+      description: 'W3C PaymentItem: an item for purchase and its price.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentitem'
+    PaymentMandate:
+      properties:
+        payment_mandate_contents:
+          $ref: '#/components/schemas/PaymentMandateContents'
+          description: The data contents of the payment mandate.
+        user_authorization:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Authorization
+          description: Base64url-encoded SD-JWT-VC verifiable presentation binding the user's consent to the CartMandate + PaymentMandateContents hashes via a key-binding JWT's transaction_data claim.
+      type: object
+      required:
+      - payment_mandate_contents
+      title: PaymentMandate
+      description: 'User''s instructions and authorization for payment.
+
+
+        user_authorization is a base64url-encoded SD-JWT-VC (Selective Disclosure
+
+        Verifiable Credential) containing an issuer-signed JWT authorizing a ''cnf''
+
+        claim and a key-binding JWT with transaction_data including the hashes of
+
+        CartMandate and PaymentMandateContents (RFC 8785 JCS).
+
+
+        Spec source: ap2/types/mandate.py'
+    PaymentMandateContents:
+      properties:
+        payment_mandate_id:
+          type: string
+          title: Payment Mandate Id
+          description: Unique identifier for this payment mandate.
+        payment_details_id:
+          type: string
+          title: Payment Details Id
+          description: Unique identifier for the payment request.
+        payment_details_total:
+          $ref: '#/components/schemas/PaymentItem'
+          description: The total payment amount.
+        payment_response:
+          $ref: '#/components/schemas/PaymentResponse'
+          description: The payment response containing details of the chosen payment method.
+        merchant_agent:
+          type: string
+          title: Merchant Agent
+          description: Identifier for the merchant.
+        timestamp:
+          type: string
+          title: Timestamp
+          description: Creation time of the mandate, in ISO 8601 format.
+      type: object
+      required:
+      - payment_mandate_id
+      - payment_details_id
+      - payment_details_total
+      - payment_response
+      - merchant_agent
+      title: PaymentMandateContents
+      description: 'The data contents of a PaymentMandate.
+
+
+        Spec source: ap2/types/mandate.py'
+    PaymentMethodData:
+      properties:
+        supported_methods:
+          type: string
+          title: Supported Methods
+          description: A string identifying the payment method.
+        data:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Data
+          description: Payment method specific details.
+      type: object
+      required:
+      - supported_methods
+      title: PaymentMethodData
+      description: 'W3C PaymentMethodData: identifies a payment method and method-specific data.
+
+
+        For AlgoVoi crypto payments, `supported_methods` is set to the AlgoVoi
+
+        crypto extension URI (https://api.algovoi.co.uk/ap2/extensions/crypto-algo/v1)
+
+        and `data` contains the CryptoPaymentDetails struct (see ap2_ext_crypto.py).
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentmethoddata'
+    PaymentOptions:
+      properties:
+        request_payer_name:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Request Payer Name
+          default: false
+        request_payer_email:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Request Payer Email
+          default: false
+        request_payer_phone:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Request Payer Phone
+          default: false
+        request_shipping:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Request Shipping
+          default: true
+        shipping_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Shipping Type
+          description: '`shipping`, `delivery`, or `pickup`.'
+      type: object
+      title: PaymentOptions
+      description: 'W3C PaymentOptions: which payer details to collect.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentoptions'
+    PaymentRequest:
+      properties:
+        method_data:
+          items:
+            $ref: '#/components/schemas/PaymentMethodData'
+          type: array
+          title: Method Data
+          description: Supported payment methods.
+        details:
+          $ref: '#/components/schemas/PaymentDetailsInit'
+          description: Financial details of the transaction.
+        options:
+          anyOf:
+          - $ref: '#/components/schemas/PaymentOptions'
+          - type: 'null'
+        shipping_address:
+          anyOf:
+          - $ref: '#/components/schemas/ContactAddress'
+          - type: 'null'
+      type: object
+      required:
+      - method_data
+      - details
+      title: PaymentRequest
+      description: 'W3C PaymentRequest: the top-level request for payment.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#paymentrequest-interface'
+    PaymentResponse:
+      properties:
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique ID from the original PaymentRequest.
+        method_name:
+          type: string
+          title: Method Name
+          description: The payment method chosen by the user.
+        details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Details
+          description: Payment-method-specific transaction data.
+        shipping_address:
+          anyOf:
+          - $ref: '#/components/schemas/ContactAddress'
+          - type: 'null'
+        shipping_option:
+          anyOf:
+          - $ref: '#/components/schemas/PaymentShippingOption'
+          - type: 'null'
+        payer_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payer Name
+        payer_email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payer Email
+        payer_phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payer Phone
+      type: object
+      required:
+      - request_id
+      - method_name
+      title: PaymentResponse
+      description: 'W3C PaymentResponse: user''s chosen payment method + approval.
+
+
+        For AlgoVoi crypto payments, `details` contains a CryptoPaymentResponse
+
+        struct (see ap2_ext_crypto.py) with tx_id, network, and note field.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#paymentresponse-interface'
+    PaymentShippingOption:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the shipping option.
+        label:
+          type: string
+          title: Label
+          description: Human-readable description.
+        amount:
+          $ref: '#/components/schemas/PaymentCurrencyAmount'
+          description: Cost of this shipping option.
+        selected:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Selected
+          description: If true, the default option.
+          default: false
+      type: object
+      required:
+      - id
+      - label
+      - amount
+      title: PaymentShippingOption
+      description: 'W3C PaymentShippingOption.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentshippingoption'
+    ReceiptVerifyRequest:
+      properties:
+        jws:
+          type: string
+          title: Jws
+          description: Compact JWS string (header.payload.signature) as returned by /compliance/screen (compliance_receipt_jws field) or /verify (settlement_attestation_jws field).
+        expected_payment_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expected Payment Hash
+          description: 'If supplied, the receipt''s payment_hash field must equal this value. Use to bind a receipt to a specific transaction. Format: ''sha256:<hex>''.'
+        receipt_required:
+          type: boolean
+          title: Receipt Required
+          description: If True, treat a missing JWS as a MISSING_ENVELOPE error rather than a format error.
+          default: false
+        jwks:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Jwks
+          description: 'Optional external JWKS dict ({''keys'': [...]}) for verifying receipts signed by a third-party provider. If omitted, AlgoVoi''s own platform key is used.'
+      type: object
+      required:
+      - jws
+      title: ReceiptVerifyRequest
+      description: Request body for POST /v1/receipt/verify.
+    ReceiptVerifyResponse:
+      properties:
+        verified:
+          type: boolean
+          title: Verified
+        error_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error Code
+        error_message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error Message
+        error_field:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error Field
+        screen_result:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Screen Result
+        settlement_status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Settlement Status
+        canon_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Canon Version
+        alg:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Alg
+        kid:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Kid
+        screen_provider_did:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Screen Provider Did
+        payer_ref:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payer Ref
+        payment_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payment Hash
+        service_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Service Id
+        request_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Request Hash
+        response_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Response Hash
+      type: object
+      required:
+      - verified
+      title: ReceiptVerifyResponse
+      description: Verification result.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+x-discovery:
+  ownershipProofs: []

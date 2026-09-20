@@ -1,0 +1,545 @@
+generated: '2026-09-19'
+method: probed
+source: Live GET probes of the closed /.well-known/* path list (plus /apis.json and /apis.yml) on every host the
+  record knows — the apex and www, the five API baseURL hosts, the OpenAPI servers[] host, the docs host, the two
+  MCP server hosts, the cloud edge and the dashboard — on 2026-09-19, with a negative-control path on each. Every
+  row is a request that was issued; every status is the one returned.
+summary:
+  hosts_probed: 11
+  documents_served: security.txt on 3 hosts (apex, api, cloud); A2A agent cards on 5 hosts; did.json + jwks.json
+    on 2; x402 descriptors on 3; an Agent Skills discovery index and a pay-skills catalog
+  oauth_oidc: 'No host serves openid-configuration, oauth-authorization-server or oauth-protected-resource. That
+    is consistent with the surfaces: the gateway authenticates with static tenant Bearer keys, the pay rail and
+    the clinic are anonymous, and the ulu MCP server gates tools/list with an x402 402 rather than an OAuth challenge
+    — there is no authorization server to describe.'
+  api_catalog: No RFC 9727 api-catalog and no APIs.json on any host.
+  ai_plugin: /.well-known/ai-plugin.json returns 200 on api. and cloud., but the body is the A2A agent card, not
+    an OpenAI plugin manifest; recorded as present-but-not-that-document and not counted.
+  path_echo_control: passed on every host (404, or 405 on api.algovoi.co.uk which answers 405 for every unknown
+    /.well-known/ path)
+hosts:
+- host: algovoi.co.uk
+  role: Website (apex); marketing site on Cloudflare
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    type: text/plain
+    file: algovoi-co-uk-security.txt
+    note: 'RFC 9116: Contact security@algovoi.co.uk + GitHub issues, Expires 2027-04-26, Policy https://algovoi.co.uk/AlgoVoi/compliance.html#disclosure
+      (that Policy URL returns 404 — the live compliance page is /compliance.html), Acknowledgments https://docs.algovoi.co.uk/security,
+      in-scope *.algovoi.co.uk'
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 200
+    type: application/json
+    file: a2a/algovoi-co-uk-gateway-agent-card.json
+    note: Legacy path; byte-identical to the api.algovoi.co.uk card (graded flavored in a2a/)
+  - path: /.well-known/did.json
+    status: 404
+  - path: /.well-known/jwks.json
+    status: 404
+  - path: /.well-known/x402
+    status: 404
+  - path: /robots.txt
+    status: 200
+    type: text/plain
+    note: 'Content-Signal: search=yes, ai-input=yes, ai-train=no; Sitemap declared'
+  - path: /llms.txt
+    status: 200
+    type: text/plain
+    file: llms/algovoi-co-uk-llms.txt
+  - path: /.well-known/algovoi-co-uk-negative-control-7f3a9c1e.json
+    status: 404
+    note: negative control
+- host: www.algovoi.co.uk
+  role: www alias
+  documents:
+  - path: /
+    status: 301
+    note: 301 to https://algovoi.co.uk/ — every path redirects to the apex; not probed separately
+- host: pay.algovoi.co.uk
+  role: API baseURL host for AlgoVoi Pay (Payable Core) and its A2A endpoint
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 200
+    type: application/json
+    file: a2a/algovoi-co-uk-pay-agent-card.json
+    note: Graded conformant in a2a/algovoi-co-uk-a2a.yml
+  - path: /.well-known/agent.json
+    status: 200
+    note: byte-identical legacy copy
+  - path: /.well-known/did.json
+    status: 200
+    type: application/did+json
+    file: algovoi-co-uk-pay-did.json
+  - path: /.well-known/jwks.json
+    status: 200
+    type: application/jwk-set+json
+    file: algovoi-co-uk-pay-jwks.json
+    note: Ed25519 receipt-signing key
+  - path: /.well-known/x402
+    status: 200
+    type: application/json
+    file: algovoi-co-uk-pay-x402.json
+    note: x402 resource descriptor listing three paid resources
+  - path: /pay/v1/index
+    status: 200
+    type: application/json
+    file: algovoi-co-uk-pay-index.json
+    note: 'Machine index: pricing per service, 12 lanes, payment-binding contract, receipt/JWKS pointers, free-tier
+      limits'
+  - path: /discovery/resources
+    status: 200
+    type: application/json
+    note: Bazaar-shaped x402 catalog
+  - path: /openapi.json
+    status: 200
+    type: application/json
+    file: openapi/_original/algovoi-co-uk-pay-openapi.json
+  - path: /llms.txt
+    status: 200
+    type: text/plain
+    file: llms/algovoi-co-uk-pay-llms.txt
+  - path: /robots.txt
+    status: 200
+    note: 'Content-Signal: search=yes, ai-input=yes, ai-train=no'
+  - path: /.well-known/algovoi-co-uk-negative-control-7f3a9c1e.json
+    status: 404
+    note: negative control (22-byte JSON 404)
+- host: api.algovoi.co.uk
+  role: API baseURL host for the AlgoVoi Gateway (tenant platform); documented canonical REST base
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    type: text/plain; charset=utf-8
+    file: algovoi-co-uk-api-security.txt
+    note: Policy points at a GitHub INCIDENT_RESPONSE_PLAN.md that returns 404
+  - path: /.well-known/openid-configuration
+    status: 405
+  - path: /.well-known/oauth-authorization-server
+    status: 405
+  - path: /.well-known/oauth-protected-resource
+    status: 405
+  - path: /.well-known/api-catalog
+    status: 405
+  - path: /.well-known/api-catalog.json
+    status: 405
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    type: application/json
+    file: algovoi-co-uk-api-ai-plugin.json
+    note: NOT an ai-plugin manifest — the body is the AlgoVoi Payment Agent A2A card (byte-identical to /.well-known/agent-card.json).
+      Recorded as present-but-not-that-document.
+  - path: /.well-known/ucp.json
+    status: 405
+  - path: /.well-known/acp.json
+    status: 405
+  - path: /.well-known/aauth-resource.json
+    status: 405
+  - path: /.well-known/apis.json
+    status: 405
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 200
+    type: application/json
+    file: a2a/algovoi-co-uk-gateway-agent-card.json
+    note: Graded flavored (no protocolVersion)
+  - path: /.well-known/agent.json
+    status: 200
+    note: byte-identical
+  - path: /.well-known/did.json
+    status: 200
+    type: application/did+json
+    file: algovoi-co-uk-api-did.json
+  - path: /.well-known/jwks.json
+    status: 200
+    type: application/jwk-set+json
+    file: algovoi-co-uk-api-jwks.json
+  - path: /.well-known/x402
+    status: 200
+    type: application/json
+    file: algovoi-co-uk-api-x402.json
+    note: Names spec https://api.algovoi.co.uk/openapi.json, probeUrl /mpp/probe and the Bazaar catalog
+  - path: /.well-known/pay-skills.json
+    status: 200
+    type: application/json
+    file: algovoi-co-uk-api-pay-skills.json
+    note: solana-foundation pay-skills catalog entry
+  - path: /.well-known/verascore-provider.json
+    status: 200
+    type: application/json
+    file: algovoi-co-uk-api-verascore-provider.json
+  - path: /.well-known/pqc-keys.json
+    status: 200
+    type: application/json
+    file: algovoi-co-uk-api-pqc-keys.json
+    note: Falcon-1024 signing keys
+  - path: /discovery/resources
+    status: 200
+    type: application/json
+  - path: /openapi.json
+    status: 200
+    type: application/json
+    file: openapi/_original/algovoi-co-uk-gateway-openapi.json
+  - path: /mpp/probe
+    status: 402
+    note: 'WWW-Authenticate: Payment (MPP) and payment-required (x402 v2) headers observed'
+  - path: /.well-known/algovoi-co-uk-negative-control-7f3a9c1e.json
+    status: 405
+    note: negative control — unknown /.well-known/ paths answer 405 on this host
+- host: docs.algovoi.co.uk
+  role: Documentation host (Mintlify)
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 200
+    type: application/json
+    file: a2a/algovoi-co-uk-docs-agent-card.json
+    note: Mintlify-generated platform card
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/agent-skills/index.json
+    status: 200
+    type: application/json
+    file: algovoi-co-uk-docs-agent-skills-index.json
+    note: Agent Skills discovery 0.2.0 index with sha256 digest of the published SKILL.md
+  - path: /.well-known/agent-skills/algovoi/skill.md
+    status: 200
+    type: text/markdown
+    file: skills/algovoi-co-uk-algovoi.md
+    note: digest verified sha256:310da03000af8c5a89a35113f5c1ecea380d9c4faff16d3feb637adb1f7276ae
+  - path: /llms.txt
+    status: 200
+    type: text/plain
+    file: llms/algovoi-co-uk-docs-llms.txt
+  - path: /mcp
+    status: 200
+    type: application/json
+    note: Mintlify documentation MCP server (2 tools); platform-authored
+  - path: /.well-known/algovoi-co-uk-negative-control-7f3a9c1e.json
+    status: 404
+    note: negative control
+- host: agents.algovoi.co.uk
+  role: API baseURL host for the RFC 9421 clinic (Verifiable-Comms Agent), its A2A endpoint AND the anonymous remote
+    MCP server (/mcp) — the MCP-host probe
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 200
+    type: application/json
+    file: a2a/algovoi-co-uk-clinic-agent-card.json
+    note: Graded conformant
+  - path: /.well-known/agent.json
+    status: 200
+    note: byte-identical
+  - path: /.well-known/mcp/server-card.json
+    status: 404
+  - path: /.well-known/mcp.json
+    status: 404
+  - path: /.well-known/did.json
+    status: 404
+  - path: /openapi.json
+    status: 200
+    type: application/json
+    file: openapi/_original/algovoi-co-uk-clinic-openapi.json
+  - path: /llms.txt
+    status: 200
+    type: text/plain
+    file: llms/algovoi-co-uk-clinic-llms.txt
+  - path: /mcp
+    status: 200
+    note: POST initialize + tools/list succeed anonymously (algovoi-mcp-server 1.29.0, 3 tools); GET returns 406
+  - path: /.well-known/algovoi-co-uk-negative-control-7f3a9c1e.json
+    status: 404
+    note: negative control
+- host: mcp.algovoi.co.uk
+  role: MCP server host (ulu-mcp, x402-gated) named in the Terms as the UluMCP Server — RFC 9728 protected-resource
+    metadata was probed here and is absent
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/mcp/server-card.json
+    status: 404
+  - path: /mcp
+    status: 200
+    note: POST initialize succeeds (ulu-mcp 0.0.1, Streamable HTTP, mcp-session-id issued); tools/list then returns
+      402 with an x402 v1 challenge — the tool schema is payment-gated, not OAuth-gated, so there is no protected-resource
+      document to publish
+- host: agent-trust-bench.algovoi.co.uk
+  role: API baseURL host for the Agent Trust Bench (OpenAPI servers[] host)
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/x402.json
+    status: 200
+    type: application/json
+    file: algovoi-co-uk-agent-trust-bench-x402.json
+  - path: /.well-known/a2a-trust-signal.json
+    status: 200
+    type: application/json
+    file: algovoi-co-uk-agent-trust-bench-a2a-trust-signal.json
+    note: behavioral_attestation signal descriptor referenced from the gateway card trust block
+  - path: /discovery/resources
+    status: 200
+    type: application/json
+    note: 354 KB Bazaar catalog of 187 profiles
+  - path: /openapi.json
+    status: 200
+    type: application/json
+    file: openapi/_original/algovoi-co-uk-agent-trust-bench-openapi.json
+  - path: /.well-known/algovoi-co-uk-negative-control-7f3a9c1e.json
+    status: 404
+    note: negative control
+- host: cloud.algovoi.co.uk
+  role: Cloud proxy edge (documented as a non-canonical subset of public-read endpoints); default ALGOVOI_API_BASE
+    for the stdio MCP server
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    type: text/plain; charset=utf-8
+    file: algovoi-co-uk-cloud-security.txt
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    note: byte-identical copy of the cloud A2A card, not an ai-plugin manifest
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 200
+    type: application/json
+    file: a2a/algovoi-co-uk-cloud-agent-card.json
+    note: Graded flavored
+  - path: /.well-known/agent.json
+    status: 200
+    note: byte-identical
+  - path: /.well-known/algovoi-co-uk-negative-control-7f3a9c1e.json
+    status: 404
+    note: negative control (111-byte JSON 404)
+- host: verify.algovoi.co.uk
+  role: API baseURL host for the Audit Verifier
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 200
+    type: application/json
+    note: 200 but NOT an AgentCard — a custom clinic descriptor without version/protocolVersion/capabilities/skills;
+      not saved as a card
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /openapi.json
+    status: 200
+    type: application/json
+    file: openapi/_original/algovoi-co-uk-audit-verifier-openapi.json
+  - path: /.well-known/algovoi-co-uk-negative-control-7f3a9c1e.json
+    status: 404
+    note: negative control
+- host: dash.algovoi.co.uk
+  role: Tenant dashboard / sign-up (SPA)
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /signup
+    status: 200
+    note: HTML sign-up page (SignUp pointer)

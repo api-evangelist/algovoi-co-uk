@@ -1,0 +1,38 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  AlgoVoi publishes its own Agent Skill at https://docs.algovoi.co.uk/.well-known/agent-skills/algovoi/skill.md
+  (text/markdown, HTTP 200, 13,011 bytes, listed in /.well-known/agent-skills/index.json with digest
+  sha256:310da03000af8c5a89a35113f5c1ecea380d9c4faff16d3feb637adb1f7276ae — verified byte-for-byte on 2026-09-19) — saved
+  verbatim as the first entry. The other three are API Evangelist-generated skills for the pay rail, the RFC 9421 clinic
+  and hosted checkout, grounded in operationIds verified verbatim in openapi/ and in the live MCP tools/list.
+skills:
+- file: algovoi-co-uk-algovoi.md
+  name: algovoi
+  method: searched
+  source: https://docs.algovoi.co.uk/.well-known/agent-skills/algovoi/skill.md
+  digest: sha256:310da03000af8c5a89a35113f5c1ecea380d9c4faff16d3feb637adb1f7276ae
+  api: openapi/algovoi-co-uk-gateway-openapi.yml
+  note: >-
+    Provider-authored (Mintlify agent-skills frontmatter, version "1.0"). Covers the tenant gateway — auth headers and
+    key prefixes, protocol choice (x402/MPP/AP2/A2A), webhook verification, compliance verdicts, CAIP-2 ids, testnet vs
+    mainnet and Agent Trust Bench workflow. It names endpoints by path (e.g. /v1/x402/requirements, /v1/protected/{id})
+    rather than operationId; two of those paths (/v1/x402/requirements, /v1/protected/{resource_id}) do not appear in the
+    live OpenAPI, which has /x402/challenge and /protected/{resource_id} instead — recorded, not corrected.
+- file: algovoi-co-uk-pay-per-call-verification.md
+  name: algovoi-pay-per-call-verification
+  method: generated
+  api: openapi/algovoi-co-uk-pay-openapi.yml
+  operations: [payable_index_pay_v1_index_get, negotiate_capabilities_pay_v1_negotiate_get, negotiate_pay_v1_negotiate_post, probe_receipt_pay_v1_verify_receipt_get, pay_verify_receipt_pay_v1_verify_receipt_post, pay_verify_rfc9421_pay_v1_verify_rfc9421_post, pay_screen_url_pay_v1_screen_url_post, verify_receipt_post_v1_receipt_verify_post]
+- file: algovoi-co-uk-rfc9421-clinic.md
+  name: algovoi-rfc9421-clinic
+  method: generated
+  api: openapi/algovoi-co-uk-clinic-openapi.yml
+  operations: [verify_verify_rfc9421_post, explain_verify_rfc9421_explain_post, sign_demo_verify_rfc9421_sign_post, health_health_get, agent_card__well_known_agent_card_json_get]
+  mcp_tools: [verify_rfc9421, explain_rfc9421, list_networks]
+- file: algovoi-co-uk-hosted-checkout.md
+  name: algovoi-hosted-checkout
+  method: generated
+  api: openapi/algovoi-co-uk-gateway-openapi.yml
+  operations: [create_dynamic_payment_link_v1_payment_links_post, checkout_status_checkout__token__status_get, verify_checkout_checkout__token__verify_post, cancel_checkout_checkout__token__cancel_post, abandon_checkout_checkout__token__abandon_post, health_health_get]
+  mcp_tools: [create_payment_link, verify_payment, verify_webhook, list_networks]

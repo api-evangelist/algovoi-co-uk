@@ -1,0 +1,82 @@
+generated: '2026-09-19'
+method: searched
+probe: true
+source: >-
+  Harvested artifacts first (well-known/algovoi-co-uk-security.txt, security/, lifecycle/, conformance/), then the docs
+  (https://docs.algovoi.co.uk/compliance, /security, /incident-protocol), the legal pages
+  (https://algovoi.co.uk/privacy-policy.html, /terms.html, /compliance.html) and the answer page
+  https://algovoi.co.uk/run-by-a-secure-agent-workforce.html, all fetched 2026-09-19. Conventional paths /accessibility,
+  /accessibility/vpat, /legal/subprocessors, /legal/dpa, /privacy/requests, /transparency, /security/sbom,
+  /docs/data-residency, /ai/transparency and /legal/report-content were not probed as separate URLs because the site's
+  page inventory (sitemap.xml, 60 URLs) contains none of them; the signals below come from pages that exist.
+signals:
+  subprocessors:
+    url: https://docs.algovoi.co.uk/compliance#subprocessors
+    section: Subprocessors
+    vendors: [Cloudflare (CDN, WAF, DDoS, TLS termination), Vultr (production compute and database hosting), GitHub (source code and CI), Mintlify (public docs hosting), Let's Encrypt (TLS certificate issuance), Backblaze B2 (Object Lock archive — named in the audit-chain section)]
+    evidence:
+    - source: https://docs.algovoi.co.uk/compliance.md
+      http_status: 200
+      fetched: '2026-09-19'
+      quote: 'A "Subprocessors" table with Vendor / Purpose columns: Cloudflare, Vultr, GitHub, Mintlify, Let''s Encrypt …'
+    note: >-
+      A real vendor table with purposes, not a mention. It is not itself dated; the security page's "Vendor and supplier
+      risk" section adds that T1 suppliers (Vultr, Cloudflare, GitHub) "each has a signed Data Processing Agreement" and
+      that 13 suppliers are tracked. The full vendor-management policy and DPA template are NDA-only and therefore not
+      recorded as published.
+  incident_notification:
+    url: https://docs.algovoi.co.uk/security#incident-response
+    stated_sla: 'Affected tenant(s) within 1 hour of P0/P1 confirmation via email + dashboard banner. Material outage = status-page banner + all-tenant email within 1 hour.'
+    regulator_sla: 'UK ICO within 72 hours for personal-data breaches per UK GDPR Art. 33. NCA SARonline within 30 days statutory for AML implications.'
+    evidence:
+    - source: https://docs.algovoi.co.uk/security.md
+      http_status: 200
+      fetched: '2026-09-19'
+      quote: '"Customer notification: Affected tenant(s) within 1 hour of P0/P1 confirmation via email + dashboard banner."'
+    - source: https://docs.algovoi.co.uk/incident-protocol.md
+      http_status: 200
+      fetched: '2026-09-19'
+      quote: '"We post a short status update on the public status page within 5 minutes of detection." / "A post-incident summary lands within 48 hours of resolution"'
+    note: Verbatim strings; the status page the protocol refers to ("Better Stack, when live") was not live — https://status.algovoi.co.uk returned 502.
+  data_subject_request:
+    url: https://algovoi.co.uk/privacy-policy.html#your-rights
+    section: Your Rights
+    channel: email to the data controller (address obfuscated on the page); "We will respond within 30 days"
+    rights_named: [access, rectification, erasure, portability, objection, restriction, complaint to the ICO]
+    stated_sla: We will respond within 30 days.
+    evidence:
+    - source: https://algovoi.co.uk/privacy-policy.html
+      http_status: 200
+      fetched: '2026-09-19'
+      quote: '"Under UK GDPR you have the following rights regarding any personal data we hold: Access … Rectification … Erasure … Portability … Objection … Restriction … We will respond within 30 days."'
+    - source: https://docs.algovoi.co.uk/security.md
+      http_status: 200
+      fetched: '2026-09-19'
+      quote: '"Tenants can export their full data record via a GDPR data-export request. Currently a manual operator process"'
+    note: 'Data controller named as Christopher Hopley, algovoi.co.uk (Privacy Policy v1.2, 26 April 2026). No self-service DSR endpoint or API exists; the compliance page adds that payer_address erasure applies to the live copy after 90 days while the Object-Lock WORM copy is retained under UK MLRs.'
+  ai_transparency:
+    url: https://algovoi.co.uk/run-by-a-secure-agent-workforce.html
+    evidence:
+    - source: https://algovoi.co.uk/run-by-a-secure-agent-workforce.html
+      http_status: 200
+      fetched: '2026-09-19'
+      quote: '"AlgoVoi''s day-to-day marketing, measurement, and security operations are run by an autonomous agent workforce. Humans approve anything public, financial, or irreversible."'
+    - source: https://algovoi.co.uk/llms.txt
+      http_status: 200
+      fetched: '2026-09-19'
+      quote: '"AlgoVoi is an AI company: run by an AI agent workforce and built for AI agents (a human founder approves anything public)."'
+    note: >-
+      A published, first-party disclosure that the company's operations are AI-agent-run with a stated human-approval
+      boundary and an audit trail — the substance of an AI-transparency statement about the operator itself. It is not
+      a disclosure about AI features inside the product (the product is payment infrastructure, not a generative model).
+absent_after_search:
+  sbom: 'The security page says "Software Bill of Materials: CycloneDX SBOM generated per release tag. First public SBOM ships with this trust page." — a named format but no SBOM file or URL is published anywhere found; per the never-derive rule nothing is recorded.'
+  support_lifetime: 'Pricing states licences include "the point releases in that version line" and perpetual use; no stated support period for a product line, so no verbatim period to record.'
+  accessibility_conformance: 'No accessibility statement, VPAT or conformance report; /accessibility.html is 404.'
+  training_data_summary: 'Not applicable to the product; nothing published.'
+  global_privacy_control: 'No GPC statement in the privacy policy (the extension collects no data and uses no analytics; the policy is silent on GPC). Not set.'
+  data_residency: 'The security page names a "UK-region VPC-attached host" and Vultr datacentres but publishes no residency commitment or region choice for tenants.'
+  age_assurance: 'Terms require users to be 18+ and the privacy policy has a Children''s Privacy section; that is an eligibility rule, not an assurance mechanism, so it is not recorded.'
+  notice_and_action: 'No content-reporting channel (not a hosting/intermediary service); the Agent Trust Bench AVD policy is a research-disclosure policy, not notice-and-action.'
+  transparency_report: 'None published; the bench /stats page is research telemetry.'
+  exit_assistance: 'Beyond the manual GDPR export above and the self-hosted products'' "no vendor in the trust path" design, no cloud-switching or exit-assistance commitment is published.'

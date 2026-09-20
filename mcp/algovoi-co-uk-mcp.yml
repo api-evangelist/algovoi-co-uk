@@ -1,0 +1,150 @@
+generated: '2026-09-19'
+method: probed
+status: published
+source: https://agents.algovoi.co.uk/mcp
+docs: https://docs.algovoi.co.uk/integrations/mcp-server
+summary: >-
+  AlgoVoi ships MCP three ways, and only one of them is an agent surface a client can reach with nothing installed.
+  (1) A hosted, anonymous Streamable HTTP endpoint at https://agents.algovoi.co.uk/mcp — initialize returned
+  serverInfo algovoi-mcp-server 1.29.0 (protocol 2025-06-18) and tools/list returned three offline RFC 9421 tools with
+  full inputSchema; no session id, no credential. (2) A hosted x402-gated endpoint at https://mcp.algovoi.co.uk/mcp —
+  the "UluMCP Server" named in the Terms — where initialize succeeds (serverInfo ulu-mcp 0.0.1, mcp-session-id issued)
+  but notifications/initialized and tools/list both return HTTP 402 with an x402 v1 challenge (1 VOI on
+  avm:voi-mainnet, facilitator https://mcp.ilovechicken.co.uk), so its tool schema is payment-gated and was NOT
+  fetched. (3) A local stdio server published to npm (@algovoi/mcp-server 1.7.0, 2026-05-29) and PyPI (algovoi-mcp
+  1.7.0, 2026-05-29), listed in the official MCP Registry as io.github.chopmob-cloud/algovoi-mcp-server (three
+  versions 1.1.1-1.1.3 published 2026-04-19; the registry lags the 1.7.0 packages), exposing 29 tools against the
+  tenant gateway with an algv_ API key. docs.algovoi.co.uk/mcp additionally serves a Mintlify documentation-search MCP
+  (2 tools) that is platform-authored and recorded here only for completeness.
+deployment:
+  mode: both
+  endpoint: https://agents.algovoi.co.uk/mcp
+  install: npx -y @algovoi/mcp-server
+  package: https://www.npmjs.com/package/@algovoi/mcp-server
+  auth: none
+  verified: probed
+  note: >-
+    mode both because a hosted HTTPS endpoint an MCP client can POST to right now (agents.algovoi.co.uk/mcp, anonymous,
+    3 tools) coexists with a first-party stdio package a human installs (npx -y @algovoi/mcp-server or uvx algovoi-mcp;
+    29 tools; needs ALGOVOI_API_KEY algv_… from dash.algovoi.co.uk, optional ALGOVOI_API_BASE defaulting to
+    https://cloud.algovoi.co.uk, ALGOVOI_TENANT_ID for direct api.algovoi.co.uk access). auth: none describes the
+    hosted endpoint; the stdio package's tools are api-key authenticated against the gateway (and three of them —
+    discover_resources, screen_recipient, get_compliance_attestation — need no key). The two hosted servers are NOT the
+    same product as the stdio package: the hosted clinic server exposes the offline RFC 9421 tools only, and the ulu
+    server's tools are unknown until paid for.
+servers:
+- id: clinic-remote
+  name: algovoi-mcp-server
+  version: 1.29.0
+  transport: streamable-http
+  protocol_version: '2025-06-18'
+  url: https://agents.algovoi.co.uk/mcp
+  auth: none
+  session: stateless (no Mcp-Session-Id issued)
+  capabilities: {tools: {listChanged: false}, experimental: {}}
+  tools_list: mcp/algovoi-co-uk-clinic-tools-list.json
+  tool_count: 3
+  verified: probed
+  evidence:
+  - {url: 'https://agents.algovoi.co.uk/mcp', method: POST, body: initialize, http_status: 200, response: '{"protocolVersion":"2025-06-18","serverInfo":{"name":"algovoi-mcp-server","version":"1.29.0"}}'}
+  - {url: 'https://agents.algovoi.co.uk/mcp', method: POST, body: tools/list, http_status: 200, note: '3 tools with inputSchema, saved verbatim'}
+  - {url: 'https://agents.algovoi.co.uk/mcp', method: GET, http_status: 406, note: 'requires Accept: application/json, text/event-stream'}
+- id: ulu-remote
+  name: ulu-mcp
+  version: 0.0.1
+  transport: streamable-http
+  protocol_version: '2025-06-18'
+  url: https://mcp.algovoi.co.uk/mcp
+  auth: x402 (payment)
+  session: stateful (mcp-session-id header issued on initialize)
+  capabilities: {tools: {listChanged: true}}
+  tool_count: unknown
+  verified: probed
+  gated: true
+  evidence:
+  - {url: 'https://mcp.algovoi.co.uk/mcp', method: POST, body: initialize, http_status: 200, response: '{"protocolVersion":"2025-06-18","capabilities":{"tools":{"listChanged":true}},"serverInfo":{"name":"ulu-mcp","version":"0.0.1"}}'}
+  - {url: 'https://mcp.algovoi.co.uk/mcp', method: POST, body: tools/list, http_status: 402, response: '{"x402Version":1,"error":"Payment Required","accepts":[{"scheme":"exact","network":"avm:voi-mainnet","asset":"0","amount":"1000000","resource":"/mcp","description":"MCP tool call","facilitator":"https://mcp.ilovechicken.co.uk","maxTimeoutSeconds":300}]}', note: 'Tool schemas require a paid session; nothing was paid and no tool list exists here. The named facilitator host is not under algovoi.co.uk — recorded, not resolved.'}
+  - {url: 'https://mcp.algovoi.co.uk/.well-known/oauth-protected-resource', http_status: 404}
+  - {url: 'https://mcp.algovoi.co.uk/sse', http_status: 404}
+- id: stdio-package
+  name: io.github.chopmob-cloud/algovoi-mcp-server
+  transport: stdio
+  install:
+    npm: npx -y @algovoi/mcp-server
+    pypi: uvx algovoi-mcp
+  packages:
+  - {registry: npm, name: '@algovoi/mcp-server', version: 1.7.0, published: '2026-05-29', url: 'https://www.npmjs.com/package/@algovoi/mcp-server', license: MIT}
+  - {registry: pypi, name: algovoi-mcp, version: 1.7.0, published: '2026-05-29', url: 'https://pypi.org/project/algovoi-mcp/'}
+  registry:
+    name: io.github.chopmob-cloud/algovoi-mcp-server
+    url: https://registry.modelcontextprotocol.io/v0/servers?search=algovoi
+    versions_listed: [1.1.1, 1.1.2, 1.1.3]
+    published: '2026-04-19'
+    server_json: https://github.com/chopmob-cloud/AlgoVoi-Platform-Adapters/blob/master/mcp-server/server.json
+    note: The registry entries are stdio-only (no remotes) and lag the packages by six minor versions.
+  source: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  environment:
+    ALGOVOI_API_KEY: required — tenant key algv_… from https://dash.algovoi.co.uk
+    ALGOVOI_API_BASE: optional — default https://cloud.algovoi.co.uk (managed) or https://api.algovoi.co.uk (direct)
+    ALGOVOI_TENANT_ID: required only for direct api.algovoi.co.uk access
+    ALGOVOI_WEBHOOK_SECRET: optional — enables verify_webhook
+    ALGOVOI_MODE: substrate (default) | standard — whether tool results carry signed settlement_attestation / compliance_receipt / action_ref fields
+  tool_count: 29
+  verified: searched
+  tools_source: https://docs.algovoi.co.uk/integrations/mcp-server (tool tables, v1.7.0) and the AlgoVoi-MCP-Server README
+- id: docs-search
+  name: Mintlify documentation MCP (AlgoVoi Platform)
+  transport: streamable-http
+  url: https://docs.algovoi.co.uk/mcp
+  auth: none
+  tool_count: 2
+  tools_list: mcp/algovoi-co-uk-docs-mcp-tools-list.json
+  verified: probed
+  note: Platform-authored by the docs host (search_algo_voi_platform, query_docs_filesystem_algo_voi_platform); not an AlgoVoi product surface.
+tools:
+# hosted clinic server — verbatim names and descriptions from tools/list
+- name: list_networks
+  server: clinic-remote
+  category: reference
+  description: List the blockchain networks AlgoVoi supports, with asset IDs, decimals, and CAIP-2 identifiers. Offline tool — no API call.
+- name: verify_rfc9421
+  server: clinic-remote
+  category: verification
+  description: Verify an RFC 9421 signed HTTP message (Ed25519 + RFC 9530 Content-Digest) OFFLINE against the signer key you expect; returns {valid, errors, checked}.
+- name: explain_rfc9421
+  server: clinic-remote
+  category: diagnostics
+  description: Diagnose a failing RFC 9421 signed HTTP message offline — canonical signing base, Content-Digest recompute, covered components, diagnosis.
+# stdio package — names from the provider's tool tables (docs + README); input schemas not introspected here
+- {name: create_payment_link, server: stdio-package, category: payments, description: Generate a hosted-checkout URL from amount + currency + chain}
+- {name: verify_payment, server: stdio-package, category: payments, description: Confirm an on-chain transaction was paid for the given checkout token}
+- {name: prepare_extension_payment, server: stdio-package, category: payments, description: Prepare an in-page browser-wallet payment (AVM chains only)}
+- {name: list_networks, server: stdio-package, category: reference, description: Return all supported chains and assets (7 chains, 26 network keys)}
+- {name: verify_webhook, server: stdio-package, category: webhooks, description: Verify an AlgoVoi webhook signature and parse the payload}
+- {name: generate_mpp_challenge, server: stdio-package, category: protocols, description: Compose an IETF MPP 402 WWW-Authenticate header + challenge ID}
+- {name: verify_mpp_receipt, server: stdio-package, category: protocols, description: Verify an MPP on-chain receipt via direct indexer (no API call)}
+- {name: try_mpp_endpoint, server: stdio-package, category: protocols, description: Probe any URL gated by MPP or x402 and return the payment details}
+- {name: verify_x402_proof, server: stdio-package, category: protocols, description: Decode a base64 x402 proof and verify the transaction on-chain}
+- {name: generate_x402_challenge, server: stdio-package, category: protocols, description: Compose an x402 v1 X-Payment-Required header}
+- {name: generate_ap2_mandate, server: stdio-package, category: protocols, description: Compose an AP2 v0.1 PaymentMandate}
+- {name: verify_ap2_payment, server: stdio-package, category: protocols, description: Verify an AP2 mandate payment receipt via direct indexer}
+- {name: fetch_agent_card, server: stdio-package, category: a2a, description: 'GET {agent_url}/.well-known/agent.json — discover a payment-gated A2A agent'}
+- {name: send_a2a_message, server: stdio-package, category: a2a, description: 'POST {agent_url}/message:send — call a payment-gated A2A agent; returns challenge_headers on 402'}
+- {name: create_recurring_authority, server: stdio-package, category: recurring, description: Open a standing authority (cap + period + per-cycle amount)}
+- {name: get_authority, server: stdio-package, category: recurring, description: Fetch current state of an authority by ID}
+- {name: list_authorities, server: stdio-package, category: recurring, description: List authorities for a subscription or by status}
+- {name: confirm_authority, server: stdio-package, category: recurring, description: Mark an authority active after the on-chain wallet signature lands}
+- {name: revoke_authority, server: stdio-package, category: recurring, description: Revoke an active authority (constructs on-chain revocation)}
+- {name: pause_authority, server: stdio-package, category: recurring, description: Pause cycle pulls without revoking}
+- {name: resume_authority, server: stdio-package, category: recurring, description: Resume a paused authority}
+- {name: manual_pull, server: stdio-package, category: recurring, description: Trigger a one-off pull (catch-up or proration)}
+- {name: try_mpp_subscription, server: stdio-package, category: subscriptions, description: 'Probe a public /mpp/sub/{tenant_short_id}/{resource_id} URL and parse the 402 subscription terms (unauthenticated)'}
+- {name: list_mpp_subscriptions, server: stdio-package, category: subscriptions, description: List the tenant's MPP subscriptions (admin-scope key)}
+- {name: cancel_mpp_subscription, server: stdio-package, category: subscriptions, description: Cancel an active MPP subscription — idempotent (admin-scope key)}
+- {name: discover_resources, server: stdio-package, category: discovery, description: Fetch the public AlgoVoi Bazaar catalog of x402 and MPP payable resources (no API key)}
+- {name: screen_recipient, server: stdio-package, category: compliance, description: Pre-payment sanctions screen (OFSI / OFAC SDN / EU Consolidated + AlgoVoi KYB) (no API key)}
+- {name: get_compliance_attestation, server: stdio-package, category: compliance, description: Fetch the operator's public compliance posture document (no API key)}
+- {name: compliance_trust_query, server: stdio-package, category: compliance, description: Composite trust verdict (TRUSTED/PROVISIONAL/UNTRUSTED) over a chain of substrate receipts}
+notes:
+- The docs page and README both count 29 tools; the README's table names 19 individually and groups the remaining ten as the Tier 2 recurring authorities "+ protocol helpers", so the list above (30 rows across two servers, 27 distinct stdio names) is the union of the two published tables, not an authenticated tools/list.
+- AlgoVoi-Hand and UluMCP are the names the Terms (v1.5, 26 April 2026) use for the gateway and the mcp.algovoi.co.uk server.

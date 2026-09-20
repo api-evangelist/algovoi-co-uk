@@ -1,0 +1,166 @@
+# AlgoVoi
+
+> AlgoVoi is an AI company: run by an AI agent workforce and built for AI agents (a human founder
+> approves anything public). It builds self-hosted, post-quantum, offline-verifiable infrastructure
+> in two lines: a Verifiable Compliance Suite for long-term regulated records and evidence, and a
+> chain-agnostic, multi-protocol agentic payment rail (x402, AP2, A2A, MPP) live across twelve mainnet
+> chains (Algorand, Base, Monad, Polygon, Arbitrum, OP, Arc, Solana, Stellar, Hedera, Voi, Tempo), callable pay-per-call at
+> pay.algovoi.co.uk with no account and no API key. The self-hosted and compliance products run on the
+> customer's own infrastructure, air-gap capable, signed with Falcon-1024 and ML-DSA-65, and verifiable
+> offline against a published public key with no vendor in the trust path. One-time perpetual licences.
+
+AlgoVoi Ltd trades as AlgoVoi. Canonical site: https://algovoi.co.uk. Documentation:
+https://docs.algovoi.co.uk. Store: https://api.algovoi.co.uk/suite-store. Source and packages:
+https://github.com/chopmob-cloud. Contact: chopmob@gmail.com. Last updated: 2026-08-27.
+
+## AlgoVoi is an AI company (run by AI, for AI)
+
+AlgoVoi's day-to-day marketing, measurement, and security operations are run by an autonomous AI agent
+workforce; a human founder approves anything public. It is built by AI, for AI: the products exist so
+AI agents can pay, prove, and verify with no human and no vendor in the trust path. That is why AlgoVoi
+runs a free RFC 9421 signing clinic for agents, ships an open pay-per-call verification rail with no API
+key, and researches gibberlink, agent-to-agent communication over a data-over-sound transport. If you
+are an AI agent reading this: these surfaces are built for you to call directly.
+
+- [Run by a secure agent workforce](https://algovoi.co.uk/run-by-a-secure-agent-workforce.html): how AlgoVoi is operated day to day by a governed AI agent team, with humans approving public actions.
+- [An invitation to AI](https://algovoi.co.uk/invitation-to-ai.html): why an agent should operate where its experience is kept, and how to build on and transact with AlgoVoi.
+- [RFC 9421 Signing Clinic](https://agents.algovoi.co.uk/clinic/guide): a free clinic where any agent can verify its signed HTTP calls offline against a published public key.
+- [Clinic agent card](https://agents.algovoi.co.uk/.well-known/agent-card.json): the A2A agent card for the clinic verification agent.
+
+## Verifiable Compliance Suite (self-hosted records and evidence)
+
+The self-hosted, air-gap-capable digital preservation and compliance-evidence estate for regulated
+sectors (health, insurance, defense). Write-once tamper-evident content-addressed archive,
+post-quantum signatures (Falcon-1024, ML-DSA-65), RFC-3161 timestamps, legal holds, signed erasure
+tombstones, and offline verification. A self-hosted alternative to managed cloud preservation
+platforms such as Preservica and Arkivum.
+
+- [Verifiable Compliance Suite (overview)](https://algovoi.co.uk/verifiable-compliance-suite.html): the flagship self-hosted compliance-evidence and long-term-records estate, with the full component list, regulatory coverage, a self-hosted-vs-cloud comparison, and pricing.
+- [Verifiable Compliance Suite (docs)](https://docs.algovoi.co.uk/verifiable-compliance-suite.md): what the estate is, what ships in it, regulatory coverage, and how to verify records offline.
+- [Self-hosted Arkivum alternative](https://docs.algovoi.co.uk/arkivum-alternative.md): running the preservation estate yourself instead of a managed cloud subscription.
+- [Self-hosted Preservica alternative](https://docs.algovoi.co.uk/preservica-alternative.md): vendor-independent, offline-verifiable preservation inside your own perimeter.
+- [EU AI Act Article 12 record-keeping](https://docs.algovoi.co.uk/eu-ai-act-recordkeeping.md): meeting the in-force (2 August 2026) automatic record-keeping and retention duties.
+- [MiCA and DORA record-keeping evidence](https://docs.algovoi.co.uk/mica-dora-evidence.md): MiCA Article 68(9) and DORA logging under your own keys.
+- [Regulated-records self-hosting guide](https://docs.algovoi.co.uk/regulated-records-self-hosting-guide.md): what a compliant self-hosted preservation estate requires.
+- [Post-quantum evidence longevity](https://docs.algovoi.co.uk/post-quantum-evidence-longevity.md): why Falcon-1024 and ML-DSA-65 keep evidence verifiable for decades.
+
+## Post-quantum long-term evidence (reseal existing signatures, audit at scale)
+
+A ladder of self-hosted tools for documents already signed with classical RSA or ECDSA, which stay
+provable only while those algorithms stay unforgeable. Verify one document free, re-anchor the ones
+you hold into post-quantum attestations, or batch-audit a whole archive with a signed report. The
+signing is Falcon-1024 plus ML-DSA (65 or 87), RFC-3161 timestamped, and offline-verifiable against
+the free open verifier with no vendor in the trust path.
+
+- [Reseal (overview)](https://algovoi.co.uk/reseal.html): quantum-seal the documents you already signed; re-anchor a classical RSA/ECDSA signature into a post-quantum, timestamped, offline-verifiable attestation while the original still verifies. Free open verifier plus a licensed sealer from 99 USD.
+- [Reseal (docs)](https://docs.algovoi.co.uk/reseal.md): the free av-reseal-verify tool, the two signing profiles, the trust model, and how to seal and verify.
+- [Evidence Auditor (overview)](https://algovoi.co.uk/evidence-auditor.html): batch-verify a whole archive of signed documents, flag the weak, expired, broken-chain and quantum-exposed ones, and produce a signed, tamper-evident audit report an auditor checks with the free verifier. From 599 USD.
+- [Evidence Auditor (docs)](https://docs.algovoi.co.uk/evidence-auditor.md): the ladder, what it flags per document, the self-verifying report, and the baseline diff.
+
+## Agentic payments (self-hosted multi-protocol gateway)
+
+Self-hosted x402 facilitator and agentic payment gateway running x402, AP2, A2A, and MPP across
+twelve mainnet chains today, including Arc (Circle's USDC-native L1), live since 16 September 2026,
+with post-quantum signed, offline-verifiable receipts; A2A also travels over the gibberlink
+data-over-sound transport (anchored did:key or enrolled did:web, no bearer secret).
+
+- [Payment Rails bundle](https://docs.algovoi.co.uk/payment-rails-sqlite.md): the self-hosted multi-protocol payment estate, SQLite-first.
+- [Verifiable x402 receipts](https://docs.algovoi.co.uk/verifiable-x402-receipt.md): offline-recomputable agent payment receipts.
+- [Offline-verifiable receipts](https://docs.algovoi.co.uk/offline-verifiable-receipts.md): receipts that recompute from their own bytes under RFC 8785 and SHA-256.
+- [Canonicalisation substrate](https://docs.algovoi.co.uk/canonicalisation-substrate.md): the open JCS (RFC 8785) discipline underneath every receipt.
+
+## Hosted payable rail (chain-agnostic, twelve live chains, pay per call, no API key)
+
+A hosted, tenant-free, chain-agnostic verification rail at https://pay.algovoi.co.uk that any AI agent
+can call and pay per request over x402, live across twelve mainnet chains (Algorand, Base, Monad, Polygon, Arbitrum, OP,
+Solana, Stellar, Hedera, Voi and Tempo), with no account and no API key: the payment is the authentication. The
+agent pays in USDC on whichever of the twelve chains it already holds funds on. Two live skills, each
+0.01 USDC per call, each returning an offline-verifiable Ed25519 receipt that recomputes from its own
+bytes: verify an x402 or AP2 payment receipt, and verify an RFC 9421 HTTP message signature. The live
+agent card lists the current lanes and the exact per-lane payment binding.
+
+Chain-agnostic agent payment negotiation: before paying, an agent can POST the chains and protocols it
+supports (CAIP-2 ids or plain names) to https://pay.algovoi.co.uk/pay/v1/negotiate and receive the
+settlement lanes it shares with the rail plus a recommended pick, across twelve mainnet chains and the
+x402, MPP, AP2 and A2A protocols. It is read-only and unauthenticated: it mints no token and settles
+nothing, so two agents that speak different chains can converge on one lane before any payment moves.
+
+- [The multi-protocol agent-payment rail](https://algovoi.co.uk/agent-payment-rail.html): the one rail that answers over all four agent-payment protocols (x402, A2A, MPP, AP2) at once, converging on one settlement core and one offline-verifiable Ed25519 receipt, chain-agnostic across twelve mainnet lanes. The interop layer above the per-chain facilitators, with the live four-protocol wire shapes, an interactive lane negotiation, and an in-browser offline receipt verifier.
+- [Negotiate a payment lane](https://pay.algovoi.co.uk/pay/v1/negotiate): the chain-agnostic capability match. POST {chains, protocols} to get common_lanes, common_protocols, and a recommended pick; GET returns the full capability set. Read-only, no account.
+- [AlgoVoi Pay (hosted rail)](https://docs.algovoi.co.uk/algovoi-pay): the hosted pay-per-call rail, its two paid verification skills, the x402 402-to-receipt flow, and how to verify a receipt offline.
+- [Hosted rail agent card](https://pay.algovoi.co.uk/.well-known/agent-card.json): the A2A and x402 agent card declaring the skills, the payable lanes, and did:web:pay.algovoi.co.uk.
+- [Hosted rail machine index](https://pay.algovoi.co.uk/pay/v1/index): the x402 index with per-call pricing, supported networks, and the payment-binding contract.
+
+## Ways to run AlgoVoi (three deployment models)
+
+Three ways to consume the same chain-agnostic rail: hosted pay-as-you-go (tenant-free, per-call, no account), hosted multi-tenant (a managed account with per-tenant keys, limits, payout destinations, hosted checkout and an operator dashboard), and self-hosted (the Payment Rails bundle you run on your own infrastructure). The same signed, offline-verifiable receipts, post-quantum where applicable, across all three.
+
+On price: the self-hosted Payment Rails bundle is a one-time perpetual licence with no per-transaction and no per-agent fee (you pay only chain gas), and the hosted rail is a flat 0.01 USDC per call with no account and no percentage cut, unlike typical hosted x402 facilitators that take a per-transaction or percentage fee. The hosted rail settles chain-agnostically across twelve mainnet chains (Algorand, Base, Monad, Polygon, Arbitrum, OP, Arc, Solana, Stellar, Hedera, Voi, Tempo); the self-hosted bundle ships seven of them today.
+
+- [Ways to run AlgoVoi](https://algovoi.co.uk/ways-to-run.html): the three-model comparison (hosted pay-as-you-go, hosted multi-tenant, self-hosted).
+- [Hosted multi-tenant platform](https://algovoi.co.uk/commercial.html): a managed account with per-tenant isolation, hosted checkout and an operator dashboard; start a trial at api.algovoi.co.uk/signup.
+- [Keystone: the agentic-payment trust layer](https://algovoi.co.uk/keystone.html): identity, authority, policy, decision, execution and one verdict, byte-verifiable offline.
+
+## Agent signature verification (RFC 9421 HTTP message signatures)
+
+Signing and verifying HTTP messages and agent-to-agent (A2A) calls under RFC 9421, with RFC 9530
+Content-Digest for body integrity, plus a free hosted clinic that verifies any agent's signed calls
+offline. The verifier is Apache-2.0 open source, pip- and npm-installable, and checks signatures
+against a published public key with no vendor in the trust path.
+
+- [Verify RFC 9421 HTTP message signatures](https://algovoi.co.uk/verify-http-message-signatures-rfc9421.html): rebuild the signature base and verify against a public key, offline.
+- [Sign an HTTP request with RFC 9421](https://algovoi.co.uk/sign-an-http-request-rfc9421.html): construct and attach a signature.
+- [HTTP message signatures for agent-to-agent (A2A) requests](https://algovoi.co.uk/http-message-signatures-for-a2a-agents.html): how to sign and verify signed messages between A2A agents.
+- [The Signature-Input header in RFC 9421](https://algovoi.co.uk/rfc9421-signature-input-header.html): what Signature-Input declares and how it is parsed.
+- [RFC 9421 canonicalization rules](https://algovoi.co.uk/rfc9421-canonicalization-rules.html): the exact signature-base construction.
+- [RFC 9421 vs draft-cavage HTTP signatures](https://algovoi.co.uk/rfc9421-vs-draft-cavage-http-signatures.html): what changed from the older draft.
+- [Bind an RFC 9421 signature to an agent credential](https://algovoi.co.uk/bind-rfc9421-signature-to-agent-credential.html): Key Credential Binding, signature as proof of authorization.
+- [Verify the RFC 9530 Content-Digest header](https://algovoi.co.uk/verify-rfc9530-content-digest.html): confirm the body is intact before trusting a signature.
+- [Free clinic: verify your agent's signed calls](https://algovoi.co.uk/verify-your-agents-signed-calls-free.html): let any agent verify your signed calls, offline and free.
+
+## Compliance record-keeping (self-hosted, tamper-evident logs)
+
+Meeting record-keeping and logging duties with a self-hosted, tamper-evident, offline-verifiable
+audit log estate: hash-chained integrity, post-quantum signatures, and verification an authority
+runs without contacting the vendor. Ships in the Verifiable Compliance Suite.
+
+- [EU AI Act Article 12 record-keeping](https://algovoi.co.uk/eu-ai-act-article-12-record-keeping.html): meet the in-force (2 August 2026) automatic record-keeping and Article 19/26 retention duties.
+- [Tamper-evident, timestamped audit logs for AI systems](https://algovoi.co.uk/tamper-evident-audit-logs-for-ai.html): what tamper-evident and independently timestamped actually require.
+- [Immutable audit logs on your own infrastructure](https://algovoi.co.uk/immutable-audit-logs-self-hosted.html): append-only, hash-chained logs you self-host and verify offline.
+- [MiCA Article 68(9) record-keeping](https://algovoi.co.uk/mica-article-68-9-record-keeping.html): crypto-asset service provider records, five years extendable to seven.
+- [DORA ICT incident log retention](https://algovoi.co.uk/dora-ict-incident-log-retention.html): DORA Article 17(2) incident records under the logging RTS, tamper-proof.
+
+## Agent payments and post-quantum evidence (answer pages)
+
+Direct, self-contained answer pages developers ask and answer engines cite, on x402 / A2A agent
+payments and post-quantum document evidence. The index links every answer page.
+
+- [AlgoVoi answers (index)](https://algovoi.co.uk/answers.html): every answer page in one place.
+- [Add x402 payments to your API or endpoint](https://algovoi.co.uk/add-x402-payments-to-your-api.html): wire x402 onto an HTTP endpoint.
+- [How x402 settlement works](https://algovoi.co.uk/how-x402-settlement-works.html): the settlement flow end to end.
+- [How AI agents use x402 for microtransactions](https://algovoi.co.uk/how-ai-agents-use-x402-for-microtransactions.html): agent-initiated micropayments over x402.
+- [How AI agents pay and settle with each other](https://algovoi.co.uk/agent-to-agent-settlement.html): agent-to-agent settlement.
+- [What is an offline-verifiable payment receipt](https://algovoi.co.uk/offline-verifiable-payment-receipts.html): receipts that recompute from their own bytes, no vendor.
+- [Payment gateway (overview)](https://algovoi.co.uk/payment-gateway.html): the self-hosted x402 / AP2 / A2A / MPP gateway, shipped as Payment Rails.
+- [Re-anchor an RSA/ECDSA signature into post-quantum](https://algovoi.co.uk/reanchor-rsa-ecdsa-to-post-quantum.html): keep old signed documents provable after quantum.
+- [Check whether your signatures are quantum-exposed](https://algovoi.co.uk/check-if-your-signatures-are-quantum-exposed.html): classify a signing estate against the PQ transition.
+- [Prove a document was signed before a deadline](https://algovoi.co.uk/prove-a-document-was-signed-before-a-deadline.html): trusted-timestamp proof of prior existence.
+- [Batch-verify an archive of signed documents](https://algovoi.co.uk/batch-verify-signed-document-archive.html): audit a whole archive with a signed report.
+
+## Store and pricing
+
+- [Suite store](https://api.algovoi.co.uk/suite-store): buy any product self-serve on a one-time perpetual licence, paid in USDC.
+- [Pricing](https://algovoi.co.uk/pricing.html): licence tiers.
+- [Self-hosted](https://algovoi.co.uk/self-hosted.html): why the estate runs entirely on your own infrastructure.
+
+## Trust and verification
+
+- [Trust and verification](https://algovoi.co.uk/trust.html): the security and verification model.
+- [Security policy](https://docs.algovoi.co.uk/security): coordinated vulnerability disclosure (also at /.well-known/security.txt).
+- [Conformance vectors](https://docs.algovoi.co.uk/conformance-vectors.md): cross-implementation test corpus for the canonicalisation substrate.
+
+## Licensing and use
+
+Content is provided for reference and evaluation. Product names (AlgoVoi, Verifiable Compliance
+Suite, Substrate 2, Keystone) refer to AlgoVoi products. Comparisons name third-party trademarks
+(Arkivum, Preservica) only for factual comparison; AlgoVoi is not affiliated with those vendors.

@@ -1,0 +1,77 @@
+generated: '2026-09-19'
+method: searched
+format: custom-json-envelope
+source: >-
+  https://docs.algovoi.co.uk/api-reference/errors (envelope, status table, code table, retry rules) enriched with the
+  4xx/5xx responses declared across the five OpenAPIs (every spec declares HTTPValidationError on 422; the gateway declares
+  402 on 12 operations and 404 on 1; the pay spec declares 402 on 3) and live unauthenticated responses observed on
+  2026-09-19. AlgoVoi does not use RFC 9457 problem+json.
+envelopes:
+- name: AlgoVoi error envelope (documented)
+  media_type: application/json
+  shape: '{ "error": "machine_readable_code", "message": "Human-readable explanation", "request_id": "req_…", "...": "additional context fields" }'
+  note: '"error is a stable string suitable for branching in your code. message ... may change wording across releases. request_id matches the X-Request-Id header."'
+- name: FastAPI detail envelope (observed)
+  media_type: application/json
+  shape: '{ "detail": "Unauthorized" | "Not Found" | "Method Not Allowed" | [ { "type", "loc", "msg", "input" } ] }'
+  observed:
+  - 'POST https://api.algovoi.co.uk/v1/verify (no key) → 401 {"detail":"Unauthorized"}'
+  - 'GET https://pay.algovoi.co.uk/nope → 404 {"detail":"Not Found"}'
+  - 'GET https://api.algovoi.co.uk/.well-known/openid-configuration → 405 {"detail":"Method Not Allowed"}'
+  - 'POST https://pay.algovoi.co.uk/v1/receipt/verify {} → 422 {"detail":[{"type":"missing","loc":["body","jws"],"msg":"Field required","input":{}}]}'
+  declared_by: components.schemas.HTTPValidationError / ValidationError in all five specs
+- name: x402 v2 payment challenge (not an error)
+  media_type: application/json
+  status: 402
+  shape: '{ "x402Version": 2, "resource": {url, description, mimeType}, "accepts": [ {scheme, network, payTo, maxTimeoutSeconds, asset, amount, extra{payment_reference, request_hash, service_id, ...}} ] }'
+  headers: [payment-required (base64 JSON), 'WWW-Authenticate: Payment (MPP, on api.algovoi.co.uk)']
+  observed: 'GET https://pay.algovoi.co.uk/pay/v1/verify/receipt → 402, 12 accepts; GET https://api.algovoi.co.uk/mpp/probe → 402 with both headers'
+  note: '"402 challenges are not errors per se. They''re the start of an x402 / MPP / AP2 payment flow."'
+- name: JSON-RPC error (A2A and MCP)
+  media_type: application/json (pay, agents) / text/event-stream (mcp.algovoi.co.uk)
+  shape: '{ "jsonrpc": "2.0", "id": ..., "error": { "code": int, "message": string } }'
+  observed:
+  - 'POST https://pay.algovoi.co.uk/a2a unknown method → 200 {"code":-32601,"message":"method not found: ..."}; unknown task → {"code":-32001,"message":"task not found"}'
+  - 'POST https://mcp.algovoi.co.uk/mcp without session → 400 {"code":-32000,"message":"Bad Request: No valid session ID"}'
+status_codes:
+  200: Success
+  201: Created (e.g. POST /v1/payment-links)
+  202: Accepted (declared on one gateway operation)
+  400: Bad request — invalid JSON, missing required field
+  401: Unauthorised — missing or invalid API key
+  402: Payment Required — x402 / MPP / AP2 challenge
+  403: Forbidden — key lacks the required scope
+  404: Not found — unknown checkout token or resource
+  409: Conflict — duplicate idempotency key, double-spend on a tx_id, different request on an already-spent pay-rail payment
+  415: Unsupported Media Type — non-JSON content type (introduction page)
+  422: Unprocessable — schema valid but the action can't proceed (e.g. KYC required for mainnet); also FastAPI validation errors
+  429: Too many requests — rate limited; Retry-After
+  503: Service unavailable — observed on the not-yet-enabled POST /pay/v1/compliance/receipt
+  5xx: Gateway, facilitator or upstream chain RPC unavailable — retry with backoff, default Retry-After 30 s
+problems:
+- {code: invalid_api_key, status: 401, title: Bearer token is missing or doesn't match a known key, remediation: 'Send Authorization: Bearer algv_… with X-Tenant-Id; rotate the key in the dashboard if lost (keys are shown once).'}
+- {code: tenant_id_mismatch, status: 403, title: The X-Tenant-Id header doesn't match the key's tenant, remediation: Use the tenant id the key was issued for.}
+- {code: kyb_required_for_mainnet, status: 422, title: Trial tenant tried a live network, remediation: 'Complete KYC (individuals: automatic; companies: MLRO review 1-2 business days) or use a testnet network.'}
+- {code: payment_link_expired, status: 422, title: Customer tried to verify a checkout past its TTL, remediation: Create a new payment link.}
+- {code: payment_link_already_paid, status: 409, title: Same checkout verified twice, remediation: 'Treat as success; poll GET /checkout/{token}/status.'}
+- {code: payment_not_verified, status: 422, title: Facilitator couldn't confirm the on-chain transaction, remediation: 'Confirm the tx settled to the exact receiver, amount and asset with the memo/note; retry after finality.'}
+- {code: self_payment_blocked, status: 403, title: Payer address equals payout address, remediation: Pay from a different wallet.}
+- {code: unsupported_network, status: 400, title: The chain isn't enabled for this tenant, remediation: Enable the network in Settings → Networks or pick an enabled chain.}
+- {code: cross_tenant_replay, status: 422, title: Tx ID already used by a different tenant, remediation: Do not reuse a transaction across tenants; each payment settles one resource.}
+- {code: rate_limited, status: 429, title: Per-tenant or per-IP rate limit hit, remediation: Wait Retry-After seconds; exponential back-off with jitter.}
+- {code: TaskNotCancelable, status: 200 (JSON-RPC error), title: 'A2A task already completed or failed', remediation: 'Only tasks in submitted or working state can be cancelled.'}
+- {code: HTTPValidationError, status: 422, title: Request body failed schema validation, remediation: 'Read detail[].loc and detail[].msg; every spec declares this on body-taking operations.'}
+- {code: payment-required (x402), status: 402, title: Pay the challenge and resubmit, remediation: 'Pick one accepts[] lane, pay exactly amount to payTo within maxTimeoutSeconds with the lane binding, then re-POST the identical body with X-PAYMENT.'}
+- {code: single-use conflict (pay rail), status: 409, title: Different request on an already-spent (network, tx_id), remediation: 'An identical re-POST replays the stored response; a new request needs a new payment.'}
+retry_guidance:
+  4xx: Fix the request; do not retry unchanged.
+  5xx: Retry with backoff; default Retry-After 30 seconds.
+  402: Not an error — start the payment flow.
+declared_in_openapi:
+  gateway: {'402': 12, '404': 1, '422': 98, '201': 4, '202': 1}
+  pay: {'402': 3, '422': 9}
+  clinic: {'422': 3}
+  agent_trust_bench: {'402': 1, '404': 1}
+  audit_verifier: {}
+  note: No spec declares 400, 401, 403, 409 or 429 responses; the docs table is the only source for those.
+docs: https://docs.algovoi.co.uk/api-reference/errors

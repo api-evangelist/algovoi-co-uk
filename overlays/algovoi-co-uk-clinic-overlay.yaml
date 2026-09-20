@@ -1,0 +1,73 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the AlgoVoi Verifiable-Comms Agent (RFC 9421 clinic) OpenAPI
+  version: 1.0.0
+  description: 'Generated 2026-09-19 (method: generated). Extends openapi/algovoi-co-uk-clinic-openapi.yml (verbatim copy
+    of https://agents.algovoi.co.uk/openapi.json in openapi/_original/). This overlay adds the missing servers[] block; adds
+    a tag taxonomy to the 9 untagged operations and stamps provenance. It never mutates the original.'
+extends: openapi/algovoi-co-uk-clinic-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: algovoi-co-uk
+    x-apievangelist-harvested: '2026-09-19'
+    x-apievangelist-source: https://agents.algovoi.co.uk/openapi.json
+    x-apievangelist-artifacts:
+      authentication: authentication/algovoi-co-uk-authentication.yml
+      conventions: conventions/algovoi-co-uk-conventions.yml
+      errors: errors/algovoi-co-uk-problem-types.yml
+      lifecycle: lifecycle/algovoi-co-uk-lifecycle.yml
+      rate_limits: rate-limits/algovoi-co-uk-rate-limits.yml
+      mcp: mcp/algovoi-co-uk-mcp.yml
+      crosswalk: mcp/algovoi-co-uk-tool-crosswalk.yml
+      a2a: a2a/algovoi-co-uk-a2a.yml
+      webhooks: asyncapi/algovoi-co-uk-webhooks.yml
+- target: $
+  update:
+    servers:
+    - url: https://agents.algovoi.co.uk
+      description: Production — the host the document was fetched from; the providers spec declares no servers[] (added here,
+        never in the original)
+- target: $
+  update:
+    tags:
+    - name: Verification
+    - name: A2A
+    - name: Discovery
+    - name: Meta
+- target: $.paths['/verify/rfc9421'].post
+  update:
+    tags:
+    - Verification
+- target: $.paths['/verify/rfc9421/explain'].post
+  update:
+    tags:
+    - Verification
+- target: $.paths['/verify/rfc9421/sign'].post
+  update:
+    tags:
+    - Verification
+- target: $.paths['/a2a'].get
+  update:
+    tags:
+    - A2A
+- target: $.paths['/a2a'].post
+  update:
+    tags:
+    - A2A
+- target: $.paths['/.well-known/agent-card.json'].get
+  update:
+    tags:
+    - Discovery
+- target: $.paths['/.well-known/agent.json'].get
+  update:
+    tags:
+    - Discovery
+- target: $.paths['/health'].get
+  update:
+    tags:
+    - Meta
+- target: $.paths['/'].get
+  update:
+    tags:
+    - Meta

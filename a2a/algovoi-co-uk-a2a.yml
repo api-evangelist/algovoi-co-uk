@@ -1,0 +1,291 @@
+generated: '2026-09-19'
+method: probed            # search-only artifact — never generated or derived
+source: https://pay.algovoi.co.uk/.well-known/agent-card.json
+summary: >-
+  AlgoVoi serves FIVE A2A agent cards from hosts under its own registrable domain, and this manifest grades the
+  provider on the strongest of them — the AlgoVoi Payable Rail card on pay.algovoi.co.uk — because it is a
+  conformant 0.3.0 card whose declared endpoint is a live A2A JSON-RPC responder. It sits at the canonical
+  /.well-known/agent-card.json (protocolVersion 0.3.0, preferredTransport JSONRPC at https://pay.algovoi.co.uk/a2a,
+  five skills, a did:web identity, the google-agentic-commerce a2a-x402 extension declared as required, and a
+  securitySchemes entry whose scheme is "x402" — payment is the authentication). The Verifiable-Comms Agent card on
+  agents.algovoi.co.uk also grades conformant (0.3.0 plus a 1.0.1 interface declared in supportedInterfaces). The
+  AlgoVoi Payment Agent card served by api.algovoi.co.uk (and mirrored byte-identically at the legacy
+  /.well-known/agent.json on the apex, at the legacy path on api., and — unusually — at /.well-known/ai-plugin.json
+  on api.) carries no protocolVersion and grades flavored; the cloud.algovoi.co.uk variant of that card grades flavored
+  for the same reason. docs.algovoi.co.uk serves a Mintlify-generated "AlgoVoi Platform" card that is shape-conformant
+  but platform-authored. Every card was fetched with HTTP 200 and application/json, every host passed a
+  negative-control probe (a /.well-known/ path that cannot exist returned 404, or 405 on api. which returns 405 for
+  every unknown /.well-known/ path), and ownership is settled by the documents themselves: every provider block
+  names organization "AlgoVoi" with a url on algovoi.co.uk or pay.algovoi.co.uk, the pay card's did:web resolves at
+  https://pay.algovoi.co.uk/.well-known/did.json to a DID document whose service block points back at this card, and
+  the a2aregistry.org entry that brought AlgoVoi into the harvest lists this exact wellKnownURI.
+card:
+  file: a2a/algovoi-co-uk-pay-agent-card.json
+discovery:
+  path: /.well-known/agent-card.json
+  canonical: true
+  host: pay.algovoi.co.uk
+  note: >-
+    Served with content-type application/json, Cache-Control public max-age=300, CORS * and HSTS preload. The
+    legacy /.well-known/agent.json path returns the byte-identical 12,418-byte document. The same host serves
+    /.well-known/did.json (did:web:pay.algovoi.co.uk, application/did+json), /.well-known/jwks.json (the Ed25519
+    receipt-signing key), /.well-known/x402 (the x402 resource descriptor) and /discovery/resources (a Bazaar-shaped
+    catalog); every OAuth/OIDC discovery path, api-catalog, ai-plugin.json, ucp.json, acp.json, aauth-resource.json
+    and apis.json returns a 22-byte JSON 404 ({"detail":"Not Found"}), as does the negative-control path, so the card
+    is a served document and not a catch-all. The pay sitemap.xml lists the card URL explicitly.
+conformance:
+  spec: A2A 1.0.0
+  grade: conformant
+  graded_card: payable-rail
+  protocol_version: 0.3.0
+  preferred_transport: JSONRPC
+  deviations: []
+  checks:
+    capabilities_is_object: true
+    protocol_version_present: true
+    skills_is_array: true
+    preferred_transport_present: true
+    default_input_modes_present: true
+    default_output_modes_present: true
+    additional_interfaces_present: true
+    signatures_present: false
+  note: >-
+    skills[] carries five entries with id, name, description, tags, inputModes and outputModes; capabilities
+    declares streaming false, pushNotifications false, stateTransitionHistory false and one REQUIRED extension
+    (https://github.com/google-agentic-commerce/a2a-x402/blob/main/spec/v0.2) whose params.lanes[] lists twelve
+    CAIP-2 settlement lanes with asset, decimals and per-lane binding. securitySchemes declares one scheme of type
+    http with scheme "x402" — not an IANA-registered HTTP auth scheme, recorded as the provider's chosen way to say
+    that payment is the credential; security is []. The non-spec top-level field `did` (did:web:pay.algovoi.co.uk)
+    is recorded and not counted as a deviation. One skill (pay-compliance-receipt) describes itself as "wave 2,
+    not yet enabled" and its REST counterpart returned HTTP 503 on 2026-09-19.
+x-evidence:
+  fetched: '2026-09-19'
+  url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  http_status: 200
+  content_type: application/json
+  body_bytes: 12418
+  sha256: d43feaa017b9d2cc164002467878c84381c28ffdc74c7c72d8887edd74a12bf9
+  body_parses_as: JSON object with AgentCard shape (protocolVersion, name, description, url, preferredTransport, additionalInterfaces, version, provider, documentationUrl, did, capabilities, securitySchemes, security, defaultInputModes, defaultOutputModes, skills)
+  corroborating_probes:
+  - url: https://pay.algovoi.co.uk/a2a
+    method: POST
+    body: '{"jsonrpc":"2.0","id":1,"method":"agent/getAuthenticatedExtendedCard"}'
+    http_status: 200
+    response: '{"jsonrpc":"2.0","id":1,"error":{"code":-32601,"message":"method not found: agent/getAuthenticatedExtendedCard"}}'
+    note: A live JSON-RPC 2.0 responder. tasks/get with an unknown id returned {"code":-32001,"message":"task not found"}. No message was sent and nothing was paid.
+  - url: https://pay.algovoi.co.uk/.well-known/agent.json
+    http_status: 200
+    note: Byte-identical copy at the legacy path.
+  - url: https://pay.algovoi.co.uk/.well-known/did.json
+    http_status: 200
+    note: did:web:pay.algovoi.co.uk; service[] names this card (type A2AAgentCard), the x402 index and the receipt verifier. Saved to well-known/algovoi-co-uk-pay-did.json.
+  - url: https://pay.algovoi.co.uk/.well-known/jwks.json
+    http_status: 200
+    note: One Ed25519 key (kid 0226212c7d1243326cab5ae646e562a1) matching the DID document's verificationMethod. Saved to well-known/algovoi-co-uk-pay-jwks.json.
+  - url: https://pay.algovoi.co.uk/openapi.json
+    http_status: 200
+    note: OpenAPI 3.1.0 "AlgoVoi Payable Core" declaring POST /a2a (operationId a2a_jsonrpc_a2a_post) alongside the paid /pay/v1/* operations. Saved to openapi/_original/algovoi-co-uk-pay-openapi.json.
+  - url: https://pay.algovoi.co.uk/.well-known/algovoi-co-uk-negative-control-7f3a9c1e.json
+    http_status: 404
+    note: Negative control — the host does not catch-all /.well-known/*.
+  - url: https://a2aregistry.org/api/agents?search=algovoi
+    http_status: 200
+    note: The registry that fed the harvest lists "AlgoVoi Payable Rail" with wellKnownURI https://pay.algovoi.co.uk/.well-known/agent-card.json (x-source in apis.yml).
+agent_card:
+  name: AlgoVoi Payable Rail
+  description: >-
+    Tenant-free metered signed-verification rail. Pay per call in USDC over x402/a2a/mpp/ap2 across 12 mainnet
+    lanes; no API key, payment is the auth; every response carries an offline-verifiable Ed25519 receipt.
+  version: 1.0.0
+  protocol_version: 0.3.0
+  url: https://pay.algovoi.co.uk/a2a
+  preferred_transport: JSONRPC
+  documentation_url: https://pay.algovoi.co.uk/pay/v1/index
+  did: did:web:pay.algovoi.co.uk
+  provider:
+    organization: AlgoVoi
+    url: https://pay.algovoi.co.uk
+  security_schemes:
+    x402-payment: {type: http, scheme: x402}
+  security: []
+  default_input_modes: [application/json]
+  default_output_modes: [application/json]
+  skills: 5
+  skill_ids: [pay-verify-receipt, pay-verify-rfc9421, pay-compliance-receipt, pay-url-screen, negotiate-payment-lane]
+  extensions:
+  - uri: https://github.com/google-agentic-commerce/a2a-x402/blob/main/spec/v0.2
+    required: true
+    lanes: 12
+additional_cards:
+- id: verifiable-comms-agent
+  file: a2a/algovoi-co-uk-clinic-agent-card.json
+  source: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  discovery:
+    path: /.well-known/agent-card.json
+    canonical: true
+    host: agents.algovoi.co.uk
+    note: Also served byte-identically at the legacy /.well-known/agent.json; the host's OpenAPI declares both paths as operations.
+  conformance:
+    spec: A2A 1.0.0
+    grade: conformant
+    protocol_version: 0.3.0
+    preferred_transport: JSONRPC
+    deviations: []
+    note: >-
+      capabilities is an object, protocolVersion 0.3.0 is present, skills is a 3-entry array, preferredTransport,
+      defaultInputModes and defaultOutputModes are present. The card carries BOTH additionalInterfaces (0.3 shape) and
+      supportedInterfaces (1.0 shape, declaring protocolVersion 1.0.1 and 0.3.0 on the same JSONRPC URL); the live
+      endpoint confirms it "supports message/send (A2A 0.3.0) and SendMessage (A2A 1.0.1)". securitySchemes {} and
+      security [] — the agent is intentionally anonymous. The non-spec x-algovoi block (stance, verifier_package,
+      offline_verifiable_identity) is recorded, not counted as a deviation.
+  x-evidence:
+    fetched: '2026-09-19'
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+    http_status: 200
+    content_type: application/json
+    body_bytes: 3769
+    sha256: d1b825a8beea1b4ec451c5b297f2442469954b3f9a76f2a7521c1aa926eeb9be
+    corroborating_probes:
+    - {url: 'https://agents.algovoi.co.uk/a2a', method: POST, body: '{"jsonrpc":"2.0","id":1,"method":"agent/getAuthenticatedExtendedCard"}', http_status: 200, note: 'JSON-RPC error -32601 "method not supported ... This agent supports message/send (A2A 0.3.0) and SendMessage (A2A 1.0.1)" — a live responder; nothing was sent.'}
+    - {url: 'https://agents.algovoi.co.uk/openapi.json', http_status: 200, note: 'OpenAPI 3.1.0 "AlgoVoi Verifiable-Comms Agent" 0.1.0 declaring /a2a, /verify/rfc9421, /verify/rfc9421/explain, /verify/rfc9421/sign and both card paths. Saved to openapi/_original/algovoi-co-uk-clinic-openapi.json.'}
+    - {url: 'https://agents.algovoi.co.uk/mcp', method: POST, body: '{"jsonrpc":"2.0","id":2,"method":"tools/list"}', http_status: 200, note: 'Anonymous MCP server algovoi-mcp-server 1.29.0 returning 3 tools with inputSchema. Saved to mcp/algovoi-co-uk-clinic-tools-list.json.'}
+    - {url: 'https://agents.algovoi.co.uk/.well-known/algovoi-co-uk-negative-control-7f3a9c1e.json', http_status: 404, note: negative control}
+  agent_card:
+    name: AlgoVoi Verifiable-Comms Agent
+    version: 0.1.0
+    protocol_version: 0.3.0
+    url: https://agents.algovoi.co.uk/a2a
+    documentation_url: https://verify.algovoi.co.uk
+    provider: {organization: AlgoVoi, url: 'https://algovoi.co.uk'}
+    skills: 3
+    skill_ids: [verify-rfc9421, conformance-vectors, rfc9421-clinic]
+    default_input_modes: [application/json, text/plain]
+    default_output_modes: [application/json, text/plain]
+- id: payment-agent-gateway
+  file: a2a/algovoi-co-uk-gateway-agent-card.json
+  source: https://api.algovoi.co.uk/.well-known/agent-card.json
+  discovery:
+    path: /.well-known/agent-card.json
+    canonical: true
+    host: api.algovoi.co.uk
+    note: >-
+      The same 7,358-byte body is served at the legacy /.well-known/agent.json on api.algovoi.co.uk, at the legacy
+      /.well-known/agent.json on the apex algovoi.co.uk (whose canonical path is a 404), and at
+      /.well-known/ai-plugin.json on api.algovoi.co.uk — the ai-plugin path returns this agent card rather than an
+      OpenAI plugin manifest. api.algovoi.co.uk answers 405 Method Not Allowed for every unknown /.well-known/ path
+      (including the negative control), so the three 200s are served documents, not a catch-all.
+  conformance:
+    spec: A2A 1.0.0
+    grade: flavored
+    protocol_version: null
+    preferred_transport: null
+    deviations:
+    - no-protocolVersion
+    - no-preferredTransport
+    - url-is-rest-base-not-a2a-endpoint
+    - non-spec-top-level-field (trust)
+    note: >-
+      capabilities is an object (with extendedAgentCard true and one optional extension, the AlgoVoi scoped
+      authorization receipts profile) and skills is a 5-entry array, but protocolVersion is absent — a hard check
+      fails. The card's url is the REST origin https://api.algovoi.co.uk; the gateway OpenAPI does declare the A2A
+      surface (POST /message:send, /message:stream, /tasks/{id}, /tasks/{id}:cancel, /a2a/jsonrpc, /a2a/gibberlink
+      and GET /extendedAgentCard), but every one of them answered 401 {"detail":"Unauthorized"} anonymously, matching
+      the card's securitySchemes (apiKey in header Authorization, "Bearer <tenant_api_key>"). The did:web document
+      at https://api.algovoi.co.uk/.well-known/did.json names /.well-known/agent.json as the primary A2A discovery entry.
+  x-evidence:
+    fetched: '2026-09-19'
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+    http_status: 200
+    content_type: application/json
+    body_bytes: 7358
+    sha256: da3cca612f547d2c6baef2b205cb55b3d8523963b8e51899462cd0d7780ba857
+    corroborating_probes:
+    - {url: 'https://api.algovoi.co.uk/.well-known/agent.json', http_status: 200, note: byte-identical}
+    - {url: 'https://algovoi.co.uk/.well-known/agent.json', http_status: 200, note: 'byte-identical, legacy path on the apex; https://algovoi.co.uk/.well-known/agent-card.json is 404'}
+    - {url: 'https://api.algovoi.co.uk/.well-known/ai-plugin.json', http_status: 200, note: 'byte-identical agent card served under the ai-plugin path; saved as well-known/algovoi-co-uk-api-ai-plugin.json and NOT counted as an ai-plugin manifest'}
+    - {url: 'https://api.algovoi.co.uk/a2a/jsonrpc', method: POST, http_status: 401, note: '{"detail":"Unauthorized"} — the A2A endpoint is tenant-key gated'}
+    - {url: 'https://api.algovoi.co.uk/extendedAgentCard', http_status: 401}
+    - {url: 'https://api.algovoi.co.uk/.well-known/did.json', http_status: 200, note: 'did:web:api.algovoi.co.uk, alsoKnownAs did:web:algovoi.co.uk; seven service entries. Saved to well-known/algovoi-co-uk-api-did.json.'}
+    - {url: 'https://api.algovoi.co.uk/.well-known/algovoi-co-uk-negative-control-7f3a9c1e.json', http_status: 405, note: 'negative control — this host answers 405 for every unknown /.well-known/ path'}
+  agent_card:
+    name: AlgoVoi Payment Agent
+    version: 1.0.0
+    protocol_version: null
+    url: https://api.algovoi.co.uk
+    provider: {organization: AlgoVoi, url: 'https://algovoi.co.uk'}
+    skills: 5
+    skill_ids: [verify-payment, create-checkout, check-status, post-twitter-checkout, agent-trust-bench]
+    security_schemes: {apiKey: {type: apiKey, in: header, name: Authorization}}
+- id: payment-agent-cloud
+  file: a2a/algovoi-co-uk-cloud-agent-card.json
+  source: https://cloud.algovoi.co.uk/.well-known/agent-card.json
+  discovery:
+    path: /.well-known/agent-card.json
+    canonical: true
+    host: cloud.algovoi.co.uk
+    note: Also served byte-identically at the legacy /.well-known/agent.json and at /.well-known/ai-plugin.json on this host; the negative control returns a 111-byte JSON 404.
+  conformance:
+    spec: A2A 1.0.0
+    grade: flavored
+    protocol_version: null
+    preferred_transport: null
+    deviations: [no-protocolVersion, no-preferredTransport, url-is-rest-base-not-a2a-endpoint]
+    note: A trimmed variant of the gateway card (3 skills, 7 chains, no trust block, no extensions) with the same missing protocolVersion. cloud.algovoi.co.uk is documented as a proxy edge for a subset of public-read endpoints, not the canonical API.
+  x-evidence:
+    fetched: '2026-09-19'
+    url: https://cloud.algovoi.co.uk/.well-known/agent-card.json
+    http_status: 200
+    content_type: application/json
+    body_bytes: 2526
+  agent_card:
+    name: AlgoVoi Payment Agent
+    version: 1.0.0
+    protocol_version: null
+    url: https://cloud.algovoi.co.uk
+    skills: 3
+    skill_ids: [verify-payment, create-checkout, check-status]
+- id: docs-platform-card
+  file: a2a/algovoi-co-uk-docs-agent-card.json
+  source: https://docs.algovoi.co.uk/.well-known/agent-card.json
+  discovery:
+    path: /.well-known/agent-card.json
+    canonical: true
+    host: docs.algovoi.co.uk
+    note: The legacy /.well-known/agent.json is a 404 on this host.
+  conformance:
+    spec: A2A 1.0.0
+    grade: conformant
+    protocol_version: '0.3'
+    preferred_transport: HTTP+JSON
+    deviations: [url-is-docs-site-not-a2a-endpoint, non-spec-transport-label (HTTP+JSON)]
+    note: >-
+      Shape-conformant (capabilities object, protocolVersion "0.3", skills array with one entry pointing at the
+      published Agent Skill), but this is the Mintlify docs platform's auto-generated card: provider.organization is
+      "AlgoVoi Platform" with url https://docs.algovoi.co.uk/, and the interface URL is the documentation site root
+      with no JSON-RPC responder behind it. Recorded as a platform-authored discovery document; it does not add to
+      the provider's A2A posture beyond advertising the skill.
+  x-evidence:
+    fetched: '2026-09-19'
+    url: https://docs.algovoi.co.uk/.well-known/agent-card.json
+    http_status: 200
+    content_type: application/json
+    body_bytes: 1004
+  agent_card:
+    name: AlgoVoi Platform
+    version: 1.0.0
+    protocol_version: '0.3'
+    url: https://docs.algovoi.co.uk/
+    skills: 1
+    skill_ids: [algovoi]
+hosts_without_a_card:
+- host: verify.algovoi.co.uk
+  note: >-
+    /.well-known/agent-card.json returns HTTP 200 application/json (1,961 bytes) but the body is a custom clinic
+    descriptor (name, description, endpoints, transports, gibberlink_codec, enrollment, signing) with none of
+    version, protocolVersion, capabilities or skills — it fails the AgentCard shape test and is not counted.
+- host: agent-trust-bench.algovoi.co.uk
+  note: Both card paths return a 22-byte JSON 404; the host serves an OpenAPI, an x402 descriptor and a Bazaar catalog instead.
+- host: mcp.algovoi.co.uk
+  note: Both card paths 404 (9-byte "Not Found"); the host is an MCP-only endpoint.
+- host: dash.algovoi.co.uk
+  note: Both card paths return the dashboard HTML 404 page.

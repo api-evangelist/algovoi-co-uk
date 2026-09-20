@@ -1,0 +1,77 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://w3id.org/security/suites/jws-2020/v1"
+  ],
+  "id": "did:web:api.algovoi.co.uk",
+  "alsoKnownAs": [
+    "did:web:algovoi.co.uk",
+    "https://algovoi.co.uk",
+    "did:key:z6MkgExzvcpvxrghf4Q3285xqSdenhRZHcP6wc5UvY6VVaz5"
+  ],
+  "verificationMethod": [
+    {
+      "id": "did:web:api.algovoi.co.uk#d0481df4cbbda8e8aba86709419884ef",
+      "type": "JsonWebKey2020",
+      "controller": "did:web:api.algovoi.co.uk",
+      "publicKeyJwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "GpEhVWMjUqIKDxcANFjaWqRY_BA0sK6NdwpUiouOkhI",
+        "kid": "d0481df4cbbda8e8aba86709419884ef",
+        "alg": "EdDSA",
+        "use": "sig"
+      }
+    }
+  ],
+  "authentication": [
+    "did:web:api.algovoi.co.uk#d0481df4cbbda8e8aba86709419884ef"
+  ],
+  "assertionMethod": [
+    "did:web:api.algovoi.co.uk#d0481df4cbbda8e8aba86709419884ef"
+  ],
+  "service": [
+    {
+      "id": "did:web:api.algovoi.co.uk#a2a",
+      "type": "A2AAgent",
+      "description": "A2A Agent Card with skills, x-payment-info hints per skill, and capability metadata. Primary discovery entry for the A2A protocol.",
+      "serviceEndpoint": "https://api.algovoi.co.uk/.well-known/agent.json"
+    },
+    {
+      "id": "did:web:api.algovoi.co.uk#x402",
+      "type": "X402PaymentGateway",
+      "description": "x402 payment gateway root. Paid resources resolve via /r/{tenant}/{resource} and /protected/* endpoints; the Bazaar facilitator surface lives at /discovery/resources.",
+      "serviceEndpoint": "https://api.algovoi.co.uk"
+    },
+    {
+      "id": "did:web:api.algovoi.co.uk#compliance",
+      "type": "ComplianceAttestation",
+      "description": "Public compliance posture (UK MLR 2017 / SAMLA 2018 s.20 / GDPR / FCA Reg 40(3) 7-year retention). Returns frameworks, active screening sources, audit-chain head, and selective-disclosure bundle methodology.",
+      "serviceEndpoint": "https://api.algovoi.co.uk/compliance/attestation"
+    },
+    {
+      "id": "did:web:api.algovoi.co.uk#erc8004",
+      "type": "ERC8004Registry",
+      "description": "On-chain ERC-8004 agent registration. ARC testnet agent ID 5938 (https://arc.network). Provides chain-readable identity and reputation registry record per ERC-8004.",
+      "serviceEndpoint": "https://arc.network/registry/agent/5938"
+    },
+    {
+      "id": "did:web:api.algovoi.co.uk#verascore",
+      "type": "VerascoreEvidenceProvider",
+      "description": "Verascore attestation-provider metadata. Declares the attestation types AlgoVoi emits (PAYMENT_SETTLEMENT / COMPLIANCE_SCREEN / AUDIT_CHAIN_ANCHOR) and the dimensionMap into Verascore reputation dimensions (reliability / identity / stability).",
+      "serviceEndpoint": "https://api.algovoi.co.uk/.well-known/verascore-provider.json"
+    },
+    {
+      "id": "did:web:api.algovoi.co.uk#bench",
+      "type": "AgentTrustBench",
+      "description": "Agent Trust Bench \u2014 138 adversarial profiles across 30 threat categories. Conformance fixtures for behavioral / compliance / settlement attack classes. MCP stdio runner plus REST endpoint.",
+      "serviceEndpoint": "https://agent-trust-bench.algovoi.co.uk"
+    },
+    {
+      "id": "did:web:api.algovoi.co.uk#pqc-keys",
+      "type": "PQCSigningKeys",
+      "description": "Post-quantum signing keys (Falcon-1024 / FIPS 206). Used for AP2 PaymentMandate signing in PQC-enabled flows and for cross-scheme JCS PQC fixture work.",
+      "serviceEndpoint": "https://api.algovoi.co.uk/.well-known/pqc-keys.json"
+    }
+  ]
+}

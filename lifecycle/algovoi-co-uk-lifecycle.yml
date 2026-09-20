@@ -1,0 +1,59 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  https://docs.algovoi.co.uk/api-reference/introduction (versioning), /api-reference/authentication (key rotation),
+  /incident-protocol, /support, /security (incident response, BC/DR), /changelog, https://status.algovoi.co.uk (probed),
+  and the five OpenAPIs (no deprecated flags).
+versioning:
+  scheme: unversioned-url
+  current: gateway info.version 1.0.0-phase1c; pay 1.0.0; clinic 0.1.0; bench 0.1.0; audit verifier 0.1.0; webhook api_version "1"
+  mechanism: >-
+    "The REST API is unversioned in the URL. Breaking changes are gated by feature flag and announced in the changelog
+    before any rollout. Webhook payloads carry an api_version field so receivers can detect schema changes." Path prefixes
+    /v1 (gateway) and /pay/v1 (pay rail) exist but no v2 is published. MCP negotiates its revision natively (2025-06-18);
+    the A2A cards declare protocolVersion 0.3.0 (and 1.0.1 on the clinic's supportedInterfaces).
+  docs: https://docs.algovoi.co.uk/api-reference/introduction
+deprecation:
+  policy_url: null
+  policy: >-
+    No standalone deprecation or sunset policy is published. The stated commitment is that breaking changes are announced
+    in the changelog before rollout and gated by feature flag; webhook schema breaks bump api_version. Key rotation has a
+    defined overlap: old and new API keys (and webhook signing secrets) are both valid for 30 days after rotation.
+  sunset_header: not-documented
+  deprecation_header: not-documented
+  notes: No operation is marked deprecated in any of the five OpenAPIs. Because no policy page exists, no Deprecation pointer is emitted.
+sla:
+  url: https://docs.algovoi.co.uk/incident-protocol
+  public_uptime_target: null
+  statement: >-
+    No numeric uptime SLA is published; "an SLA ... available" is an enterprise term on the pricing page. Published
+    incident commitments: a status update "within 5 minutes of detection", updates every 15 minutes during UK business
+    hours, a post-incident summary "within 48 hours of resolution", tenant notification "within 1 hour of P0/P1
+    confirmation" (security page), and support replies within 1 hour during UK business hours for critical incidents /
+    2 working days for email.
+status_page: null
+status_page_note: >-
+  The incident protocol says "The status page (Better Stack, when live)"; https://status.algovoi.co.uk/ returned HTTP 502
+  on 2026-09-19 and no other status URL is published, so no StatusPage pointer is emitted. Agent Trust Bench publishes a
+  live stats page (https://agent-trust-bench.algovoi.co.uk/stats) which is research telemetry, not a service status page.
+support:
+  url: https://docs.algovoi.co.uk/support
+  channels: [support@algovoi.co.uk, security@algovoi.co.uk, 'https://github.com/chopmob-cloud/AlgoVoi-Platform-Adapters (issues)']
+  response_targets: {email: within 2 working days, critical_incident: within 1 hour during UK business hours, security_disclosure: acknowledged within 24 hours}
+change_log: https://docs.algovoi.co.uk/changelog
+change_log_note: Dated markdown changelog (latest entry 2026-08-15); structured recent entries in changelog/algovoi-co-uk-changelog.yml.
+key_lifecycle:
+  api_key_rotation: one click in the dashboard; both keys valid for 30 days, then the old key is revoked; overlap configurable
+  webhook_secret_rotation: new secret signs immediately, old accepted for 30 days
+  mode_binding: test-mode keys cannot become live-mode keys — rotate a new key in the other mode
+data_lifecycle:
+  audit_chains: five hash-chained tables shipped to Object Lock storage in COMPLIANCE mode with 7-year retention (UK MLRs Reg 40 minimum 5)
+  payer_address_erasure: GDPR erasure of payer_address applies to the live Postgres copy after 90 days; the WORM copy is outside the erasure scope under UK MLRs
+  aml_retention: 5-year AML data retention enforced
+  bc_dr: 'sanctions cache RPO 24 h / RTO 1 h (security page BC/DR table); annual DR drill stated'
+launched: '2026-04 (changelog "Earlier" section; first dated entries 2026-04-15)'
+rate_limits: rate-limits/algovoi-co-uk-rate-limits.yml
+deprecated_operations: []
+coming_soon:
+- {operation: pay_compliance_receipt_pay_v1_compliance_receipt_post, status: 'coming_soon in /pay/v1/index; skill says "wave 2, not yet enabled"; HTTP 503 observed'}
+- {product: Agentic Payment Mandates (custodial fiat rail), status: '"in development, not yet live; at launch it operates under EMR 2011 safeguarding" (compliance page)'}

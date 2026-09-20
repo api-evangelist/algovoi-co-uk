@@ -1,0 +1,80 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: AlgoVoi
+providerId: algovoi-co-uk
+generated: '2026-09-19'
+method: searched
+source: https://algovoi.co.uk/pricing.html
+created: '2026-09-19'
+modified: '2026-09-19'
+tags: [Payments, Agentic Commerce, x402, Stablecoins, Self-hosted]
+description: >-
+  Three pricing models, all published. (1) AlgoVoi Pay, the hosted tenant-free rail: a flat 0.01 USDC per paid call with
+  no account, no licence and no percentage cut — the authoritative price is the amount in each service's live 402
+  challenge (10000 micro-USDC observed on 2026-09-19 for receipt-verify, rfc9421-verify and url-screen; the machine
+  index lists compliance-receipt at 50000 micro-USDC, "coming_soon"). (2) The hosted multi-tenant gateway
+  (api.algovoi.co.uk): 60 days free on testnet with no KYC, then KYC unlocks a $1,000 lifetime allowance of free mainnet
+  volume, then a merchant-absorbed 0.50% per confirmed payment with volume tiers 0.40% ($10k-$100k/month) and 0.30%
+  ($100k+, or by negotiation); no monthly, setup, payout, on/off-ramp or chargeback fees. (3) Self-hosted products on
+  one-time perpetual licences (some with an annual alternative), priced in USD and paid in USDC at the suite store:
+  Payment Rails $5,000, Verifiable Compliance Suite $5,000, Payment Mandate $4,500 / $1,500 per year, Privacy Proofs
+  $3,000 / $1,000 per year, Evidence Auditor $599 / $299 per year, Reseal $99 / $39 per year, Keystone components free.
+  Enterprise terms (multi-deployment, warranty, indemnity, SLA) are "talk to us".
+plan_count: 11
+sources:
+- https://algovoi.co.uk/pricing.html
+- https://docs.algovoi.co.uk/trial-and-pricing
+- https://pay.algovoi.co.uk/pay/v1/index
+- https://api.algovoi.co.uk/suite-store
+plans:
+- id: algovoi-pay-per-call
+  name: AlgoVoi Pay — pay-as-you-go rail
+  type: usage-based
+  price: 0.01
+  currency: USDC
+  billing_period: per-call
+  description: Tenant-free hosted verification rail; payment is the credential. Twelve mainnet lanes.
+  included: [pay-verify-receipt, pay-verify-rfc9421, pay-url-screen, chain-agnostic negotiation (free, read-only), offline-verifiable Ed25519 receipt on every response]
+  limits: ['challenge TTL 1800 s', 'request body limit 65536 bytes', 'each (network, tx_id) buys exactly one call', 'free unsigned tiers: /v1/receipt/verify 120/min, /verify/rfc9421 60/min']
+  overage: none — every call is metered at the same price
+  entries:
+  - {label: Verify payment receipt, name: receipt_verify, type: metered, metric: call, limit: -1, timeFrame: usage, unit: 1, price: '0.01 USDC (10000 micro-USDC)', userMultiplied: false}
+  - {label: Verify RFC 9421 signature, name: rfc9421_verify, type: metered, metric: call, limit: -1, timeFrame: usage, unit: 1, price: '0.01 USDC (10000 micro-USDC)', userMultiplied: false}
+  - {label: Screen a URL, name: url_screen, type: metered, metric: call, limit: -1, timeFrame: usage, unit: 1, price: '0.01 USDC (10000 micro-USDC)', userMultiplied: false}
+  - {label: Compliance receipt (coming soon), name: compliance_receipt, type: metered, metric: call, limit: -1, timeFrame: usage, unit: 1, price: '0.05 USDC (50000 micro-USDC) — status coming_soon; endpoint returned 503', userMultiplied: false}
+- id: gateway-testnet-trial
+  name: Gateway — 60-day testnet trial
+  type: free
+  price: 0
+  currency: USD
+  billing_period: trial
+  description: Free tenant account, no KYC, all chains on testnet; mainnet blocked (kyb_required_for_mainnet).
+  limits: ['60 days', 'testnet only', 'per-tenant 300 req/min', 'one trial per email or wallet']
+- id: gateway-mainnet-allowance
+  name: Gateway — $1,000 free mainnet allowance
+  type: free
+  price: 0
+  currency: USD
+  billing_period: lifetime
+  description: After KYC, the first $1,000 (lifetime, USD cents, all chains and channels) of confirmed mainnet payments carries no platform fee.
+- id: gateway-paid
+  name: Gateway — paid plan
+  type: usage-based
+  price: 0.5
+  currency: percent
+  billing_period: per-confirmed-payment
+  description: Merchant-absorbed 0.50% platform fee deducted from settlement; no invoice, no monthly or setup fee.
+  entries:
+  - {label: 'Platform fee, $0-$10,000 monthly volume', name: fee_tier_1, type: metered, metric: payment, limit: -1, timeFrame: usage, unit: 1, price: '0.50%', userMultiplied: false}
+  - {label: 'Platform fee, $10,000-$100,000 monthly volume', name: fee_tier_2, type: metered, metric: payment, limit: -1, timeFrame: usage, unit: 1, price: '0.40% (on request once sustained)', userMultiplied: false}
+  - {label: 'Platform fee, $100,000+ monthly volume', name: fee_tier_3, type: metered, metric: payment, limit: -1, timeFrame: usage, unit: 1, price: '0.30% or by negotiation', userMultiplied: false}
+- {id: payment-rails, name: Payment Rails (self-hosted), type: perpetual-licence, price: 5000, currency: USD, billing_period: one-time, description: 'Full self-hosted gateway: x402, MPP, AP2, A2A; Security Suite and Mesh federation included; two installs per licence; point releases in the version line.'}
+- {id: verifiable-compliance-suite, name: Verifiable Compliance Suite (self-hosted), type: perpetual-licence, price: 5000, currency: USD, billing_period: one-time, description: '18 signed components, air-gap capable, includes the Compliance Command Center.'}
+- {id: payment-mandate, name: Payment Mandate, type: perpetual-licence, price: 4500, currency: USD, billing_period: one-time, description: 'Verifiable recurring and agentic payment authorisation. Annual alternative $1,500/yr.', annual_price: 1500}
+- {id: privacy-proofs, name: Privacy Proofs, type: perpetual-licence, price: 3000, currency: USD, billing_period: one-time, description: 'Privacy-preserving compliance proofs (ZK), self-run prover. Annual alternative $1,000/yr.', annual_price: 1000}
+- {id: evidence-auditor, name: Evidence Auditor, type: perpetual-licence, price: 599, currency: USD, billing_period: one-time, description: 'Audit and verify long-term post-quantum evidence at scale. Annual alternative $299/yr.', annual_price: 299}
+- {id: reseal, name: Reseal, type: perpetual-licence, price: 99, currency: USD, billing_period: one-time, description: 'Re-anchor existing signatures to post-quantum attestations. Annual alternative $39/yr. Free open verifier (algovoi-reseal-verify).', annual_price: 39}
+- {id: keystone-components, name: Keystone components, type: free, price: 0, currency: USD, billing_period: none, description: 'Keystone Journey and Keystone Revocation — free, offline-verifiable references; Crypto-Agility free with Substrate 2.'}
+enterprise:
+  note: '"Multi deployment, warranty, indemnity, an SLA or a custom binding are available" — contact hello@algovoi.co.uk. Two commercial packages (algovoi-federation-validator, algovoi-zkp-receipt) need an AlgoVoi Commercial License v1.0 for production; evaluation is free.'

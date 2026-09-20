@@ -1,0 +1,49 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  https://docs.algovoi.co.uk/quickstart, /concepts/payment-links, /changelog (2026-05-08, 2026-05-05, 2026-05-21 entries),
+  https://algovoi.co.uk/wallet.html, https://algovoi.co.uk/agent-payment-rail.html, the gateway OpenAPI (/checkout/{token}/*,
+  /recurr/portal, /mandate/portal/{mandate_id}) and the store pages.
+description: >-
+  Hosted and client-side surfaces distinct from the SDKs: a hosted checkout page per payment link, a hosted recurring
+  authorisation (wallet-connect signing) page, a customer subscription portal, a mandate top-up portal, an in-browser
+  receipt verifier and lane negotiator on the marketing site, and a browser wallet extension that intercepts x402/MPP
+  402s. Storefront plugins (WooCommerce, OpenCart, PrestaShop, Shopware, BigCommerce, Magento) are adapters and live in
+  packages/, not here.
+families:
+- name: Hosted checkout
+  kind: hosted-page
+  url_pattern: https://api.algovoi.co.uk/checkout/{token}
+  description: 'Returned as checkout_url from create_dynamic_payment_link_v1_payment_links_post; renders a QR code, receiving address, exact amount and memo; auto-detects on-chain payment and flips to Paid; CSP-nonced HTML.'
+  backing_operations: [checkout_qr_checkout__token__qr_get, checkout_build_txn_checkout__token__build_txn_get, checkout_submit_txn_checkout__token__submit_txn_post, detect_payment_checkout__token__detect_get, checkout_status_checkout__token__status_get, abandon_checkout_checkout__token__abandon_post, xchain_bridge_info_checkout__token__xchain_bridge_info_get]
+  docs: https://docs.algovoi.co.uk/concepts/payment-links
+- name: Recurr hosted authorisation page
+  kind: hosted-page
+  url_pattern: https://recurr.algovoi.co.uk/{signing_token}
+  description: 'Wallet-connect signing flow for Tier 2 standing authorities (AlgoVoi Extension, Pera, Defly, Lute; MetaMask/Rainbow/Coinbase Wallet; Phantom/Solflare; HashPack/Blade/Kabila; Freighter/Albedo/LOBSTR). recurr.algovoi.co.uk returned 200 on 2026-09-19.'
+  backing_operations: [resolve_token_v1_recurring_auth__token__get, confirm_token_v1_recurring_auth__token__confirm_post]
+- name: Customer subscription portal and cancel pages
+  kind: hosted-page
+  url_pattern: https://api.algovoi.co.uk/recurr/portal, /recurr/cancel/{cancel_secret}, /subscription/{cancel_secret}/cancel
+  description: Public single-use cancel links given to customers at signup (GET shows a confirmation page, POST commits) and a wallet-authenticated "my subscriptions / my invoices" portal.
+  backing_operations: [portal_page_recurr_portal_get, public_cancel_page_recurr_cancel__cancel_secret__get, public_cancel_commit_recurr_cancel__cancel_secret__post, my_subscriptions_v1_recurr_me_subscriptions_get]
+- name: Mandate top-up portal
+  kind: hosted-page
+  url_pattern: https://api.algovoi.co.uk/mandate/portal/{mandate_id}
+  description: Buyer-facing portal for the (in-development) Agentic Payment Mandates rail with PayPal top-up initiate/capture.
+  backing_operations: [get_mandate_portal_mandate_portal__mandate_id__get, portal_topup_initiate_mandate_portal__mandate_id__topup_initiate_post, portal_topup_capture_mandate_portal__mandate_id__topup_capture_post]
+- name: In-browser tools on the marketing site
+  kind: embedded-widget
+  url: https://algovoi.co.uk/agent-payment-rail.html
+  description: '"an interactive lane negotiation, and an in-browser offline receipt verifier" — client-side demos of POST /pay/v1/negotiate and Ed25519 receipt verification against the published JWKS.'
+- name: AlgoVoi browser wallet extension
+  kind: browser-extension
+  urls: ['https://chromewebstore.google.com/detail/algovoi/ofmgegnkjdmbeakjbmfaagigmhagdcbl', 'https://addons.mozilla.org/en-GB/firefox/addon/algovoi/', 'https://algovoi.co.uk/wallet.html']
+  description: 'Non-custodial wallet for Algorand and Voi (plus Hedera, Base, Arc, Tempo in the 2.5+/2.6 line) with a fetch interceptor that detects x402 and MPP 402 responses, EIP-6963 multi-wallet discovery, and WalletConnect AI-agent signing sessions. Source under BSL 1.1 per the privacy policy.'
+  note: Store builds stay on 1.0.x while GitHub releases carry 2.6.x (changelog 2026-05-19).
+- name: Suite store
+  kind: hosted-page
+  url: https://api.algovoi.co.uk/suite-store
+  description: Self-serve checkout for perpetual/annual licences paid in USDC; mints a Substrate 2 receipt and a Falcon-1024 licence key.
+  backing_operations: [suite_store_checkout_suite_store_checkout_post, suite_store_order_status_suite_store_order__token__status_get, suite_store_activate_suite_store_order__token__activate_post]
+loader_libraries: []

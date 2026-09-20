@@ -1,0 +1,61 @@
+generated: '2026-09-19'
+method: searched
+kind: webhook-catalog
+source: >-
+  https://docs.algovoi.co.uk/integrations/outbound-webhooks, https://docs.algovoi.co.uk/concepts/notifications,
+  https://docs.algovoi.co.uk/quickstart (sample event), https://docs.algovoi.co.uk/integrations/mcp-server (MPP subscription
+  events) and the changelog (2026-05-05 payment.cancelled). No AsyncAPI document is published: /asyncapi.yaml and
+  /asyncapi.json are 404 on api.algovoi.co.uk and docs.algovoi.co.uk, and the chopmob-cloud org holds none, so this is a
+  catalog of the documented webhook surface, not a spec, and no AsyncAPI pointer is emitted.
+description: >-
+  Stripe-shaped outbound events from the tenant gateway to up to nine destinations per tenant (Slack, Discord, Microsoft
+  Teams, Mattermost, Rocket.Chat, Google Chat, Zulip, Telegram and a generic HTTPS webhook). Only the generic webhook
+  receives the machine-readable JSON; chat destinations get rendered cards. Every generic delivery is HMAC-SHA256 signed,
+  retried with exponential backoff for about 32 hours, and logged per attempt in the dashboard.
+direction: outbound (AlgoVoi -> tenant endpoint)
+transport: HTTPS POST, application/json, 5-second timeout per attempt
+configuration: dash.algovoi.co.uk → Settings → Notifications (destinations, per-destination signing secret algvw_…, audit log at dash.algovoi.co.uk/notifications, manual retry)
+security:
+  signing_header: X-AlgoVoi-Signature
+  format: 't={unix_ts},v1={hex}'
+  algorithm: 'HMAC-SHA256(secret, "{t}.{raw_body}")'
+  tolerance_seconds: 300
+  compare: constant-time
+  secret_prefix: algvw_
+  rotation: new secret signs immediately; old secret accepted for 30 days
+  verifier_packages: [algovoi-webhook-verifier (PyPI 0.2.0), '@algovoi/webhook-verifier (npm 0.2.0)', 'MCP tool verify_webhook']
+  ssrf_guard: destination URLs are screened at configuration and re-resolved at every delivery (RFC 1918 / link-local / cloud-metadata / non-HTTPS rejected)
+delivery:
+  guarantee: at-least-once — receivers must dedupe on event id
+  retry_schedule: ['+30s', '+2 min', '+10 min', '+1 h', '+6 h', dead-letter]
+  attempts: 6 over about 32 hours; manual retry from the dashboard after dead-letter
+  status_handling: {'2xx': delivered, '4xx': 'failure, counts as an attempt', '5xx/timeout': retry}
+  advice: return 200 for event types you do not handle
+envelope:
+  shape: '{ "id": "evt_<uuid>", "type": "<event.type>", "created": <unix>, "api_version": "1", "data": { ... } }'
+  versioning: api_version is bumped on a breaking schema change (currently "1")
+events:
+- name: payment.confirmed
+  description: A payment settled on-chain for a checkout link, x402/MPP/A2A resource or subscription pull.
+  data_fields: [tenant_label, resource_id, 'chain (CAIP-2)', 'asset {id, label, decimals}', 'amount_microunits (string)', amount_pretty, tx_id, payer_address, 'payment_link_token (hosted checkout only)', payment_link_label]
+  example: '{"id":"evt_a3f7c192-d8e1-4b6c-9f0a-7b1e2c4d8e3f","type":"payment.confirmed","created":1777200000,"api_version":"1","data":{"tenant_label":"Acme Payments Ltd","resource_id":"premium-content","chain":"algorand:mainnet","asset":{"id":"31566704","label":"USDC","decimals":6},"amount_microunits":"5000000","amount_pretty":"5 USDC","tx_id":"ABCD…","payer_address":"GHSRL2SAY247…MWI","payment_link_token":"abc123","payment_link_label":"Order #1234"}}'
+  source: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+- name: payment.cancelled
+  description: Emitted immediately when a customer abandons a checkout (POST /checkout/{token}/abandon) instead of waiting for the link to time out.
+  source: https://docs.algovoi.co.uk/changelog (2026-05-05)
+- name: mpp_subscription.activated
+  description: An MPP subscription's first pull finalized and the subscription is active.
+  source: https://docs.algovoi.co.uk/integrations/mcp-server (MPP subscription tools)
+- name: mpp_subscription.charged
+  description: A per-period renewal pull executed by the facilitator and settled to payment_ledger.
+  source: https://docs.algovoi.co.uk/integrations/mcp-server
+- name: mpp_subscription.revoked
+  description: The subscription was cancelled; the next due pull will not execute.
+  source: https://docs.algovoi.co.uk/integrations/mcp-server
+- name: mpp_subscription.expired
+  description: The subscription reached the end of its term.
+  source: https://docs.algovoi.co.uk/integrations/mcp-server
+inbound_webhooks:
+- operation: suite_store_settled_suite_store_settled_post
+  description: 'AlgoVoi''s own inbound settlement webhook for store orders — "Verify HMAC → fulfil → cache + email. Idempotent."; 5xx triggers the dispatcher''s redelivery with backoff.'
+docs: https://docs.algovoi.co.uk/integrations/outbound-webhooks

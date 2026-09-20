@@ -1,0 +1,168 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  https://docs.algovoi.co.uk/api-reference/introduction, /api-reference/authentication, /api-reference/errors,
+  /api-reference/rate-limits, /integrations/outbound-webhooks, /algovoi-pay, /trial-and-pricing, /concepts/kyc-and-mainnet,
+  the pay rail machine index https://pay.algovoi.co.uk/pay/v1/index, the gateway and pay OpenAPIs (operation descriptions),
+  and live unauthenticated responses observed on 2026-09-19.
+description: >-
+  Cross-cutting runtime semantics for AlgoVoi's two hosted API doors — the tenant gateway at api.algovoi.co.uk (Bearer key
+  + X-Tenant-Id, Stripe-shaped webhooks, Idempotency-Key on creates, published rate-limit headers) and the tenant-free
+  AlgoVoi Pay rail at pay.algovoi.co.uk (payment is the credential, every payment welded to one request, every response a
+  signed receipt) — plus the anonymous clinic, bench and verifier surfaces that share the same FastAPI envelope.
+
+base_url:
+  gateway: https://api.algovoi.co.uk
+  pay: https://pay.algovoi.co.uk
+  clinic: https://agents.algovoi.co.uk
+  bench: https://agent-trust-bench.algovoi.co.uk
+  verifier: https://verify.algovoi.co.uk
+api_style: REST over HTTPS, application/json both ways (the gateway rejects other content types with 415); JSON-RPC 2.0 for /a2a, /a2a/jsonrpc and the MCP endpoints; HTTP 402 challenge/response for paid calls
+
+authentication:
+  scheme: Bearer tenant key (algv_) + X-Tenant-Id on the gateway; none on the pay rail — the X-PAYMENT proof is the authorization; anonymous elsewhere
+  detail: authentication/algovoi-co-uk-authentication.yml
+  docs: https://docs.algovoi.co.uk/api-reference/authentication
+
+idempotency:
+  supported: true
+  coverage: partial
+  scope: [create_dynamic_payment_link_v1_payment_links_post, create_payout_v1_payouts_post, mpp_subscription_resource_mpp_sub__resource_id__post, confirm_token_v1_recurring_auth__token__confirm_post, xchain_source_tx_recorded_checkout__token__xchain_source_tx_recorded_post, suite_store_settled_suite_store_settled_post, suite_store_activate_suite_store_order__token__activate_post, portal_topup_capture_mandate_portal__mandate_id__topup_capture_post, cancel_mpp_subscription (MCP), pay_verify_receipt_pay_v1_verify_receipt_post, pay_verify_rfc9421_pay_v1_verify_rfc9421_post, pay_screen_url_pay_v1_screen_url_post]
+  mechanism: >-
+    Gateway: "For endpoints that create resources (POST /v1/payment-links, POST /v1/resources, etc.) you can include an
+    Idempotency-Key header. Replays with the same key within 24 hours return the originally-created resource without
+    creating a duplicate." The OpenAPI declares the Idempotency-Key header parameter on only two operations
+    (mpp_subscription_resource_mpp_sub__resource_id__post and confirm_token_v1_recurring_auth__token__confirm_post); a
+    further set of operations describe themselves as idempotent on a business key rather than a header — POST /v1/payouts
+    "Idempotent on reference", the xchain source-tx and suite-store settlement/activation calls, and the PayPal top-up
+    capture. Duplicate keys and double-spends on a tx_id return 409. Pay rail: server-side single-use binding — "each
+    (network, tx_id) buys exactly one call; identical re-POST replays the stored response; a different request on the same
+    tx is a 409, never a leaked result" — so a paid call is replay-safe by construction with no client header.
+  not_covered: >-
+    The documented header is scoped to resource-creating POSTs; subscription/authority/checkout state changes
+    (cancel, pause, resume, revoke, abandon) carry no Idempotency-Key in the spec, and the A2A/MPP verification
+    endpoints rely on the on-chain tx_id being single-use rather than a replay key.
+  retention: 24 hours (gateway header); for the life of the payment record on the pay rail
+  docs: https://docs.algovoi.co.uk/api-reference/introduction
+
+dry_run_mode:
+  available: partial
+  mechanism: >-
+    Pay rail: "GET the same URL returns a strict-v2 402 probe over an example body for scanner discovery; the metered call
+    is POST your real body" — every paid operation has a GET twin (probe_receipt_pay_v1_verify_receipt_get,
+    probe_rfc9421_pay_v1_verify_rfc9421_get, probe_url_screen_pay_v1_screen_url_get, probe_compliance_pay_v1_compliance_receipt_get)
+    that rehearses the challenge without paying, and GET /pay/v1/negotiate is a read-only capability match that "mints no
+    token, changes no state, settles nothing". Gateway: test-mode keys against testnet networks for the 60-day trial, and
+    GET /mpp/probe as a free 402 discovery probe. Agent Trust Bench: /freebie is an always-free control endpoint. There is
+    no dry-run flag on live mutating operations.
+  docs: https://docs.algovoi.co.uk/algovoi-pay
+
+reversibility:
+  summary: >-
+    On-chain settlement is final by design — "No chargeback fees. Crypto transactions are final." — so a completed
+    payment has no API reversal; AlgoVoi instead documents reversal as a separate signed receipt format (refund receipt
+    FULL/PARTIAL/REJECTED, cancellation receipt with four reasons) and exposes cancel/revoke/pause paths on the
+    pre-settlement and recurring surfaces. Windows are stated as state conditions rather than durations.
+  surfaces:
+  - write: create_dynamic_payment_link_v1_payment_links_post (hosted checkout link)
+    reversal: cancel_checkout_checkout__token__cancel_post; abandon_checkout_checkout__token__abandon_post
+    window: 'While the link is "active" — cancel requires the merchant-only cancel_secret returned at creation and sets status cancelled; abandon is customer-initiated and fires a payment.cancelled webhook immediately. Links also expire at expires_at (payment_link_expired on a late verify).'
+    grade: documented
+    docs: https://docs.algovoi.co.uk/api-reference/errors
+  - write: verify_checkout_checkout__token__verify_post (settle a checkout on-chain)
+    reversal: none
+    grade: none
+    note: Once verified the payment is recorded to the hash-chained ledger and the on-chain transfer is final; a refund is an off-API business event recorded as a refund receipt (https://docs.algovoi.co.uk/refund-receipt).
+  - write: create_subscription_endpoint_v1_subscriptions_post
+    reversal: cancel_subscription_endpoint_v1_subscriptions__subscription_id__cancel_post; pause_/resume_subscription_endpoint
+    window: 'Cancel of an MPP subscription: "next due renewal pull will not execute; current period''s already-paid access is unaffected. Idempotent." (MCP tool table).'
+    grade: documented
+    docs: https://docs.algovoi.co.uk/integrations/mcp-server
+  - write: create_authority_endpoint_v1_recurring_authorities_post (standing authority)
+    reversal: revoke_authority_endpoint_v1_recurring_authorities__authority_id__revoke_post; pause_/resume_authority_endpoint
+    window: 'Revoke "constructs on-chain revocation"; pause stops cycle pulls "without revoking". No stated time window.'
+    grade: documented
+    docs: https://docs.algovoi.co.uk/concepts/recurring
+  - write: send_message_message_send_post (A2A task)
+    reversal: cancel_task_tasks__task_id__cancel_post
+    window: 'Only tasks in "submitted" or "working" state can be cancelled; "Since AlgoVoi tasks complete synchronously" completed/failed tasks return TaskNotCancelable.'
+    grade: documented
+    docs: openapi/algovoi-co-uk-gateway-openapi.yml (cancel_task_tasks__task_id__cancel_post description)
+  - write: create_payout_v1_payouts_post
+    reversal: none
+    grade: none
+    note: On-chain transfer from the tenant balance; idempotent on reference, not reversible.
+  - write: pay_verify_receipt_pay_v1_verify_receipt_post and the other paid pay-rail calls
+    reversal: none
+    grade: na
+    note: 'A paid verification is a read-only computation bought with a single-use payment; there is nothing to reverse, and the payment itself is on-chain and final.'
+  - write: suite_store_checkout_suite_store_checkout_post (licence purchase)
+    reversal: none
+    grade: none
+    note: Store terms — "perpetual or annual, self-hosted, all sales final".
+
+pagination:
+  style: none-documented
+  note: The list operations (list_customers, list_subscriptions, list_authorities, list_tasks, list_subscription_invoices) declare no page/cursor parameters in the spec and the docs do not describe a pagination convention.
+
+field_expansion:
+  supported: false
+
+metadata:
+  supported: false
+  note: No free-form metadata field is documented; payment links carry a merchant `label` that adapters parse for routing.
+
+request_tracing:
+  request_id_header: X-Request-Id
+  observed_header: x-trace-id
+  description: 'Docs: every response includes X-Request-Id and the error envelope echoes it as request_id. Observed on 2026-09-19: api.algovoi.co.uk anonymous responses carried x-trace-id (UUID) rather than X-Request-Id; pay.algovoi.co.uk carried neither.'
+
+versioning:
+  scheme: unversioned URL; feature-flag gated breaking changes
+  mechanism: '"The REST API is unversioned in the URL. Breaking changes are gated by feature flag and announced in the changelog before any rollout. Webhook payloads carry an api_version field so receivers can detect schema changes."'
+  current: gateway info.version 1.0.0-phase1c; pay 1.0.0; webhook api_version "1"; /pay/v1 and /v1 path prefixes
+  detail: lifecycle/algovoi-co-uk-lifecycle.yml
+  changelog: changelog/algovoi-co-uk-changelog.yml
+  docs: https://docs.algovoi.co.uk/api-reference/introduction
+
+error_envelope:
+  media_type: application/json
+  rfc9457: false
+  shape: '{ "error": "machine_readable_code", "message": "Human-readable explanation", "request_id": "req_…", ...context }'
+  also_observed: 'FastAPI default {"detail": ...} — {"detail":"Unauthorized"} on 401, {"detail":"Not Found"} on 404, {"detail":[{type,loc,msg,input}]} on 422 (HTTPValidationError in every spec)'
+  detail: errors/algovoi-co-uk-problem-types.yml
+  docs: https://docs.algovoi.co.uk/api-reference/errors
+
+rate_limits:
+  signal_status: 429
+  headers: [X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After]
+  detail: rate-limits/algovoi-co-uk-rate-limits.yml
+  docs: https://docs.algovoi.co.uk/api-reference/rate-limits
+
+webhooks:
+  signing_header: X-AlgoVoi-Signature
+  verification: 'HMAC-SHA256 over "{t}.{raw_body}", header t={unix_ts},v1={hex}, ±300 s tolerance, constant-time compare; secret prefix algvw_, 30-day dual-secret rotation'
+  delivery: at-least-once; dedupe on event id; retries +30s, +2m, +10m, +1h, +6h, then dead-letter (~32 h); 5 s timeout per attempt
+  events: [payment.confirmed, payment.cancelled, mpp_subscription.activated, mpp_subscription.charged, mpp_subscription.revoked, mpp_subscription.expired]
+  detail: asyncapi/algovoi-co-uk-webhooks.yml
+  docs: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+
+payment_semantics:
+  x402:
+    challenge: HTTP 402, JSON accepts[] (one per lane) and a base64 payment-required header; pay rail challenge TTL 1800 s (maxTimeoutSeconds)
+    proof: X-PAYMENT header, base64 JSON — {tx_id, payment_reference} on mined-tx lanes, {authorization, signature[, challenge_token]} on EVM EIP-3009 lanes
+    binding: mined-tx lanes weld the challenge token into the tx note / memo / reference (mandatory, fail-closed); EVM lanes bind through the single-use EIP-3009 authorization (to == payTo, value == price exactly), nonce weld optional
+    receipt: Ed25519 JWS payable receipt binding settled_payment_ref -> request_hash -> response_hash; verify offline against https://pay.algovoi.co.uk/.well-known/jwks.json or did:web:pay.algovoi.co.uk
+  mpp: 'WWW-Authenticate: Payment challenge (realm, id, method, intent, expires, request) observed on GET /mpp/probe; proof via PAYMENT-SIGNATURE'
+  ap2: IntentMandate -> CartMandate -> PaymentMandate -> confirm, W3C Payment Request-shaped schemas in the spec
+  amounts: minor units as strings (amount_microunits) to avoid float precision; CAIP-2 network ids
+
+other_conventions:
+- name: Test vs live
+  detail: Keys are mode-bound; testnet during the 60-day trial, mainnet after KYC. See sandbox/algovoi-co-uk-sandbox.yml.
+- name: Cloud edge is not canonical
+  detail: '"The cloud edge at cloud.algovoi.co.uk proxies a subset of public-read endpoints and chat-bot webhooks but is not the canonical API."'
+- name: Self-payment block
+  detail: 403 self_payment_blocked when payer address equals payout address.
+- name: Cross-tenant replay
+  detail: 422 cross_tenant_replay when a tx_id was already used by a different tenant.

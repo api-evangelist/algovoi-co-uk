@@ -1,0 +1,116 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the AlgoVoi Gateway OpenAPI
+  version: 1.0.0
+  description: 'Generated 2026-09-19 (method: generated). Extends openapi/algovoi-co-uk-gateway-openapi.yml (verbatim copy
+    of https://api.algovoi.co.uk/openapi.json in openapi/_original/). This overlay adds the missing servers[] block; declares
+    the 26 tags the operations use, adds the documented security schemes and rate-limit/401/429 response headers and stamps
+    provenance. It never mutates the original.'
+extends: openapi/algovoi-co-uk-gateway-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: algovoi-co-uk
+    x-apievangelist-harvested: '2026-09-19'
+    x-apievangelist-source: https://api.algovoi.co.uk/openapi.json
+    x-apievangelist-artifacts:
+      authentication: authentication/algovoi-co-uk-authentication.yml
+      conventions: conventions/algovoi-co-uk-conventions.yml
+      errors: errors/algovoi-co-uk-problem-types.yml
+      lifecycle: lifecycle/algovoi-co-uk-lifecycle.yml
+      rate_limits: rate-limits/algovoi-co-uk-rate-limits.yml
+      mcp: mcp/algovoi-co-uk-mcp.yml
+      crosswalk: mcp/algovoi-co-uk-tool-crosswalk.yml
+      a2a: a2a/algovoi-co-uk-a2a.yml
+      webhooks: asyncapi/algovoi-co-uk-webhooks.yml
+- target: $
+  update:
+    servers:
+    - url: https://api.algovoi.co.uk
+      description: Production — the host the document was fetched from; the providers spec declares no servers[] (added here,
+        never in the original)
+- target: $.components
+  update:
+    securitySchemes:
+      tenantApiKey:
+        type: http
+        scheme: bearer
+        description: 'Tenant key algv_… in Authorization: Bearer plus X-Tenant-Id header (docs: api-reference/authentication).
+          The original declares these only as header parameters.'
+      tenantId:
+        type: apiKey
+        in: header
+        name: X-Tenant-Id
+      x402Payment:
+        type: apiKey
+        in: header
+        name: X-PAYMENT
+        description: x402 payment proof (base64 JSON) presented after a 402 challenge on /mpp/*, /protected/*, /r/*
+      mppPaymentSignature:
+        type: apiKey
+        in: header
+        name: PAYMENT-SIGNATURE
+        description: 'MPP proof answering a WWW-Authenticate: Payment challenge'
+      atbCredential:
+        type: apiKey
+        in: header
+        name: X-ATB-ZK-Credential
+        description: Optional ATB Pass Certificate for a 20% challenge discount
+- target: $.components
+  update:
+    headers:
+      X-RateLimit-Limit:
+        schema:
+          type: integer
+        description: Requests allowed in the current window (300/min per tenant)
+      X-RateLimit-Remaining:
+        schema:
+          type: integer
+      X-RateLimit-Reset:
+        schema:
+          type: integer
+        description: Unix timestamp when the window resets
+      Retry-After:
+        schema:
+          type: integer
+        description: Seconds to wait after a 429 or 5xx
+      X-Request-Id:
+        schema:
+          type: string
+    responses:
+      RateLimited:
+        description: 429 Too Many Requests — {"error":"rate_limited"}; documented, not declared in the original
+        headers:
+          Retry-After:
+            $ref: '#/components/headers/Retry-After'
+      Unauthorized:
+        description: 401 {"detail":"Unauthorized"} — observed live on every tenant operation without a key
+- target: $
+  update:
+    tags:
+    - name: a2a
+    - name: agent-auth
+    - name: ap2
+    - name: atb-license
+    - name: bazaar
+    - name: checkout
+    - name: compliance
+    - name: health
+    - name: mandate
+    - name: mandate-portal
+    - name: mesh-federation
+    - name: mpp
+    - name: public
+    - name: public-resource
+    - name: recurr
+    - name: recurr-public
+    - name: recurring
+    - name: recurring-contracts
+    - name: recurring-hosted-auth
+    - name: resources
+    - name: signup
+    - name: suite-store
+    - name: v1
+    - name: verify
+    - name: x402
+    - name: x402-protected

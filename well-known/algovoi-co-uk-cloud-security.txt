@@ -1,0 +1,7 @@
+# AlgoVoi — security contact (RFC 9116)
+Contact: mailto:security@algovoi.co.uk
+Contact: https://github.com/chopmob-cloud/AlgoVoi-Platform-Adapters/issues
+Expires: 2027-04-19T00:00:00Z
+Preferred-Languages: en
+Canonical: https://cloud.algovoi.co.uk/.well-known/security.txt
+Policy: https://github.com/chopmob-cloud/AlgoVoi-Platform-Adapters/blob/master/compliance/INCIDENT_RESPONSE_PLAN.md

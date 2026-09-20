@@ -1,0 +1,52 @@
+{
+  "provider_name": "algovoi",
+  "did_key": "did:key:z6MkgExzvcpvxrghf4Q3285xqSdenhRZHcP6wc5UvY6VVaz5",
+  "jwks_uri": "https://api.algovoi.co.uk/.well-known/jwks.json",
+  "evidence_url": "https://api.algovoi.co.uk/compliance/attestation",
+  "alg": "EdDSA",
+  "kid": "d0481df4cbbda8e8aba86709419884ef",
+  "attestation_types": [
+    {
+      "attestationType": "PAYMENT_SETTLEMENT",
+      "scope": "x402",
+      "dimension": "reliability",
+      "source": "payment_ledger_chain rows where state=settled"
+    },
+    {
+      "attestationType": "PAYMENT_SETTLEMENT",
+      "scope": "mpp",
+      "dimension": "reliability",
+      "source": "MPP receipt + on-chain confirm"
+    },
+    {
+      "attestationType": "PAYMENT_SETTLEMENT",
+      "scope": "xchain",
+      "dimension": "reliability",
+      "source": "xchain delivered (Allbridge/CCTP)"
+    },
+    {
+      "attestationType": "COMPLIANCE_SCREEN",
+      "scope": "sanctions",
+      "dimension": "identity",
+      "source": "/compliance/screen ALLOW verdicts (no trigger detail per SAMLA 2018 s.20)"
+    },
+    {
+      "attestationType": "COMPLIANCE_SCREEN",
+      "scope": "url_screening",
+      "dimension": "identity",
+      "source": "screening_hits ALLOW verdicts (URL/IP threat intel)"
+    },
+    {
+      "attestationType": "AUDIT_CHAIN_ANCHOR",
+      "scope": "7y_object_lock",
+      "dimension": "stability",
+      "source": "audit_chain.off_vm_shipment (SHA-256 chain head + Object Lock COMPLIANCE expiry)"
+    }
+  ],
+  "frameworks": [
+    "UK MLR 2017 (voluntary alignment)",
+    "SAMLA 2018 s.20 (tipping-off compliance)",
+    "UK GDPR / DPA 2018",
+    "FCA Reg 40(3) 7-year retention"
+  ]
+}

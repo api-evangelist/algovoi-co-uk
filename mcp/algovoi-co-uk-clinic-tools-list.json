@@ -1,0 +1,140 @@
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "tools": [
+      {
+        "name": "list_networks",
+        "description": "List the blockchain networks AlgoVoi supports, with asset IDs, decimals, and CAIP-2 identifiers. Offline tool \u2014 no API call.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "verify_rfc9421",
+        "description": "Verify an RFC 9421 signed HTTP message (Ed25519 + RFC 9530 Content-Digest) OFFLINE \u2014 no API call, no network. Support tool for the agent ecosystem: check whether a signed agent-to-agent message is authentic and untampered. Supply the envelope and the signer key you EXPECT (public_key_hex or did_key); a key inside the envelope is never trusted. Returns {valid, errors, checked}.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "method": {
+              "type": "string",
+              "description": "HTTP method of the signed message (e.g. POST)."
+            },
+            "authority": {
+              "type": "string",
+              "description": "The :authority (host) the signature covers."
+            },
+            "path": {
+              "type": "string",
+              "description": "The request path the signature covers."
+            },
+            "headers": {
+              "type": "object",
+              "description": "Message headers incl. Signature-Input, Signature, Content-Digest.",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "body_b64": {
+              "type": "string",
+              "description": "Base64 of the raw message body."
+            },
+            "scheme": {
+              "type": "string",
+              "description": "URI scheme; default https."
+            },
+            "public_key_hex": {
+              "type": "string",
+              "description": "Expected signer Ed25519 public key, hex (32 bytes)."
+            },
+            "did_key": {
+              "type": "string",
+              "description": "Alternative to public_key_hex: the signer's did:key."
+            },
+            "require_content_digest": {
+              "type": "boolean",
+              "description": "Require a covered Content-Digest; default true."
+            },
+            "expected_tag": {
+              "type": "string",
+              "description": "If set, require this signature tag."
+            },
+            "allowed_algorithms": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Allowed algs; default [\"ed25519\"]."
+            },
+            "max_age_seconds": {
+              "type": "integer",
+              "description": "If set, enforce freshness within this window."
+            },
+            "now": {
+              "type": "integer",
+              "description": "Unix time to evaluate freshness against (testing)."
+            }
+          },
+          "required": [
+            "method",
+            "authority",
+            "path",
+            "headers",
+            "body_b64"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "explain_rfc9421",
+        "description": "DIAGNOSE an RFC 9421 signed HTTP message OFFLINE (no API call, no network). Bring a broken or failing signed request and get the exact canonical signing base, the Content-Digest recompute, the covered components, and a plain diagnosis of what is wrong. Read-only and public-data-only; the MCP face of the AlgoVoi RFC 9421 clinic. Returns {valid, errors, signature_base, content_digest, covered_components, diagnosis, links, citation}.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "method": {
+              "type": "string",
+              "description": "HTTP method of the signed message (e.g. POST)."
+            },
+            "authority": {
+              "type": "string",
+              "description": "The :authority (host) the signature covers."
+            },
+            "path": {
+              "type": "string",
+              "description": "The request path the signature covers."
+            },
+            "headers": {
+              "type": "object",
+              "description": "Message headers incl. Signature-Input, Signature, Content-Digest.",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "body_b64": {
+              "type": "string",
+              "description": "Base64 of the raw message body."
+            },
+            "scheme": {
+              "type": "string",
+              "description": "URI scheme; default https."
+            },
+            "public_key_hex": {
+              "type": "string",
+              "description": "Signer Ed25519 public key, hex (32 bytes), so the signature can be checked."
+            }
+          },
+          "required": [
+            "method",
+            "authority",
+            "path",
+            "headers",
+            "body_b64"
+          ],
+          "additionalProperties": false
+        }
+      }
+    ]
+  }
+}
