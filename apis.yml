@@ -31,6 +31,23 @@ tags:
 - Cryptocurrency
 - Blockchain
 - Compliance
+- Digital Signature
+- Post-Quantum Cryptography
+- Verification
+- Fintech
+- agent-native
+- Algorand
+- United Kingdom
+tags_raw:
+- Payments
+- Agentic Commerce
+- x402
+- A2A
+- MCP
+- Stablecoins
+- Cryptocurrency
+- Blockchain
+- Compliance
 - Digital Signatures
 - Post-Quantum Cryptography
 - Verification
@@ -53,6 +70,12 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - x402
+  - Payments
+  - Verification
+  - agent-native
+  - A2A
+  tags_raw:
   - x402
   - Payments
   - Verification
@@ -190,6 +213,12 @@ apis:
   humanURL: https://agents.algovoi.co.uk/clinic/guide
   baseURL: https://agents.algovoi.co.uk
   tags:
+  - Digital Signature
+  - Verification
+  - A2A
+  - MCP
+  - agent-native
+  tags_raw:
   - Digital Signatures
   - Verification
   - A2A
@@ -242,6 +271,11 @@ apis:
   humanURL: https://docs.algovoi.co.uk/agent-trust-bench
   baseURL: https://agent-trust-bench.algovoi.co.uk
   tags:
+  - x402
+  - Agent Safety
+  - Research
+  - agent-native
+  tags_raw:
   - x402
   - Agent Safety
   - Research
@@ -303,6 +337,10 @@ apis:
   humanURL: https://docs.algovoi.co.uk/integrations/mcp-server
   baseURL: https://agents.algovoi.co.uk/mcp
   tags:
+  - MCP
+  - agent-native
+  - Payments
+  tags_raw:
   - MCP
   - Agent-native
   - Payments
