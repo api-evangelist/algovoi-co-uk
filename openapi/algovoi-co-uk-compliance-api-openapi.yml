@@ -1,0 +1,543 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Compliance API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged compliance across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: Compliance
+paths:
+  /compliance/attestation:
+    get:
+      tags:
+      - Compliance
+      summary: Attestation
+      description: 'Return the gateway''s full compliance posture as a verifiable
+
+        transparency surface. Free, no rate limit (cached server-side).'
+      operationId: attestation_compliance_attestation_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      x-payment-info:
+        authMode: none
+  /compliance/screen:
+    post:
+      tags:
+      - Compliance
+      summary: Screen
+      description: Pre-payment recipient screen. Returns a SAMLA-compliant verdict.
+      operationId: screen_compliance_screen_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScreenRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreenResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: none
+  /compliance/trust-query:
+    post:
+      tags:
+      - Compliance
+      summary: Trust Query
+      description: 'Composite trust verdict over a chain of substrate receipts.
+
+
+        Submit decoded compliance receipts, settlement attestations, refund receipts,
+
+        and/or cancellation receipts. Returns TRUSTED/PROVISIONAL/INSUFFICIENT_EVIDENCE/
+
+        UNTRUSTED plus a content-addressed composite_hash and a signed CtqResponse.'
+      operationId: trust_query_compliance_trust_query_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrustQueryRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrustQueryResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/receipt/verify:
+    post:
+      tags:
+      - Compliance
+      summary: Verify a JWS compliance receipt
+      description: Cryptographically verifies a compact JWS compliance receipt or settlement attestation. Checks signature, algorithm whitelist, canon_version registry, JCS re-canonicalisation, required fields, and optionally payment_hash binding.
+      operationId: verify_receipt_v1_receipt_verify_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiptVerifyRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptVerifyResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/receipt/settlement-evidence/{settled_payment_ref}:
+    get:
+      tags:
+      - Compliance
+      summary: Fetch chain-evidence capture status (and bundle, when captured)
+      description: Returns the settlement-evidence capture status for one of the calling tenant's settled payments, keyed on its content-addressed settled_payment_ref. When status is 'captured', includes chain_binding = {scheme, bundle_sha256, bundle} — an offline-verifiable avm-proofpack state-proof bundle. Only the owning tenant may fetch its evidence.
+      operationId: get_settlement_evidence_v1_receipt_settlement_evidence__settled_payment_ref__get
+      parameters:
+      - name: settled_payment_ref
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Settled Payment Ref
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettlementEvidenceResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+components:
+  schemas:
+    ScreenResponse:
+      properties:
+        verdict:
+          type: string
+          enum:
+          - allow
+          - block
+          - flag
+          title: Verdict
+        sanctions_clear:
+          type: boolean
+          title: Sanctions Clear
+        recipient_kyb_status:
+          type: string
+          enum:
+          - unknown
+          - trial
+          - approved
+          - rejected
+          title: Recipient Kyb Status
+        risk_tier:
+          type: string
+          enum:
+          - low
+          - medium
+          - high
+          - restricted
+          - unknown
+          title: Risk Tier
+        reasons:
+          items:
+            type: string
+          type: array
+          title: Reasons
+        screened_at:
+          type: string
+          title: Screened At
+        verdict_id:
+          type: string
+          title: Verdict Id
+        network_normalised:
+          type: string
+          title: Network Normalised
+        tipping_off_notice:
+          type: string
+          title: Tipping Off Notice
+          default: Reasons are intentionally generic. We do not disclose which sanctions list (if any) matched — SAMLA 2018 s.20.
+        action_ref:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Action Ref
+        compliance_receipt:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Compliance Receipt
+        compliance_receipt_jws:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Compliance Receipt Jws
+        compliance_receipt_pef:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Compliance Receipt Pef
+        compliance_basis_ref:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Compliance Basis Ref
+        compliance_basis_binding_ref:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Compliance Basis Binding Ref
+        compliance_basis_evidence:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Compliance Basis Evidence
+        request_signature_verified:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Request Signature Verified
+        request_signature_keyid:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Request Signature Keyid
+        request_signer_identity_anchored:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Request Signer Identity Anchored
+      type: object
+      required:
+      - verdict
+      - sanctions_clear
+      - recipient_kyb_status
+      - risk_tier
+      - reasons
+      - screened_at
+      - verdict_id
+      - network_normalised
+      title: ScreenResponse
+    ReceiptVerifyRequest:
+      properties:
+        jws:
+          type: string
+          title: Jws
+          description: Compact JWS string (header.payload.signature) as returned by /compliance/screen (compliance_receipt_jws field) or /verify (settlement_attestation_jws field).
+        expected_payment_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expected Payment Hash
+          description: 'If supplied, the receipt''s payment_hash field must equal this value. Use to bind a receipt to a specific transaction. Format: ''sha256:<hex>''.'
+        receipt_required:
+          type: boolean
+          title: Receipt Required
+          description: If True, treat a missing JWS as a MISSING_ENVELOPE error rather than a format error.
+          default: false
+        jwks:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Jwks
+          description: 'Optional external JWKS dict ({''keys'': [...]}) for verifying receipts signed by a third-party provider. If omitted, AlgoVoi''s own platform key is used.'
+      type: object
+      required:
+      - jws
+      title: ReceiptVerifyRequest
+      description: Request body for POST /v1/receipt/verify.
+    ReceiptVerifyResponse:
+      properties:
+        verified:
+          type: boolean
+          title: Verified
+        error_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error Code
+        error_message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error Message
+        error_field:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error Field
+        screen_result:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Screen Result
+        settlement_status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Settlement Status
+        canon_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Canon Version
+        alg:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Alg
+        kid:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Kid
+        screen_provider_did:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Screen Provider Did
+        payer_ref:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payer Ref
+        payment_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payment Hash
+      type: object
+      required:
+      - verified
+      title: ReceiptVerifyResponse
+      description: Verification result.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ChainBinding:
+      properties:
+        scheme:
+          type: string
+          title: Scheme
+          default: avm-proofpack/1
+        bundle_sha256:
+          type: string
+          title: Bundle Sha256
+          description: sha256 hex of the canonical bundle file bytes
+        bundle:
+          additionalProperties: true
+          type: object
+          title: Bundle
+          description: The avm-proofpack state-proof evidence bundle
+      type: object
+      required:
+      - bundle_sha256
+      - bundle
+      title: ChainBinding
+      description: Offline-verifiable chain evidence for a settled payment.
+    SettlementEvidenceResponse:
+      properties:
+        settled_payment_ref:
+          type: string
+          title: Settled Payment Ref
+        status:
+          type: string
+          title: Status
+        network:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Network
+        round:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Round
+        captured_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Captured At
+        last_error:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Error
+        chain_binding:
+          anyOf:
+          - $ref: '#/components/schemas/ChainBinding'
+          - type: 'null'
+      type: object
+      required:
+      - settled_payment_ref
+      - status
+      title: SettlementEvidenceResponse
+      description: Status of chain-evidence capture for a settled payment.
+    TrustQueryRequest:
+      properties:
+        receipts:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Receipts
+          default: []
+      type: object
+      title: TrustQueryRequest
+    TrustQueryResponse:
+      properties:
+        trust_outcome:
+          type: string
+          title: Trust Outcome
+        composite_hash:
+          type: string
+          title: Composite Hash
+        receipt_count:
+          type: integer
+          title: Receipt Count
+        ctq_response:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Ctq Response
+        ctq_response_jws:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ctq Response Jws
+      type: object
+      required:
+      - trust_outcome
+      - composite_hash
+      - receipt_count
+      title: TrustQueryResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ScreenRequest:
+      properties:
+        recipient_address:
+          type: string
+          maxLength: 128
+          minLength: 4
+          title: Recipient Address
+        network:
+          type: string
+          maxLength: 64
+          minLength: 4
+          title: Network
+        amount_microunits:
+          anyOf:
+          - type: integer
+            minimum: 0.0
+          - type: 'null'
+          title: Amount Microunits
+        asset:
+          anyOf:
+          - type: string
+            maxLength: 128
+          - type: 'null'
+          title: Asset
+      type: object
+      required:
+      - recipient_address
+      - network
+      title: ScreenRequest
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

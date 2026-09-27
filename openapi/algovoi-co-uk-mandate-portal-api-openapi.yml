@@ -1,0 +1,369 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Mandate Portal API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged mandate-portal across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: mandate-portal
+paths:
+  /mandate/portal/{mandate_id}:
+    get:
+      tags:
+      - mandate-portal
+      summary: Get Mandate Portal
+      description: 'Load public portal view for a mandate.
+
+
+        Returns balance, status, JWT token (if active), and last 10 charges.
+
+        The mandate_id is the user''s credential — treat it like an account number.'
+      operationId: get_mandate_portal_mandate_portal__mandate_id__get
+      parameters:
+      - name: mandate_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Mandate Id
+      - name: include_token
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: Include JWT token in response
+          default: true
+          title: Include Token
+        description: Include JWT token in response
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MandatePortalResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /mandate/portal/{mandate_id}/topup/initiate:
+    post:
+      tags:
+      - mandate-portal
+      summary: Portal Topup Initiate
+      description: 'Initiate a PayPal top-up for a mandate.
+
+
+        Returns an approval_url — redirect the user''s browser there.
+
+        After approval, PayPal redirects to return_url with ?token=.
+
+        Then call POST /topup/capture with that token.'
+      operationId: portal_topup_initiate_mandate_portal__mandate_id__topup_initiate_post
+      parameters:
+      - name: mandate_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Mandate Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopupInitiateRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopupInitiateResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /mandate/portal/{mandate_id}/topup/capture:
+    post:
+      tags:
+      - mandate-portal
+      summary: Portal Topup Capture
+      description: 'Capture a PayPal payment after buyer approval.
+
+
+        Idempotent — safe to call again if the first attempt timed out.'
+      operationId: portal_topup_capture_mandate_portal__mandate_id__topup_capture_post
+      parameters:
+      - name: mandate_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Mandate Id
+      - name: token
+        in: query
+        required: true
+        schema:
+          type: string
+          description: PayPal order token
+          title: Token
+        description: PayPal order token
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopupCaptureResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+components:
+  schemas:
+    ChargeItemPublic:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        amount_minor:
+          type: integer
+          title: Amount Minor
+        currency:
+          type: string
+          title: Currency
+        chain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Chain
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        status:
+          type: string
+          title: Status
+        charged_at:
+          type: string
+          format: date-time
+          title: Charged At
+      type: object
+      required:
+      - id
+      - amount_minor
+      - currency
+      - chain
+      - description
+      - status
+      - charged_at
+      title: ChargeItemPublic
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TopupCaptureResponse:
+      properties:
+        mandate_id:
+          type: string
+          format: uuid
+          title: Mandate Id
+        new_balance_minor:
+          type: integer
+          title: New Balance Minor
+        added_minor:
+          type: integer
+          title: Added Minor
+        paypal_order_id:
+          type: string
+          title: Paypal Order Id
+      type: object
+      required:
+      - mandate_id
+      - new_balance_minor
+      - added_minor
+      - paypal_order_id
+      title: TopupCaptureResponse
+    TopupInitiateResponse:
+      properties:
+        mandate_id:
+          type: string
+          format: uuid
+          title: Mandate Id
+        paypal_order_id:
+          type: string
+          title: Paypal Order Id
+        approval_url:
+          type: string
+          title: Approval Url
+        amount_minor:
+          type: integer
+          title: Amount Minor
+      type: object
+      required:
+      - mandate_id
+      - paypal_order_id
+      - approval_url
+      - amount_minor
+      title: TopupInitiateResponse
+    MandatePortalResponse:
+      properties:
+        mandate_id:
+          type: string
+          format: uuid
+          title: Mandate Id
+        display_name:
+          type: string
+          title: Display Name
+        balance_minor:
+          type: integer
+          title: Balance Minor
+        currency:
+          type: string
+          title: Currency
+        period:
+          type: string
+          title: Period
+        period_cap_minor:
+          type: integer
+          title: Period Cap Minor
+        period_spent_minor:
+          type: integer
+          title: Period Spent Minor
+        status:
+          type: string
+          title: Status
+        token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Token
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        expires_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expires At
+        recent_charges:
+          items:
+            $ref: '#/components/schemas/ChargeItemPublic'
+          type: array
+          title: Recent Charges
+      type: object
+      required:
+      - mandate_id
+      - display_name
+      - balance_minor
+      - currency
+      - period
+      - period_cap_minor
+      - period_spent_minor
+      - status
+      - created_at
+      - expires_at
+      - recent_charges
+      title: MandatePortalResponse
+    TopupInitiateRequest:
+      properties:
+        amount_minor:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Amount Minor
+          description: Top-up amount in GBP pence
+        return_url:
+          type: string
+          title: Return Url
+          description: URL to redirect after PayPal approval
+        cancel_url:
+          type: string
+          title: Cancel Url
+          description: URL to redirect on cancellation
+      type: object
+      required:
+      - amount_minor
+      - return_url
+      - cancel_url
+      title: TopupInitiateRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

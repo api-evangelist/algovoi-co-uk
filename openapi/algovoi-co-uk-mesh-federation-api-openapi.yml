@@ -1,0 +1,128 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Mesh Federation API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged mesh-federation across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: mesh-federation
+paths:
+  /suite-store/mesh-fed/provision:
+    post:
+      tags:
+      - mesh-federation
+      summary: Provision
+      description: 'Return ``{cert_b64, kid, expires_at, namespace, wheelhouse_hint}`` for a valid customer licence.
+
+
+        403 if the licence is missing/expired/revoked/not entitled; 502 if fulfilment is unreachable.
+
+        Rate-limited by the gateway''s global per-IP limiter; the licence check is the real control.'
+      operationId: provision_suite_store_mesh_fed_provision_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProvisionRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Provision Suite Store Mesh Fed Provision Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /suite-store/mesh-fed/info:
+    get:
+      tags:
+      - mesh-federation
+      summary: Info
+      description: Unauthenticated liveness probe the installer hits before provisioning.
+      operationId: info_suite_store_mesh_fed_info_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Info Suite Store Mesh Fed Info Get
+      x-payment-info:
+        authMode: api_key
+components:
+  schemas:
+    ProvisionRequest:
+      properties:
+        license_key:
+          type: string
+          title: License Key
+        fed_pub_b64:
+          type: string
+          title: Fed Pub B64
+        namespace:
+          type: string
+          title: Namespace
+        federation_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Federation Id
+        ttl_secs:
+          type: integer
+          title: Ttl Secs
+          default: 157680000
+      type: object
+      required:
+      - license_key
+      - fed_pub_b64
+      - namespace
+      title: ProvisionRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

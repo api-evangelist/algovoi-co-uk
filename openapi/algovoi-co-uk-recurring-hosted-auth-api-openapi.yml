@@ -1,0 +1,261 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Recurring Hosted Auth API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged recurring-hosted-auth across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: recurring-hosted-auth
+paths:
+  /v1/recurring/auth/{token}:
+    get:
+      tags:
+      - recurring-hosted-auth
+      summary: Resolve hosted-auth signing token
+      description: Public endpoint consumed by recurr.algovoi.co.uk to render the Authority Summary Card. Returns 410 Gone in constant time for any not-found / expired / consumed token to prevent enumeration.
+      operationId: resolve_token_v1_recurring_auth__token__get
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostedAuthResolveResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/recurring/auth/{token}/confirm:
+    post:
+      tags:
+      - recurring-hosted-auth
+      summary: Confirm hosted-auth signing token + activate authority
+      description: 'Called by recurr.algovoi.co.uk after the customer''s wallet has signed and the on-chain transaction has landed. Fires a sanctions screen on the wallet address (pre-activation gate) and writes authority_signed + authority_confirmed audit-chain events. Idempotent: re-confirms with the same on_chain_address return 200 with the existing row; mismatched address returns 409.'
+      operationId: confirm_token_v1_recurring_auth__token__confirm_post
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idempotency-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HostedAuthConfirmRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostedAuthConfirmResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+components:
+  schemas:
+    HostedAuthResolveResponse:
+      properties:
+        authority_id:
+          type: string
+          format: uuid
+          title: Authority Id
+        chain:
+          type: string
+          title: Chain
+        cap_amount_minor:
+          type: integer
+          title: Cap Amount Minor
+        cap_period_seconds:
+          type: integer
+          title: Cap Period Seconds
+        per_cycle_amount_minor:
+          type: integer
+          title: Per Cycle Amount Minor
+        asset:
+          type: string
+          title: Asset
+        customer_wallet_address:
+          type: string
+          title: Customer Wallet Address
+        facilitator_address:
+          type: string
+          title: Facilitator Address
+        merchant_payout_address:
+          type: string
+          title: Merchant Payout Address
+        expires_at:
+          type: string
+          format: date-time
+          title: Expires At
+        customer_signing_payload:
+          additionalProperties: true
+          type: object
+          title: Customer Signing Payload
+        merchant:
+          $ref: '#/components/schemas/HostedAuthMerchant'
+        redirect_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Redirect Url
+      type: object
+      required:
+      - authority_id
+      - chain
+      - cap_amount_minor
+      - cap_period_seconds
+      - per_cycle_amount_minor
+      - asset
+      - customer_wallet_address
+      - facilitator_address
+      - merchant_payout_address
+      - expires_at
+      - customer_signing_payload
+      - merchant
+      title: HostedAuthResolveResponse
+    HostedAuthMerchant:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Merchant display name
+        logo_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Logo Url
+          description: Merchant logo, if uploaded
+        brand_primary_color:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Brand Primary Color
+          description: 'Hex colour, e.g. #3b82f6'
+        contact_email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contact Email
+          description: Customer support contact
+      type: object
+      required:
+      - name
+      title: HostedAuthMerchant
+      description: Subset of merchant info safe to expose on a public endpoint.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    HostedAuthConfirmRequest:
+      properties:
+        on_chain_address:
+          type: string
+          maxLength: 200
+          minLength: 1
+          title: On Chain Address
+        on_chain_tx_id:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: On Chain Tx Id
+        first_cycle_due_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: First Cycle Due At
+      type: object
+      required:
+      - on_chain_address
+      title: HostedAuthConfirmRequest
+    HostedAuthConfirmResponse:
+      properties:
+        authority_id:
+          type: string
+          format: uuid
+          title: Authority Id
+        status:
+          type: string
+          title: Status
+        on_chain_address:
+          type: string
+          title: On Chain Address
+        activated_at:
+          type: string
+          format: date-time
+          title: Activated At
+        redirect_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Redirect Url
+      type: object
+      required:
+      - authority_id
+      - status
+      - on_chain_address
+      - activated_at
+      title: HostedAuthConfirmResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

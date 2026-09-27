@@ -1,0 +1,166 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Recurr Public API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged recurr-public across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: recurr-public
+paths:
+  /recurr/portal:
+    get:
+      tags:
+      - recurr-public
+      summary: Portal Page
+      description: 'Tenant-agnostic customer portal — connect wallet, see all subscriptions
+
+        across every merchant who has billed that wallet.
+
+
+        Embeds zero JS framework. Wallets:
+
+        - EVM (Base, Tempo, ...): MetaMask injected provider + EIP-191 personal_sign
+
+        - Solana: window.solana (Phantom)
+
+        - Algorand / VOI: Pera, Defly, Lute (signData with "MX" prefix)
+
+        - Stellar: Stellar Wallets Kit (Freighter, Albedo, xBull, Lobstr, Hana, Rabet)
+
+        - Hedera: Hedera Wallet Connect (HashPack, Blade, Kabila) via Reown
+
+
+        Security: pre-sale Comet third-pass review (2026-05-07, Task A) caught
+
+        that the previous `replace(''"'', "")` sanitisation of the `chain` query
+
+        parameter was insufficient — single quotes and semicolons fell through
+
+        into a JS string literal under the legacy ''unsafe-inline'' CSP applied
+
+        to /recurr/portal, enabling reflected XSS via `?chain=''; alert(1);//`.
+
+        Replaced with a strict allowlist. The `wc_pid` reflection is also
+
+        tightened to a 32-char-hex regex even though it sources from settings.'
+      operationId: portal_page_recurr_portal_get
+      parameters:
+      - name: chain
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Default chain for wallet-connect
+          default: base_mainnet
+          title: Chain
+        description: Default chain for wallet-connect
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: none
+  /recurr/cancel/{cancel_secret}:
+    get:
+      tags:
+      - recurr-public
+      summary: Public Cancel Page
+      operationId: public_cancel_page_recurr_cancel__cancel_secret__get
+      parameters:
+      - name: cancel_secret
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Cancel Secret
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: none
+    post:
+      tags:
+      - recurr-public
+      summary: Public Cancel Commit
+      operationId: public_cancel_commit_recurr_cancel__cancel_secret__post
+      parameters:
+      - name: cancel_secret
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Cancel Secret
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: none
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

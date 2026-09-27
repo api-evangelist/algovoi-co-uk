@@ -1,0 +1,46 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Bazaar API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged bazaar across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: bazaar
+paths:
+  /discovery/resources:
+    get:
+      tags:
+      - bazaar
+      summary: Discovery Resources
+      description: 'Return the Bazaar-shaped list of x402-payable resources on this
+
+        facilitator. See module docstring for schema + scope.
+
+
+        The Agent Trust Bench has its own Bazaar surface at
+
+        https://agent-trust-bench.algovoi.co.uk/discovery/resources since
+
+        the bench was extracted to its own service on VM4 (2026-05-09).
+
+        This gateway''s catalog is now scoped to tenant resources only;
+
+        bench resources are advertised by the bench''s own discovery
+
+        endpoint as the canonical source. A `related_facilitators` hint
+
+        points Bazaar crawlers at the bench so cross-facilitator
+
+        discovery still works.'
+      operationId: discovery_resources_discovery_resources_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      x-payment-info:
+        authMode: none
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

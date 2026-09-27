@@ -1,0 +1,230 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Agent Auth API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged agent-auth across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: agent-auth
+paths:
+  /auth/token:
+    post:
+      tags:
+      - agent-auth
+      summary: Exchange Atb Cert
+      description: 'Exchange an ATB ZKP certificate for an agent session token.
+
+
+        Requires normal API key auth (X-Tenant-Id + Authorization: Bearer )
+
+        for this request only. The returned token is used for all subsequent calls
+
+        within the session.'
+      operationId: exchange_atb_cert_auth_token_post
+      parameters:
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /auth/token/status:
+    get:
+      tags:
+      - agent-auth
+      summary: Session Status
+      description: 'Return spend vs cap for a live agent session token.
+
+
+        Pass the session token as `Authorization: Bearer `.
+
+        This endpoint does NOT require X-Tenant-Id — the tenant_id is read from
+
+        the token claims. Returns 401 if the token is invalid or expired.'
+      operationId: session_status_auth_token_status_get
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionStatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+components:
+  schemas:
+    TokenResponse:
+      properties:
+        token:
+          type: string
+          title: Token
+        token_type:
+          type: string
+          title: Token Type
+          default: Bearer
+        expires_in:
+          type: integer
+          title: Expires In
+        spend_cap_usd:
+          type: number
+          title: Spend Cap Usd
+        jti:
+          type: string
+          title: Jti
+      type: object
+      required:
+      - token
+      - expires_in
+      - spend_cap_usd
+      - jti
+      title: TokenResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SessionStatusResponse:
+      properties:
+        jti:
+          type: string
+          title: Jti
+        spend_cap_usd:
+          type: number
+          title: Spend Cap Usd
+        spent_usd:
+          type: number
+          title: Spent Usd
+        remaining_usd:
+          type: number
+          title: Remaining Usd
+        active:
+          type: boolean
+          title: Active
+      type: object
+      required:
+      - jti
+      - spend_cap_usd
+      - spent_usd
+      - remaining_usd
+      - active
+      title: SessionStatusResponse
+    TokenRequest:
+      properties:
+        atb_zk_credential:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Atb Zk Credential
+          description: Base64url ATB ZKP Phase 2 cert. Provide this OR federation_token.
+        federation_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Federation Token
+          description: Pre-composed federation token from algovoi-federation-validator. Provide this OR atb_zk_credential. Requires FEDERATION_VALIDATOR_ENABLED=true.
+        spend_cap_usd:
+          anyOf:
+          - type: number
+            maximum: 10000.0
+            minimum: 0.0
+          - type: 'null'
+          title: Spend Cap Usd
+          description: Per-session spend cap in USD. Defaults to 100.0. Set to 0 to allow dry-run session (no payments).
+        ttl_secs:
+          anyOf:
+          - type: integer
+            maximum: 86400.0
+            minimum: 60.0
+          - type: 'null'
+          title: Ttl Secs
+          description: Session lifetime in seconds. Defaults to 3600. Max 86400 (24 h).
+      type: object
+      title: TokenRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

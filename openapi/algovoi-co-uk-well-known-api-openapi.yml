@@ -1,0 +1,35 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk .well Known API
+  version: 0.1.0
+  description: 'Operations tagged .well Known across 2 of this provider''s published API definitions: algovoi-co-uk-clinic-openapi.json, algovoi-co-uk-clinic-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: .well Known
+paths:
+  /.well-known/agent-card.json:
+    get:
+      summary: Agent Card
+      operationId: agent_card__well_known_agent_card_json_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      tags:
+      - .well Known
+  /.well-known/agent.json:
+    get:
+      summary: Agent Card Legacy
+      operationId: agent_card_legacy__well_known_agent_json_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      tags:
+      - .well Known
+x-refined-from:
+- algovoi-co-uk-clinic-openapi.json
+- algovoi-co-uk-clinic-openapi.yml

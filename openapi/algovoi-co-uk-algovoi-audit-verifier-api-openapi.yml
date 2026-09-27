@@ -1,0 +1,26 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk AlgoVoi Audit Verifier API
+  version: 0.1.0
+  description: 'Operations tagged AlgoVoi Audit Verifier across 2 of this provider''s published API definitions: algovoi-co-uk-audit-verifier-openapi.json, algovoi-co-uk-audit-verifier-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: AlgoVoi Audit Verifier
+paths:
+  /:
+    get:
+      summary: Root
+      operationId: root__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Root  Get
+      tags:
+      - AlgoVoi Audit Verifier
+x-refined-from:
+- algovoi-co-uk-audit-verifier-openapi.json
+- algovoi-co-uk-audit-verifier-openapi.yml

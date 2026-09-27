@@ -1,0 +1,23 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Payable A2a API
+  version: 1.0.0
+  description: 'Operations tagged payable-a2a across 2 of this provider''s published API definitions: algovoi-co-uk-pay-openapi.json, algovoi-co-uk-pay-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: payable-a2a
+paths:
+  /a2a:
+    post:
+      tags:
+      - payable-a2a
+      summary: A2A Jsonrpc
+      operationId: a2a_jsonrpc_a2a_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+x-refined-from:
+- algovoi-co-uk-pay-openapi.json
+- algovoi-co-uk-pay-openapi.yml

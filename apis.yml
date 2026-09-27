@@ -12,6 +12,23 @@ description: >-
   a published Agent Skill, llms.txt on four hosts, did:web identities, and a large Apache-2.0 reference layer on npm and
   PyPI (RFC 9421 signer/verifier, JCS substrate, receipt formats, an MCP server). Self-hosted products (Payment Rails,
   Verifiable Compliance Suite, post-quantum Reseal and Evidence Auditor) sell on perpetual licences paid in USDC.
+deliveryModel:
+  model: saas
+  license_evidence:
+    not_product:
+    - chopmob-cloud/algovoi-audit-verifier
+    - chopmob-cloud/algovoi-mcp-server
+  open_source: unknown
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: low
+  source:
+  - openapi
+  - pricing
+  - repository-not-product
+  generated: '2026-09-25'
+  method: derived
 image: https://algovoi.co.uk/apple-touch-icon.png
 url: https://raw.githubusercontent.com/api-evangelist/algovoi-co-uk/refs/heads/main/apis.yml
 x-type: company
@@ -35,7 +52,7 @@ tags:
 - Post-Quantum Cryptography
 - Verification
 - Fintech
-- agent-native
+- Agent-Native
 - Algorand
 - United Kingdom
 tags_raw:
@@ -55,38 +72,18 @@ tags_raw:
 - Agent-native
 - Algorand
 - United Kingdom
+- agent-native
 apis:
-- aid: algovoi-co-uk:algovoi-pay-payable-core-api
-  name: AlgoVoi Pay (Payable Core) API
-  description: >-
-    Tenant-free, pay-per-call verification rail (OpenAPI 3.1.0 "AlgoVoi Payable Core" 1.0.0, 17 operations). No account and
-    no API key: each paid operation (verify an x402/AP2 receipt JWS, verify an RFC 9421 HTTP message signature, screen a URL;
-    a compliance receipt is "coming soon") answers a strict x402 v2 402 challenge with one accept per lane across twelve
-    mainnet chains, and the resubmitted call with X-PAYMENT returns the result plus an offline-verifiable Ed25519 payable
-    receipt binding request hash, response hash and settled payment. GET on any paid URL is a free 402 probe; GET/POST
-    /pay/v1/negotiate is a free chain-agnostic lane negotiation; /v1/receipt/verify is a free unsigned tier (120/min). The
-    same host serves the A2A JSON-RPC door (/a2a), MPP and AP2 twins, a did:web document, the receipt JWKS and an x402
-    descriptor.
+- aid: algovoi-co-uk:algovoi-co-uk-a2a-api
+  name: AlgoVoi A2a API
+  description: The A2a API from AlgoVoi — 12 operation(s) for a2a.
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
-  - x402
-  - Payments
-  - Verification
-  - agent-native
-  - A2A
-  tags_raw:
-  - x402
-  - Payments
-  - Verification
-  - Agent-native
-  - A2A
+  - A2a
   properties:
   - type: OpenAPI
-    url: openapi/algovoi-co-uk-pay-openapi.yml
-  - type: OpenAPI
-    name: OpenAPI (provider-hosted)
-    url: https://pay.algovoi.co.uk/openapi.json
+    url: openapi/algovoi-co-uk-a2a-api-openapi.yml
   - type: Documentation
     url: https://docs.algovoi.co.uk/algovoi-pay
   - type: APIReference
@@ -96,12 +93,10 @@ apis:
   - type: AgentCard
     url: a2a/algovoi-co-uk-a2a.yml
   - type: AgentCard
-    name: Agent card (provider-hosted)
     url: https://pay.algovoi.co.uk/.well-known/agent-card.json
   - type: LLMsTxt
     url: llms/algovoi-co-uk-pay-llms.txt
   - type: LLMsTxt
-    name: llms.txt (provider-hosted)
     url: https://pay.algovoi.co.uk/llms.txt
   - type: Authentication
     url: authentication/algovoi-co-uk-authentication.yml
@@ -117,38 +112,6 @@ apis:
     url: plans/algovoi-co-uk-plans-pricing.yml
   - type: Sandbox
     url: sandbox/algovoi-co-uk-sandbox.yml
-  - type: Overlay
-    url: overlays/algovoi-co-uk-pay-overlay.yaml
-  - type: AgentSkill
-    url: skills/algovoi-co-uk-pay-per-call-verification.md
-  image: https://algovoi.co.uk/apple-touch-icon.png
-- aid: algovoi-co-uk:algovoi-gateway-api
-  name: AlgoVoi Gateway API
-  description: >-
-    The multi-tenant payment gateway (OpenAPI 3.1.0 "AlgoVoi Gateway" 1.0.0-phase1c, 115 operations, 99 schemas) at
-    api.algovoi.co.uk: hosted checkout links and the checkout lifecycle (QR, build/submit txn, detect, status, cancel,
-    abandon, cross-chain bridge), x402 and MPP gated resources and subscriptions, the AP2 mandate chain
-    (intent/cart/pay/confirm/status), an A2A surface (message:send, tasks, pushNotificationConfigs, /a2a/jsonrpc,
-    /a2a/gibberlink), customers, subscriptions, Tier 2 recurring authorities and hosted authorisation, payouts, compliance
-    screening and a public compliance attestation, receipt and RFC 9421 verification, the suite store, signup proxies and
-    the Agentic Payment Mandates portal. Authenticated with a tenant Bearer key (algv_) plus X-Tenant-Id; 300 req/min per
-    tenant with X-RateLimit-* headers; Idempotency-Key on creates; Stripe-shaped HMAC-signed webhooks.
-  humanURL: https://docs.algovoi.co.uk/api-reference/introduction
-  baseURL: https://api.algovoi.co.uk
-  tags:
-  - Payments
-  - Agentic Commerce
-  - x402
-  - MPP
-  - AP2
-  - A2A
-  - Compliance
-  properties:
-  - type: OpenAPI
-    url: openapi/algovoi-co-uk-gateway-openapi.yml
-  - type: OpenAPI
-    name: OpenAPI (provider-hosted)
-    url: https://api.algovoi.co.uk/openapi.json
   - type: Documentation
     url: https://docs.algovoi.co.uk/api-reference/introduction
   - type: APIReference
@@ -156,203 +119,45 @@ apis:
   - type: GettingStarted
     url: https://docs.algovoi.co.uk/quickstart
   - type: Authentication
-    url: authentication/algovoi-co-uk-authentication.yml
-  - type: Authentication
-    name: Authentication (provider docs)
     url: https://docs.algovoi.co.uk/api-reference/authentication
-  - type: Conventions
-    url: conventions/algovoi-co-uk-conventions.yml
-  - type: Idempotency
-    url: conventions/algovoi-co-uk-conventions.yml
-  - type: ErrorCatalog
-    url: errors/algovoi-co-uk-problem-types.yml
   - type: ErrorCodes
-    name: API errors and status codes (provider docs)
     url: https://docs.algovoi.co.uk/api-reference/errors
   - type: RateLimits
-    url: rate-limits/algovoi-co-uk-rate-limits.yml
-  - type: RateLimits
-    name: Rate limits (provider docs)
     url: https://docs.algovoi.co.uk/api-reference/rate-limits
   - type: Webhooks
     url: asyncapi/algovoi-co-uk-webhooks.yml
   - type: Webhooks
-    name: Outbound webhooks (provider docs)
     url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
-  - type: Sandbox
-    url: sandbox/algovoi-co-uk-sandbox.yml
-  - type: Plans
-    url: plans/algovoi-co-uk-plans-pricing.yml
   - type: DataModel
     url: data-model/algovoi-co-uk-data-model.yml
-  - type: Overlay
-    url: overlays/algovoi-co-uk-gateway-overlay.yaml
   - type: AgentCard
-    url: a2a/algovoi-co-uk-a2a.yml
-  - type: AgentCard
-    name: Agent card (provider-hosted, graded flavored)
     url: https://api.algovoi.co.uk/.well-known/agent-card.json
-  - type: AgentSkill
-    url: skills/algovoi-co-uk-algovoi.md
-  - type: AgentSkill
-    url: skills/algovoi-co-uk-hosted-checkout.md
   - type: SignUp
     url: https://dash.algovoi.co.uk/signup
   - type: Components
     url: components/algovoi-co-uk-components.yml
-  image: https://algovoi.co.uk/apple-touch-icon.png
-- aid: algovoi-co-uk:algovoi-rfc9421-clinic-api
-  name: AlgoVoi RFC 9421 Clinic (Verifiable-Comms Agent) API
-  description: >-
-    Free, anonymous, verify-only service at agents.algovoi.co.uk (OpenAPI 3.1.0 "AlgoVoi Verifiable-Comms Agent" 0.1.0, 9
-    operations): verify an RFC 9421 HTTP message signature with RFC 9530 Content-Digest offline against a supplied Ed25519
-    key or did:key, get a diagnosis with the exact canonical signature base, or fetch a known-good signed request from an
-    ephemeral demo key. Reachable over plain HTTP, A2A JSON-RPC (/a2a; message/send for 0.3.0 and SendMessage for 1.0.1) and
-    an anonymous Streamable HTTP MCP server (/mcp) exposing the same tools. Backed by the shipped algovoi-rfc9421-verifier
-    0.4.4 package.
-  humanURL: https://agents.algovoi.co.uk/clinic/guide
-  baseURL: https://agents.algovoi.co.uk
-  tags:
-  - Digital Signature
-  - Verification
-  - A2A
-  - MCP
-  - agent-native
-  tags_raw:
-  - Digital Signatures
-  - Verification
-  - A2A
-  - MCP
-  - Agent-native
-  properties:
-  - type: OpenAPI
-    url: openapi/algovoi-co-uk-clinic-openapi.yml
-  - type: OpenAPI
-    name: OpenAPI (provider-hosted)
-    url: https://agents.algovoi.co.uk/openapi.json
   - type: Documentation
     url: https://agents.algovoi.co.uk/clinic/guide
   - type: Documentation
-    name: RFC 9421 verifier reference
     url: https://docs.algovoi.co.uk/rfc9421-verifier
   - type: APIReference
     url: https://agents.algovoi.co.uk/docs
   - type: AgentCard
-    url: a2a/algovoi-co-uk-a2a.yml
-  - type: AgentCard
-    name: Agent card (provider-hosted)
     url: https://agents.algovoi.co.uk/.well-known/agent-card.json
-  - type: MCPServer
-    url: mcp/algovoi-co-uk-mcp.yml
-  - type: MCPServer
-    name: MCP endpoint (Streamable HTTP, anonymous)
-    url: https://agents.algovoi.co.uk/mcp
   - type: LLMsTxt
     url: llms/algovoi-co-uk-clinic-llms.txt
   - type: LLMsTxt
-    name: llms.txt (provider-hosted)
     url: https://agents.algovoi.co.uk/llms.txt
-  - type: Authentication
-    url: authentication/algovoi-co-uk-authentication.yml
-  - type: Overlay
-    url: overlays/algovoi-co-uk-clinic-overlay.yaml
-  - type: AgentSkill
-    url: skills/algovoi-co-uk-rfc9421-clinic.md
-  image: https://algovoi.co.uk/apple-touch-icon.png
-- aid: algovoi-co-uk:algovoi-agent-trust-bench-api
-  name: AlgoVoi Agent Trust Bench API
-  description: >-
-    Open, provider-neutral x402 research surface (OpenAPI 3.1.0 "AlgoVoi Agent Trust Bench" 0.1.0, 7 operations, servers[]
-    https://agent-trust-bench.algovoi.co.uk, MIT): GET /{profile_id} presents one of 187 adversarial or benign payment
-    profiles as a 402 challenge (max $1.00 USDC, publicly logged, proceeds donated), /freebie is the always-free control,
-    /discovery/resources is a Bazaar-format catalog of every profile, /.well-known/x402.json the discovery manifest and
-    /stats.json aggregate statistics. Agents that pass can fetch a Falcon-1024 or Bulletproofs ATB Pass Certificate that
-    earns a 20% discount at participating x402 gateways.
-  humanURL: https://docs.algovoi.co.uk/agent-trust-bench
-  baseURL: https://agent-trust-bench.algovoi.co.uk
-  tags:
-  - x402
-  - Agent Safety
-  - Research
-  - agent-native
-  tags_raw:
-  - x402
-  - Agent Safety
-  - Research
-  - Agent-native
-  properties:
-  - type: OpenAPI
-    url: openapi/algovoi-co-uk-agent-trust-bench-openapi.yml
-  - type: OpenAPI
-    name: OpenAPI (provider-hosted)
-    url: https://agent-trust-bench.algovoi.co.uk/openapi.json
   - type: Documentation
     url: https://docs.algovoi.co.uk/agent-trust-bench
   - type: Dashboard
-    name: Live bench statistics
     url: https://agent-trust-bench.algovoi.co.uk/stats
-  - type: Authentication
-    url: authentication/algovoi-co-uk-authentication.yml
-  - type: Overlay
-    url: overlays/algovoi-co-uk-agent-trust-bench-overlay.yaml
-  image: https://algovoi.co.uk/apple-touch-icon.png
-- aid: algovoi-co-uk:algovoi-audit-verifier-api
-  name: AlgoVoi Audit Verifier API
-  description: >-
-    Stateless reference verifier for AlgoVoi selective-disclosure audit bundles at verify.algovoi.co.uk (OpenAPI 3.1.0
-    "AlgoVoi Audit Verifier" 0.1.0, 3 operations): POST /verify checks a bundle in memory and persists nothing; an optional
-    X-Audit-Bundle-Key header verifies the bundle signature. Open source (algovoi-audit-verifier on GitHub); Swagger UI at
-    /docs.
-  humanURL: https://docs.algovoi.co.uk/audit-verifier
-  baseURL: https://verify.algovoi.co.uk
-  tags:
-  - Verification
-  - Compliance
-  - Audit
-  properties:
-  - type: OpenAPI
-    url: openapi/algovoi-co-uk-audit-verifier-openapi.yml
-  - type: OpenAPI
-    name: OpenAPI (provider-hosted)
-    url: https://verify.algovoi.co.uk/openapi.json
   - type: Documentation
     url: https://docs.algovoi.co.uk/audit-verifier
   - type: APIReference
     url: https://verify.algovoi.co.uk/docs
   - type: SourceCode
     url: https://github.com/chopmob-cloud/algovoi-audit-verifier
-  - type: Overlay
-    url: overlays/algovoi-co-uk-audit-verifier-overlay.yaml
-  image: https://algovoi.co.uk/apple-touch-icon.png
-- aid: algovoi-co-uk:algovoi-mcp-server
-  name: AlgoVoi MCP Server
-  description: >-
-    Model Context Protocol access to AlgoVoi three ways. A hosted anonymous Streamable HTTP endpoint at
-    https://agents.algovoi.co.uk/mcp (algovoi-mcp-server 1.29.0, protocol 2025-06-18; tools/list returns three offline RFC
-    9421 tools with inputSchema); a hosted x402-gated endpoint at https://mcp.algovoi.co.uk/mcp (ulu-mcp 0.0.1, initialize
-    succeeds, tools/list answers 402 with a 1 VOI challenge — tool set unknown); and a local stdio package published to npm
-    (@algovoi/mcp-server 1.7.0) and PyPI (algovoi-mcp 1.7.0), listed in the official MCP Registry, exposing 29 tenant-gateway
-    tools (payment links, x402/MPP/AP2 challenges and verification, A2A pay-and-call, recurring authorities, MPP
-    subscriptions, Bazaar discovery, sanctions screening, compliance attestation) with an algv_ API key.
-  humanURL: https://docs.algovoi.co.uk/integrations/mcp-server
-  baseURL: https://agents.algovoi.co.uk/mcp
-  tags:
-  - MCP
-  - agent-native
-  - Payments
-  tags_raw:
-  - MCP
-  - Agent-native
-  - Payments
-  properties:
-  - type: MCPServer
-    url: mcp/algovoi-co-uk-mcp.yml
-  - type: MCPServer
-    name: MCP endpoint (hosted, anonymous)
-    url: https://agents.algovoi.co.uk/mcp
-  - type: MCPServer
-    name: MCP endpoint (hosted, x402-gated)
-    url: https://mcp.algovoi.co.uk/mcp
   - type: ToolCrosswalk
     url: mcp/algovoi-co-uk-tool-crosswalk.yml
   - type: Documentation
@@ -361,15 +166,3438 @@ apis:
     url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
   - type: Packages
     url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-agent-auth-api
+  name: AlgoVoi Agent Auth API
+  description: The agent-auth API from AlgoVoi — 2 operation(s) for agent-auth.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - agent-auth
+  properties:
   - type: OpenAPI
-    url: openapi/algovoi-co-uk-gateway-openapi.yml
-  image: https://algovoi.co.uk/apple-touch-icon.png
+    url: openapi/algovoi-co-uk-agent-auth-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-algovoi-audit-verifier-api
+  name: AlgoVoi AlgoVoi Audit Verifier API
+  description: The AlgoVoi Audit Verifier API from AlgoVoi — 1 operation(s) for algovoi audit verifier.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - AlgoVoi Audit Verifier
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-algovoi-audit-verifier-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-algovoi-verifiable-comms-agent-api
+  name: AlgoVoi AlgoVoi Verifiable Comms Agent API
+  description: >-
+    The AlgoVoi Verifiable Comms Agent API from AlgoVoi — 1 operation(s) for algovoi verifiable comms
+    agent.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - AlgoVoi Verifiable Comms Agent
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-algovoi-verifiable-comms-agent-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-ap2-api
+  name: AlgoVoi Ap2 API
+  description: The Ap2 API from AlgoVoi — 7 operation(s) for ap2.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - Ap2
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-ap2-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-atb-license-api
+  name: AlgoVoi Atb License API
+  description: The atb-license API from AlgoVoi — 1 operation(s) for atb-license.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - atb-license
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-atb-license-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-bazaar-api
+  name: AlgoVoi Bazaar API
+  description: The bazaar API from AlgoVoi — 1 operation(s) for bazaar.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - bazaar
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-bazaar-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-checkout-api
+  name: AlgoVoi Checkout API
+  description: The checkout API from AlgoVoi — 17 operation(s) for checkout.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - checkout
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-checkout-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-compliance-api
+  name: AlgoVoi Compliance API
+  description: The compliance API from AlgoVoi — 5 operation(s) for compliance.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - compliance
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-compliance-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-customers-api
+  name: AlgoVoi Customers API
+  description: The Customers API from AlgoVoi — 1 operation(s) for customers.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - Customers
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-customers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-discovery-api
+  name: AlgoVoi Discovery API
+  description: Resource discovery and manifest endpoints
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - discovery
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-discovery-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-health-api
+  name: AlgoVoi Health API
+  description: The Health API from AlgoVoi — 1 operation(s) for health.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - Health
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-health-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-mandate-api
+  name: AlgoVoi Mandate API
+  description: The mandate API from AlgoVoi — 1 operation(s) for mandate.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - mandate
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-mandate-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-mandate-portal-api
+  name: AlgoVoi Mandate Portal API
+  description: The mandate-portal API from AlgoVoi — 3 operation(s) for mandate-portal.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - mandate-portal
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-mandate-portal-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-mesh-federation-api
+  name: AlgoVoi Mesh Federation API
+  description: The mesh-federation API from AlgoVoi — 2 operation(s) for mesh-federation.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - mesh-federation
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-mesh-federation-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-meta-api
+  name: AlgoVoi Meta API
+  description: Service metadata and health
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - meta
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-meta-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-mpp-api
+  name: AlgoVoi Mpp API
+  description: The mpp API from AlgoVoi — 6 operation(s) for mpp.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - mpp
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-mpp-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-payable-a2a-api
+  name: AlgoVoi Payable A2a API
+  description: The payable-a2a API from AlgoVoi — 1 operation(s) for payable-a2a.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - payable-a2a
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-payable-a2a-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-payable-api
+  name: AlgoVoi Payable API
+  description: The payable API from AlgoVoi — 6 operation(s) for payable.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - payable
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-payable-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-payable-identity-api
+  name: AlgoVoi Payable Identity API
+  description: The payable-identity API from AlgoVoi — 1 operation(s) for payable-identity.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - payable-identity
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-payable-identity-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-payment-links-api
+  name: AlgoVoi Payment Links API
+  description: The Payment Links API from AlgoVoi — 1 operation(s) for payment links.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - Payment Links
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-payment-links-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-payouts-api
+  name: AlgoVoi Payouts API
+  description: The Payouts API from AlgoVoi — 1 operation(s) for payouts.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - Payouts
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-payouts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-profiles-api
+  name: AlgoVoi Profiles API
+  description: Payable and free bench profiles
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - profiles
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-profiles-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-public-api
+  name: AlgoVoi Public API
+  description: The public API from AlgoVoi — 1 operation(s) for public.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - public
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-public-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-public-resource-api
+  name: AlgoVoi Public Resource API
+  description: The public-resource API from AlgoVoi — 1 operation(s) for public-resource.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - public-resource
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-public-resource-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-recurr-api
+  name: AlgoVoi Recurr API
+  description: The recurr API from AlgoVoi — 6 operation(s) for recurr.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - recurr
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-recurr-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-recurr-public-api
+  name: AlgoVoi Recurr Public API
+  description: The recurr-public API from AlgoVoi — 2 operation(s) for recurr-public.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - recurr-public
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-recurr-public-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-recurring-api
+  name: AlgoVoi Recurring API
+  description: The recurring API from AlgoVoi — 7 operation(s) for recurring.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - recurring
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-recurring-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-recurring-contracts-api
+  name: AlgoVoi Recurring Contracts API
+  description: The recurring-contracts API from AlgoVoi — 1 operation(s) for recurring-contracts.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - recurring-contracts
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-recurring-contracts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-recurring-hosted-auth-api
+  name: AlgoVoi Recurring Hosted Auth API
+  description: The recurring-hosted-auth API from AlgoVoi — 2 operation(s) for recurring-hosted-auth.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - recurring-hosted-auth
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-recurring-hosted-auth-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-resources-api
+  name: AlgoVoi Resources API
+  description: The resources API from AlgoVoi — 1 operation(s) for resources.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - resources
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-resources-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-signup-api
+  name: AlgoVoi Signup API
+  description: The signup API from AlgoVoi — 2 operation(s) for signup.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - signup
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-signup-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-subscriptions-api
+  name: AlgoVoi Subscriptions API
+  description: The Subscriptions API from AlgoVoi — 6 operation(s) for subscriptions.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - Subscriptions
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-subscriptions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-suite-store-api
+  name: AlgoVoi Suite Store API
+  description: The suite-store API from AlgoVoi — 4 operation(s) for suite-store.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - suite-store
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-suite-store-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-verify-api
+  name: AlgoVoi Verify API
+  description: The Verify API from AlgoVoi — 6 operation(s) for verify.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - Verify
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-verify-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-well-known-api
+  name: AlgoVoi .well Known API
+  description: The .well Known API from AlgoVoi — 2 operation(s) for .well known.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - .well Known
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-well-known-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-x402-api
+  name: AlgoVoi X402 API
+  description: The x402 API from AlgoVoi — 2 operation(s) for x402.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - x402
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-x402-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
+- aid: algovoi-co-uk:algovoi-co-uk-x402-protected-api
+  name: AlgoVoi X402 Protected API
+  description: The x402-protected API from AlgoVoi — 1 operation(s) for x402-protected.
+  humanURL: https://docs.algovoi.co.uk/algovoi-pay
+  baseURL: https://pay.algovoi.co.uk
+  tags:
+  - x402-protected
+  properties:
+  - type: OpenAPI
+    url: openapi/algovoi-co-uk-x402-protected-api-openapi.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/algovoi-pay
+  - type: APIReference
+    url: https://pay.algovoi.co.uk/docs
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/chain-agnostic-negotiation
+  - type: AgentCard
+    url: a2a/algovoi-co-uk-a2a.yml
+  - type: AgentCard
+    url: https://pay.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-pay-llms.txt
+  - type: LLMsTxt
+    url: https://pay.algovoi.co.uk/llms.txt
+  - type: Authentication
+    url: authentication/algovoi-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: Idempotency
+    url: conventions/algovoi-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/algovoi-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/algovoi-co-uk-rate-limits.yml
+  - type: Plans
+    url: plans/algovoi-co-uk-plans-pricing.yml
+  - type: Sandbox
+    url: sandbox/algovoi-co-uk-sandbox.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: APIReference
+    url: https://docs.algovoi.co.uk/api-reference/introduction
+  - type: GettingStarted
+    url: https://docs.algovoi.co.uk/quickstart
+  - type: Authentication
+    url: https://docs.algovoi.co.uk/api-reference/authentication
+  - type: ErrorCodes
+    url: https://docs.algovoi.co.uk/api-reference/errors
+  - type: RateLimits
+    url: https://docs.algovoi.co.uk/api-reference/rate-limits
+  - type: Webhooks
+    url: asyncapi/algovoi-co-uk-webhooks.yml
+  - type: Webhooks
+    url: https://docs.algovoi.co.uk/integrations/outbound-webhooks
+  - type: DataModel
+    url: data-model/algovoi-co-uk-data-model.yml
+  - type: AgentCard
+    url: https://api.algovoi.co.uk/.well-known/agent-card.json
+  - type: SignUp
+    url: https://dash.algovoi.co.uk/signup
+  - type: Components
+    url: components/algovoi-co-uk-components.yml
+  - type: Documentation
+    url: https://agents.algovoi.co.uk/clinic/guide
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/rfc9421-verifier
+  - type: APIReference
+    url: https://agents.algovoi.co.uk/docs
+  - type: AgentCard
+    url: https://agents.algovoi.co.uk/.well-known/agent-card.json
+  - type: LLMsTxt
+    url: llms/algovoi-co-uk-clinic-llms.txt
+  - type: LLMsTxt
+    url: https://agents.algovoi.co.uk/llms.txt
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/agent-trust-bench
+  - type: Dashboard
+    url: https://agent-trust-bench.algovoi.co.uk/stats
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/audit-verifier
+  - type: APIReference
+    url: https://verify.algovoi.co.uk/docs
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/algovoi-audit-verifier
+  - type: ToolCrosswalk
+    url: mcp/algovoi-co-uk-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.algovoi.co.uk/integrations/mcp-server
+  - type: SourceCode
+    url: https://github.com/chopmob-cloud/AlgoVoi-MCP-Server
+  - type: Packages
+    url: packages/algovoi-co-uk-packages.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/algovoi-co-uk-pay-overlay.yaml
+- type: AgentSkill
+  url: skills/algovoi-co-uk-pay-per-call-verification.md
+- type: AgentSkill
+  url: skills/algovoi-co-uk-algovoi.md
+- type: AgentSkill
+  url: skills/algovoi-co-uk-hosted-checkout.md
+- type: MCPServer
+  url: https://agents.algovoi.co.uk/mcp
+- type: Overlay
+  url: overlays/algovoi-co-uk-clinic-overlay.yaml
+- type: AgentSkill
+  url: skills/algovoi-co-uk-rfc9421-clinic.md
+- type: Overlay
+  url: overlays/algovoi-co-uk-agent-trust-bench-overlay.yaml
+- type: Overlay
+  url: overlays/algovoi-co-uk-audit-verifier-overlay.yaml
+- type: MCPServer
+  url: https://mcp.algovoi.co.uk/mcp
 - type: DomainSecurity
   url: security/algovoi-co-uk-domain-security.yml
 - type: AgenticAccess
@@ -495,3 +3723,10 @@ x-enrichment:
   status: enriched
   artifacts_added: 69
   pass: local-v3
+x-a2a:
+  verified: true
+  probed: '2026-09-26'
+  url: "https://pay.algovoi.co.uk/.well-known/agent-card.json"
+  grade: "conformant"
+  protocol_version: "0.3.0"
+  control: 404

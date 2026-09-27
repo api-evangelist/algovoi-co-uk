@@ -1,0 +1,232 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Suite Store API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged suite-store across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: suite-store
+paths:
+  /suite-store/checkout:
+    post:
+      tags:
+      - suite-store
+      summary: Suite Store Checkout
+      description: Create a hosted-checkout payment link + a pending order keyed by the link token.
+      operationId: suite_store_checkout_suite_store_checkout_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutBody'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /suite-store/settled:
+    post:
+      tags:
+      - suite-store
+      summary: Suite Store Settled
+      description: 'Inbound settlement webhook. Verify HMAC → fulfil → cache + email. Idempotent.
+
+
+        Returns 200 once fulfilled (or already fulfilled / not-a-suite-order); 5xx on fulfilment failure
+
+        so the outbound dispatcher redelivers with backoff.'
+      operationId: suite_store_settled_suite_store_settled_post
+      parameters:
+      - name: x-algovoi-signature
+        in: header
+        required: false
+        schema:
+          type: string
+          default: ''
+          title: X-Algovoi-Signature
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /suite-store/order/{token}/activate:
+    post:
+      tags:
+      - suite-store
+      summary: Suite Store Activate
+      description: 'Bind a paid Agent Mesh entitlement to its holder''s agent DIDs and mint the licence.
+
+
+        The mesh settles only for a PARTY to a transaction, so the licence must name its holder. We
+
+        cannot know that at checkout, hence this step.
+
+
+        Binding is near-permanent by design. Same DIDs => idempotent (re-fetch your licence). Different
+
+        DIDs => a rebind, allowed only once every REBIND_COOLDOWN (see the constant): rare enough that no
+
+        one can rebind per-counterparty to run a rail, frequent enough to rescue a lost key. A rebind
+
+        re-mints the licence bound to the new DIDs under a fresh fulfilment ref and supersedes the old
+
+        one in our records. The old licence is offline-verifiable, so this cannot claw back a *stolen*
+
+        key already in another party''s hands — it restores control after a genuine loss.
+
+
+        The read-then-write runs under SELECT … FOR UPDATE. Without that row lock two concurrent
+
+        activations could both observe "not yet bound" and both mint, quietly defeating the whole
+
+        control (a TOCTOU race). The lock is load-bearing security, not an optimisation.'
+      operationId: suite_store_activate_suite_store_order__token__activate_post
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivateBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /suite-store/order/{token}/status:
+    get:
+      tags:
+      - suite-store
+      summary: Suite Store Order Status
+      operationId: suite_store_order_status_suite_store_order__token__status_get
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+components:
+  schemas:
+    CheckoutBody:
+      properties:
+        package:
+          type: string
+          title: Package
+        email:
+          type: string
+          title: Email
+        accepted_terms:
+          type: boolean
+          title: Accepted Terms
+          default: false
+        network:
+          type: string
+          title: Network
+          default: ''
+        term:
+          type: string
+          title: Term
+          default: perpetual
+      type: object
+      required:
+      - package
+      - email
+      title: CheckoutBody
+    ActivateBody:
+      properties:
+        agent_dids:
+          items:
+            type: string
+          type: array
+          title: Agent Dids
+      type: object
+      required:
+      - agent_dids
+      title: ActivateBody
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

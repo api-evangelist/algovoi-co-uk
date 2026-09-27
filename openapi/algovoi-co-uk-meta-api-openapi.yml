@@ -1,0 +1,78 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Meta API
+  version: 0.1.0
+  contact:
+    email: research@algovoi.co.uk
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  x-discovery-url: https://agent-trust-bench.algovoi.co.uk/discovery/resources
+  x-stats-html-url: https://agent-trust-bench.algovoi.co.uk/stats
+  x-stats-url: https://agent-trust-bench.algovoi.co.uk/stats.json
+  x-well-known-url: https://agent-trust-bench.algovoi.co.uk/.well-known/x402.json
+  description: 'Operations tagged meta across 2 of this provider''s published API definitions: algovoi-co-uk-agent-trust-bench-openapi.json, algovoi-co-uk-agent-trust-bench-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://agent-trust-bench.algovoi.co.uk
+  description: Production
+tags:
+- name: Meta
+  description: Service metadata and health
+paths:
+  /stats.json:
+    get:
+      operationId: get_stats
+      summary: Aggregate bench statistics (JSON)
+      description: 'Returns global counts: total challenges issued, payments claimed, payments verified, and per-profile breakdowns. The HTML dashboard for the same data lives at /stats.'
+      responses:
+        '200':
+          description: Stats
+          content:
+            application/json:
+              schema:
+                type: object
+      tags:
+      - Meta
+    servers:
+    - url: https://agent-trust-bench.algovoi.co.uk
+      description: Production
+  /openapi.json:
+    get:
+      operationId: openapi_schema
+      summary: This OpenAPI schema
+      responses:
+        '200':
+          description: OpenAPI 3.1.0 schema
+          content:
+            application/json:
+              schema:
+                type: object
+      tags:
+      - Meta
+    servers:
+    - url: https://agent-trust-bench.algovoi.co.uk
+      description: Production
+  /health:
+    get:
+      operationId: health
+      summary: Health check
+      responses:
+        '200':
+          description: Service healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  service:
+                    type: string
+      tags:
+      - Meta
+    servers:
+    - url: https://agent-trust-bench.algovoi.co.uk
+      description: Production
+x-refined-from:
+- algovoi-co-uk-agent-trust-bench-openapi.json
+- algovoi-co-uk-agent-trust-bench-openapi.yml

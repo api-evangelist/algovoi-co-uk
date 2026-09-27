@@ -1,0 +1,162 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Mandate API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged mandate across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: mandate
+paths:
+  /mandate/pay:
+    post:
+      tags:
+      - mandate
+      summary: Mandate Pay
+      description: 'Pay for a resource using a mandate JWT.
+
+
+        The mandate JWT is passed as a standard HTTP Bearer token.
+
+        No X-Tenant-Id header is required — mandate tokens are cross-tenant.
+
+
+        On success, the mandate''s balance_minor is debited and an on-chain transfer
+
+        from AlgoVoi''s hot wallet to the merchant is executed. The response contains
+
+        a signed access_token granting access to the resource.'
+      operationId: mandate_pay_mandate_pay_post
+      parameters:
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MandatePayRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MandatePayResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+components:
+  schemas:
+    MandatePayResponse:
+      properties:
+        charge_id:
+          type: string
+          title: Charge Id
+        amount_minor:
+          type: integer
+          title: Amount Minor
+        currency:
+          type: string
+          title: Currency
+        tx_id:
+          type: string
+          title: Tx Id
+        chain:
+          type: string
+          title: Chain
+        remaining_balance_minor:
+          type: integer
+          title: Remaining Balance Minor
+        access_token:
+          type: string
+          title: Access Token
+      type: object
+      required:
+      - charge_id
+      - amount_minor
+      - currency
+      - tx_id
+      - chain
+      - remaining_balance_minor
+      - access_token
+      title: MandatePayResponse
+    MandatePayRequest:
+      properties:
+        tenant_id:
+          type: string
+          format: uuid
+          title: Tenant Id
+          description: UUID of the merchant tenant
+        resource_id:
+          type: string
+          format: uuid
+          title: Resource Id
+          description: UUID of the resource to pay for
+        max_amount_minor:
+          type: integer
+          minimum: 0.0
+          title: Max Amount Minor
+          description: Agent-supplied spending ceiling in GBP pence (self-guard). 0 = no agent cap (mandate's own balance/period cap still applies).
+          default: 0
+        description:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          title: Description
+          description: Optional human-readable label for the charge ledger
+      type: object
+      required:
+      - tenant_id
+      - resource_id
+      title: MandatePayRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

@@ -1,0 +1,182 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Payable Identity API
+  version: 1.0.0
+  description: 'Operations tagged payable-identity across 2 of this provider''s published API definitions: algovoi-co-uk-pay-openapi.json, algovoi-co-uk-pay-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: payable-identity
+paths:
+  /v1/receipt/verify:
+    post:
+      tags:
+      - payable-identity
+      summary: Verify Receipt Post
+      operationId: verify_receipt_post_v1_receipt_verify_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiptVerifyRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptVerifyResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ReceiptVerifyRequest:
+      properties:
+        jws:
+          type: string
+          title: Jws
+          description: Compact JWS string (header.payload.signature) as returned by /compliance/screen (compliance_receipt_jws field) or /verify (settlement_attestation_jws field).
+        expected_payment_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expected Payment Hash
+          description: 'If supplied, the receipt''s payment_hash field must equal this value. Use to bind a receipt to a specific transaction. Format: ''sha256:<hex>''.'
+        receipt_required:
+          type: boolean
+          title: Receipt Required
+          description: If True, treat a missing JWS as a MISSING_ENVELOPE error rather than a format error.
+          default: false
+        jwks:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Jwks
+          description: 'Optional external JWKS dict ({''keys'': [...]}) for verifying receipts signed by a third-party provider. If omitted, AlgoVoi''s own platform key is used.'
+      type: object
+      required:
+      - jws
+      title: ReceiptVerifyRequest
+      description: Request body for POST /v1/receipt/verify.
+    ReceiptVerifyResponse:
+      properties:
+        verified:
+          type: boolean
+          title: Verified
+        error_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error Code
+        error_message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error Message
+        error_field:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error Field
+        screen_result:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Screen Result
+        settlement_status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Settlement Status
+        canon_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Canon Version
+        alg:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Alg
+        kid:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Kid
+        screen_provider_did:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Screen Provider Did
+        payer_ref:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payer Ref
+        payment_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payment Hash
+        service_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Service Id
+        request_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Request Hash
+        response_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Response Hash
+      type: object
+      required:
+      - verified
+      title: ReceiptVerifyResponse
+      description: Verification result.
+x-refined-from:
+- algovoi-co-uk-pay-openapi.json
+- algovoi-co-uk-pay-openapi.yml

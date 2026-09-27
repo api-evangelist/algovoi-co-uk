@@ -1,0 +1,127 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Public Resource API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged public-resource across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: public-resource
+paths:
+  /r/{tenant_short_id}/{resource_id}:
+    get:
+      tags:
+      - public-resource
+      summary: Public Resource
+      description: Public, tenant-scoped x402 resource endpoint. See module docstring.
+      operationId: public_resource_r__tenant_short_id___resource_id__get
+      parameters:
+      - name: tenant_short_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tenant Short Id
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Resource Id
+      - name: X-PAYMENT
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Payment
+      - name: PAYMENT-SIGNATURE
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payment-Signature
+      - name: X-ATB-Credential
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Atb-Credential
+      - name: X-ATB-ZK-Credential
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Atb-Zk-Credential
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '402':
+          description: Payment Required
+        '404':
+          description: Resource not found
+      minPrice: 10000
+      maxPrice: 10000
+      x-payment-info:
+        authMode: payment
+        protocols:
+        - x402
+        price:
+          mode: fixed
+          amount: '10000'
+          currency: '0x20c000000000000000000000b9537d11c60e8b50'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

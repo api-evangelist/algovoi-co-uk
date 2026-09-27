@@ -1,0 +1,619 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Verify API
+  x-refined-note:
+  - x-guidance differs across the merged source definitions and was not carried
+  version: '1.0'
+  description: 'Operations tagged Verify across 6 of this provider''s published API definitions: algovoi-co-uk-audit-verifier-openapi.json, algovoi-co-uk-clinic-openapi.json, algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-audit-verifier-openapi.yml, algovoi-co-uk-clinic-openapi.yml, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: Verify
+paths:
+  /verify:
+    post:
+      summary: Verify
+      description: 'Verify an audit bundle.
+
+
+        The request body MUST be JSON. The bundle is verified in-memory and the
+
+        result is returned; nothing is persisted. If the bundle is signed and
+
+        you want bundle_signature verified, pass the signing key in the
+
+        `X-Audit-Bundle-Key` header; otherwise the signature step is skipped
+
+        (the structural checks 1 and 2 still run).'
+      operationId: verify_verify_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      tags:
+      - Verify
+  /verify/rfc9421:
+    post:
+      summary: Verify
+      description: 'Verify a signed message offline. Caller supplies the envelope + the key they
+
+        EXPECT the signer to hold (anchoring). Returns valid/errors -- never throws on a
+
+        verification failure, only on a malformed request.'
+      operationId: verify_verify_rfc9421_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Payload
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Verify Verify Rfc9421 Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Verify
+    get:
+      tags:
+      - Verify
+      summary: RFC 9421 verifier — schema and spec reference
+      description: Return the input schema and spec reference for the RFC 9421 verifier.
+      operationId: rfc9421_info_verify_rfc9421_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      x-payment-info:
+        authMode: api_key
+  /verify/rfc9421/explain:
+    post:
+      summary: Explain
+      description: 'Debug a signed message: pass/fail PLUS why -- the exact canonical signing base, covered components,
+
+        params, a Content-Digest recomputation, and human ''how to fix'' notes. Free. This is the #1 thing agent
+
+        builders asked us to ship. public_key_hex/did_key is optional; without it you still get the signing base.'
+      operationId: explain_verify_rfc9421_explain_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Payload
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Explain Verify Rfc9421 Explain Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Verify
+  /verify/rfc9421/sign:
+    post:
+      summary: Sign Demo
+      description: 'Known-good signer/playground: give raw request inputs, get a correctly-signed request + the
+
+        signing base + an EPHEMERAL demo key to verify it with. NEVER send a private key — it signs with a
+
+        fresh throwaway key so you can diff your own signer against a reference. Free.'
+      operationId: sign_demo_verify_rfc9421_sign_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Payload
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Sign Demo Verify Rfc9421 Sign Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Verify
+  /v1/verify:
+    post:
+      tags:
+      - Verify
+      summary: MPP payment verification
+      description: 'Verify an on-chain payment transaction for the MPP adapter.
+
+
+        The adapter submits the tx_id and network from the payer''s credential;
+
+        the gateway looks up the resource definition to get the expected amount
+
+        and receiver, then delegates to the facilitator for on-chain confirmation.
+
+
+        Returns a receipt JWT on success.'
+      operationId: mpp_verify_v1_verify_post
+      parameters:
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MppVerifyRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MppVerifyResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /verify/action-ref:
+    get:
+      tags:
+      - Verify
+      summary: action_ref verifier — schema and spec reference
+      description: Return the input schema and spec reference for the action_ref verifier.
+      operationId: action_ref_info_verify_action_ref_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      x-payment-info:
+        authMode: api_key
+    post:
+      tags:
+      - Verify
+      summary: Compute and verify an action_ref canonical hash
+      description: 'Compute the canonical action_ref for the supplied payload.
+
+
+        The canonical form is RFC 8785 JCS (keys sorted, no whitespace).
+
+        The action_ref is SHA-256(canonical_bytes), lowercase hex.
+
+
+        This is the same computation the AlgoVoi production stack applies
+
+        before issuing a compliance receipt — any implementation that
+
+        produces a different hash for the same input is non-conformant.'
+      operationId: verify_action_ref_verify_action_ref_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionRefRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionRefResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    MppVerifyRequest:
+      properties:
+        tx_id:
+          type: string
+          title: Tx Id
+        network:
+          type: string
+          title: Network
+        resource_id:
+          type: string
+          title: Resource Id
+        tenant_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tenant Id
+      type: object
+      required:
+      - tx_id
+      - network
+      - resource_id
+      title: MppVerifyRequest
+    ValidationError_2:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    MppVerifyResponse:
+      properties:
+        verified:
+          type: boolean
+          title: Verified
+        payer:
+          type: string
+          title: Payer
+          default: ''
+        amount:
+          type: integer
+          title: Amount
+          default: 0
+        receipt:
+          type: string
+          title: Receipt
+          default: ''
+        error:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error
+      type: object
+      required:
+      - verified
+      title: MppVerifyResponse
+    ActionRefResponse:
+      properties:
+        action_ref:
+          type: string
+          title: Action Ref
+        canonical_json:
+          type: string
+          title: Canonical Json
+        sha256_hex:
+          type: string
+          title: Sha256 Hex
+        spec_ref:
+          type: string
+          title: Spec Ref
+        canonicalization:
+          type: string
+          title: Canonicalization
+        implementations_attested:
+          type: integer
+          title: Implementations Attested
+        attestation_ref:
+          type: string
+          title: Attestation Ref
+      type: object
+      required:
+      - action_ref
+      - canonical_json
+      - sha256_hex
+      - spec_ref
+      - canonicalization
+      - implementations_attested
+      - attestation_ref
+      title: ActionRefResponse
+    ActionRefRequest:
+      properties:
+        agent_id:
+          type: string
+          title: Agent Id
+          description: DID or URL identifying the agent (e.g. did:web:api.example.com)
+        action_type:
+          type: string
+          title: Action Type
+          description: Dot-namespaced action class (e.g. payment.authorize)
+        scope:
+          type: string
+          title: Scope
+          description: Chain-scoped target (e.g. base:0xabc...)
+        timestamp_ms:
+          type: integer
+          title: Timestamp Ms
+          description: Unix timestamp in integer milliseconds — NOT float
+      type: object
+      required:
+      - agent_id
+      - action_type
+      - scope
+      - timestamp_ms
+      title: ActionRefRequest
+    Rfc9421VerifyResponse:
+      properties:
+        valid:
+          type: boolean
+          title: Valid
+        signature_valid:
+          type: boolean
+          title: Signature Valid
+        content_digest_valid:
+          type: boolean
+          title: Content Digest Valid
+        signing_base:
+          type: string
+          title: Signing Base
+        covered_components:
+          items:
+            type: string
+          type: array
+          title: Covered Components
+        parameters:
+          additionalProperties: true
+          type: object
+          title: Parameters
+        label:
+          type: string
+          title: Label
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+        spec_ref:
+          type: string
+          title: Spec Ref
+        digest_spec_ref:
+          type: string
+          title: Digest Spec Ref
+      type: object
+      required:
+      - valid
+      - signature_valid
+      - content_digest_valid
+      - signing_base
+      - covered_components
+      - parameters
+      - label
+      - errors
+      - spec_ref
+      - digest_spec_ref
+      title: Rfc9421VerifyResponse
+    Rfc9421VerifyRequest:
+      properties:
+        method:
+          type: string
+          title: Method
+          description: HTTP method (e.g. POST)
+        authority:
+          type: string
+          title: Authority
+          description: HTTP authority (host[:port])
+        path:
+          type: string
+          title: Path
+          description: Request path + query (e.g. /checkout?token=abc)
+        scheme:
+          type: string
+          title: Scheme
+          description: URI scheme
+          default: https
+        headers:
+          additionalProperties:
+            type: string
+          type: object
+          title: Headers
+          description: All HTTP headers as a flat dict (lowercase keys). Must include 'signature-input' and 'signature'. Include 'content-digest' when require_content_digest=true.
+        body_b64:
+          type: string
+          title: Body B64
+          description: Request body, base64-encoded. Empty string for requests with no body.
+          default: ''
+        public_key_hex:
+          type: string
+          title: Public Key Hex
+          description: Ed25519 public key as 64-char hex (32 bytes). Must match the keyid used when signing.
+        require_content_digest:
+          type: boolean
+          title: Require Content Digest
+          description: If true, verify Content-Digest header against the body. Set false for GET/HEAD requests.
+          default: true
+        mode:
+          type: string
+          title: Mode
+          description: '''rfc9421'' (default) for RFC 9421 §2.5 compliant signing base. ''algovoi-v0'' for legacy format used in rfc9421_proxy_chain_v0 conformance vectors.'
+          default: rfc9421
+      type: object
+      required:
+      - method
+      - authority
+      - path
+      - headers
+      - public_key_hex
+      title: Rfc9421VerifyRequest
+    ValidationError_3:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ValidationError_4:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ValidationError_5:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+x-refined-from:
+- algovoi-co-uk-audit-verifier-openapi.json
+- algovoi-co-uk-clinic-openapi.json
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-audit-verifier-openapi.yml
+- algovoi-co-uk-clinic-openapi.yml
+- algovoi-co-uk-gateway-openapi.yml

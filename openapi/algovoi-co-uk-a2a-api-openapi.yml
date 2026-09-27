@@ -1,0 +1,846 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk A2a API
+  x-refined-note:
+  - x-guidance differs across the merged source definitions and was not carried
+  version: '1.0'
+  description: 'Operations tagged A2a across 4 of this provider''s published API definitions: algovoi-co-uk-clinic-openapi.json, algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-clinic-openapi.yml, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: A2a
+paths:
+  /a2a:
+    get:
+      summary: A2A Hint
+      description: A GET probe gets a helpful pointer rather than a bare 405; the real transport is POST.
+      operationId: a2a_hint_a2a_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      tags:
+      - A2a
+    post:
+      summary: A2A
+      operationId: a2a_a2a_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      tags:
+      - A2a
+  /ext/scoped-authorization-receipts/v1:
+    get:
+      tags:
+      - A2a
+      summary: Scoped Auth Receipts Profile
+      operationId: _scoped_auth_receipts_profile_ext_scoped_authorization_receipts_v1_head
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      x-payment-info:
+        authMode: api_key
+    head:
+      tags:
+      - A2a
+      summary: Scoped Auth Receipts Profile
+      operationId: headExtScopedAuthorizationReceiptsV1
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      x-payment-info:
+        authMode: api_key
+      x-operation-id-source: normalized
+      x-operation-id-original: _scoped_auth_receipts_profile_ext_scoped_authorization_receipts_v1_head
+  /extendedAgentCard:
+    get:
+      tags:
+      - A2a
+      summary: Extended Agent Card
+      description: 'Authenticated extended agent card.
+
+        Returns the base card enriched with tenant-specific endpoint info.'
+      operationId: extended_agent_card_extendedAgentCard_get
+      parameters:
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: none
+  /message:send:
+    post:
+      tags:
+      - A2a
+      summary: Send Message
+      description: 'Send a message to the AlgoVoi payment agent (A2A HTTP+JSON binding).
+
+
+        Returns the completed Task as the bare resource, serialized to the
+
+        negotiated A2A version (0.3 or 1.0). The AlgoVoi payment skills
+
+        (verify-payment, create-checkout, check-status, post-twitter-checkout) are
+
+        invoked via a `skill` marker in a DataPart; a skill-less message is
+
+        acknowledged with a completed task.'
+      operationId: send_message_message_send_post
+      parameters:
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_SendMessageRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /message:stream:
+    post:
+      tags:
+      - A2a
+      summary: Message Stream
+      description: 'Streaming is not supported (capabilities.streaming=false) — return a
+
+        typed UnsupportedOperation error (400) rather than a bare 404/405.'
+      operationId: message_stream_message_stream_post
+      parameters:
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /tasks/{task_id}/pushNotificationConfigs/{config_id}:
+    get:
+      tags:
+      - A2a
+      summary: Push Notification Config
+      description: Push notifications are not supported (capabilities.pushNotifications=false).
+      operationId: push_notification_config_tasks__task_id__pushNotificationConfigs__config_id__get
+      parameters:
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Task Id
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Config Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+    delete:
+      tags:
+      - A2a
+      summary: Push Notification Config
+      description: Push notifications are not supported (capabilities.pushNotifications=false).
+      operationId: deleteTasksByTaskIdPushNotificationConfigsByConfigId
+      parameters:
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Task Id
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Config Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+      x-operation-id-source: normalized
+      x-operation-id-original: push_notification_config_tasks__task_id__pushNotificationConfigs__config_id__get
+  /tasks/{task_id}/pushNotificationConfigs:
+    post:
+      tags:
+      - A2a
+      summary: Push Notification Config
+      description: Push notifications are not supported (capabilities.pushNotifications=false).
+      operationId: push_notification_config_tasks__task_id__pushNotificationConfigs_post
+      parameters:
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Task Id
+      - name: config_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Config Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+    get:
+      tags:
+      - A2a
+      summary: Push Notification Config
+      description: Push notifications are not supported (capabilities.pushNotifications=false).
+      operationId: getTasksByTaskIdPushNotificationConfigs
+      parameters:
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Task Id
+      - name: config_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Config Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+      x-operation-id-source: normalized
+      x-operation-id-original: push_notification_config_tasks__task_id__pushNotificationConfigs_post
+  /tasks/{task_id}:
+    get:
+      tags:
+      - A2a
+      summary: Get Task
+      description: Get the current state of a task by ID (serialized to the negotiated version).
+      operationId: get_task_tasks__task_id__get
+      parameters:
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Task Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /tasks/{task_id}:cancel:
+    post:
+      tags:
+      - A2a
+      summary: Cancel Task
+      description: 'Cancel a task. Since AlgoVoi tasks complete synchronously, only
+
+        tasks in ''submitted'' or ''working'' state can be cancelled.
+
+        Completed/failed tasks return TaskNotCancelable.'
+      operationId: cancel_task_tasks__task_id__cancel_post
+      parameters:
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Task Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /tasks:
+    get:
+      tags:
+      - A2a
+      summary: List Tasks
+      description: 'List recent tasks for this session. Returns tasks from the in-process store
+
+        (TTL 10 minutes), serialized to the negotiated A2A version.'
+      operationId: list_tasks_tasks_get
+      parameters:
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /a2a/jsonrpc:
+    post:
+      tags:
+      - A2a
+      summary: A2A Jsonrpc
+      description: A2A JSON-RPC 2.0 endpoint (advertised as the JSONRPC interface).
+      operationId: a2a_jsonrpc_a2a_jsonrpc_post
+      parameters:
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /a2a/gibberlink:
+    post:
+      tags:
+      - A2a
+      summary: A2A Gibberlink
+      operationId: a2a_gibberlink_a2a_gibberlink_post
+      parameters:
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    _SendMessageRequest:
+      properties:
+        message:
+          $ref: '#/components/schemas/_Message'
+        configuration:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Configuration
+      type: object
+      required:
+      - message
+      title: _SendMessageRequest
+    _Message:
+      properties:
+        messageId:
+          type: string
+          title: Messageid
+        contextId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contextid
+        taskId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Taskid
+        role:
+          type: string
+          title: Role
+          default: user
+        parts:
+          items:
+            $ref: '#/components/schemas/_Part'
+          type: array
+          title: Parts
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+      type: object
+      title: _Message
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    _Part:
+      properties:
+        kind:
+          type: string
+          title: Kind
+          default: data
+        data:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Data
+        text:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Text
+        file:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: File
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+        raw:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Raw
+        filename:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Filename
+        mediaType:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Mediatype
+        mimeType:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Mimetype
+      additionalProperties: true
+      type: object
+      title: _Part
+x-refined-from:
+- algovoi-co-uk-clinic-openapi.json
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-clinic-openapi.yml
+- algovoi-co-uk-gateway-openapi.yml

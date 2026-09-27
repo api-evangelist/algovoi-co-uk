@@ -1,0 +1,32 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Recurring Contracts API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged recurring-contracts across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: recurring-contracts
+paths:
+  /v1/recurring/contracts/algorand/spending_cap_vault_v1:
+    get:
+      tags:
+      - recurring-contracts
+      summary: Compiled TEAL bytecode for the Algorand SpendingCapVault v1 contract
+      description: 'Return the compiled approval + clear TEAL programs for the hosted-auth
+
+        page to construct and sign the vault-deploy ApplicationCreate transaction.'
+      operationId: get_algorand_spending_cap_vault_v1_v1_recurring_contracts_algorand_spending_cap_vault_v1_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Get Algorand Spending Cap Vault V1 V1 Recurring Contracts Algorand Spending Cap Vault V1 Get
+      x-payment-info:
+        authMode: api_key
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

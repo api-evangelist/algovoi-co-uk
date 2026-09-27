@@ -1,0 +1,950 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Mpp API
+  x-refined-note:
+  - x-guidance differs across the merged source definitions and was not carried
+  version: '1.0'
+  description: 'Operations tagged mpp across 4 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-pay-openapi.json, algovoi-co-uk-gateway-openapi.yml, algovoi-co-uk-pay-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: mpp
+paths:
+  /mpp/challenge:
+    post:
+      tags:
+      - mpp
+      summary: Mpp Challenge
+      description: 'Explicit challenge pre-fetch for MPP agents that want to obtain a
+
+        challenge token before building their payment transaction.
+
+
+        Returns the same challenge object that GET /mpp/{resource_id} returns
+
+        in its 401 body, allowing agents to pipeline challenge fetch → pay →
+
+        proof submission without the round-trip to the resource endpoint.'
+      operationId: mpp_challenge_mpp_challenge_post
+      parameters:
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MppChallengeRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MppChallengeResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /mpp/probe:
+    get:
+      tags:
+      - mpp
+      summary: Mpp Probe
+      description: 'Discovery probe + operator-level paid resource.
+
+
+        No Authorization header → 402 + WWW-Authenticate: Payment challenge.
+
+        Authorization: Payment → verify on-chain → 200 receipt.
+
+
+        Payment goes to the AlgoVoi operator address (not a tenant). No DB
+
+        session needed — facilitator verifies on-chain; receipt is logged.'
+      operationId: mpp_probe_mpp_probe_delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              description: Optional payment proof or invocation parameters
+              example: {}
+        required: false
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '402':
+          description: 'Payment Required — WWW-Authenticate: Payment'
+      minPrice: 10000
+      maxPrice: 10000
+      inputSchema:
+        type: object
+        additionalProperties: true
+      outputSchema:
+        type: object
+        properties:
+          receipt:
+            type: string
+          resource_id:
+            type: string
+          tx_id:
+            type: string
+      x-payment-info:
+        authMode: payment
+        protocols:
+        - x402
+        - mpp
+        price:
+          mode: fixed
+          amount: '10000'
+          currency: '0x20c000000000000000000000b9537d11c60e8b50'
+      x-discovery:
+        resources:
+        - url: https://api.algovoi.co.uk/mpp/probe
+          description: MPP probe — canonical Tempo USDCe payment challenge
+          network: tempo
+          amount: '10000'
+          asset: '0x20c000000000000000000000b9537d11c60e8b50'
+    put:
+      tags:
+      - mpp
+      summary: Mpp Probe
+      description: 'Discovery probe + operator-level paid resource.
+
+
+        No Authorization header → 402 + WWW-Authenticate: Payment challenge.
+
+        Authorization: Payment → verify on-chain → 200 receipt.
+
+
+        Payment goes to the AlgoVoi operator address (not a tenant). No DB
+
+        session needed — facilitator verifies on-chain; receipt is logged.'
+      operationId: putMppProbe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              description: Optional payment proof or invocation parameters
+              example: {}
+        required: false
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '402':
+          description: 'Payment Required — WWW-Authenticate: Payment'
+      minPrice: 10000
+      maxPrice: 10000
+      inputSchema:
+        type: object
+        additionalProperties: true
+      outputSchema:
+        type: object
+        properties:
+          receipt:
+            type: string
+          resource_id:
+            type: string
+          tx_id:
+            type: string
+      x-payment-info:
+        authMode: payment
+        protocols:
+        - x402
+        - mpp
+        price:
+          mode: fixed
+          amount: '10000'
+          currency: '0x20c000000000000000000000b9537d11c60e8b50'
+      x-discovery:
+        resources:
+        - url: https://api.algovoi.co.uk/mpp/probe
+          description: MPP probe — canonical Tempo USDCe payment challenge
+          network: tempo
+          amount: '10000'
+          asset: '0x20c000000000000000000000b9537d11c60e8b50'
+      x-operation-id-source: normalized
+      x-operation-id-original: mpp_probe_mpp_probe_delete
+    post:
+      tags:
+      - mpp
+      summary: Mpp Probe
+      description: 'Discovery probe + operator-level paid resource.
+
+
+        No Authorization header → 402 + WWW-Authenticate: Payment challenge.
+
+        Authorization: Payment → verify on-chain → 200 receipt.
+
+
+        Payment goes to the AlgoVoi operator address (not a tenant). No DB
+
+        session needed — facilitator verifies on-chain; receipt is logged.'
+      operationId: postMppProbe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              description: Optional payment proof or invocation parameters
+              example: {}
+        required: false
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '402':
+          description: 'Payment Required — WWW-Authenticate: Payment'
+      minPrice: 10000
+      maxPrice: 10000
+      inputSchema:
+        type: object
+        additionalProperties: true
+      outputSchema:
+        type: object
+        properties:
+          receipt:
+            type: string
+          resource_id:
+            type: string
+          tx_id:
+            type: string
+      x-payment-info:
+        authMode: payment
+        protocols:
+        - x402
+        - mpp
+        price:
+          mode: fixed
+          amount: '10000'
+          currency: '0x20c000000000000000000000b9537d11c60e8b50'
+      x-discovery:
+        resources:
+        - url: https://api.algovoi.co.uk/mpp/probe
+          description: MPP probe — canonical Tempo USDCe payment challenge
+          network: tempo
+          amount: '10000'
+          asset: '0x20c000000000000000000000b9537d11c60e8b50'
+      x-operation-id-source: normalized
+      x-operation-id-original: mpp_probe_mpp_probe_delete
+    delete:
+      tags:
+      - mpp
+      summary: Mpp Probe
+      description: 'Discovery probe + operator-level paid resource.
+
+
+        No Authorization header → 402 + WWW-Authenticate: Payment challenge.
+
+        Authorization: Payment → verify on-chain → 200 receipt.
+
+
+        Payment goes to the AlgoVoi operator address (not a tenant). No DB
+
+        session needed — facilitator verifies on-chain; receipt is logged.'
+      operationId: deleteMppProbe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              description: Optional payment proof or invocation parameters
+              example: {}
+        required: false
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '402':
+          description: 'Payment Required — WWW-Authenticate: Payment'
+      minPrice: 10000
+      maxPrice: 10000
+      inputSchema:
+        type: object
+        additionalProperties: true
+      outputSchema:
+        type: object
+        properties:
+          receipt:
+            type: string
+          resource_id:
+            type: string
+          tx_id:
+            type: string
+      x-payment-info:
+        authMode: payment
+        protocols:
+        - x402
+        - mpp
+        price:
+          mode: fixed
+          amount: '10000'
+          currency: '0x20c000000000000000000000b9537d11c60e8b50'
+      x-discovery:
+        resources:
+        - url: https://api.algovoi.co.uk/mpp/probe
+          description: MPP probe — canonical Tempo USDCe payment challenge
+          network: tempo
+          amount: '10000'
+          asset: '0x20c000000000000000000000b9537d11c60e8b50'
+      x-operation-id-source: normalized
+      x-operation-id-original: mpp_probe_mpp_probe_delete
+    options:
+      tags:
+      - mpp
+      summary: Mpp Probe
+      description: 'Discovery probe + operator-level paid resource.
+
+
+        No Authorization header → 402 + WWW-Authenticate: Payment challenge.
+
+        Authorization: Payment → verify on-chain → 200 receipt.
+
+
+        Payment goes to the AlgoVoi operator address (not a tenant). No DB
+
+        session needed — facilitator verifies on-chain; receipt is logged.'
+      operationId: optionsMppProbe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              description: Optional payment proof or invocation parameters
+              example: {}
+        required: false
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '402':
+          description: 'Payment Required — WWW-Authenticate: Payment'
+      minPrice: 10000
+      maxPrice: 10000
+      inputSchema:
+        type: object
+        additionalProperties: true
+      outputSchema:
+        type: object
+        properties:
+          receipt:
+            type: string
+          resource_id:
+            type: string
+          tx_id:
+            type: string
+      x-payment-info:
+        authMode: payment
+        protocols:
+        - x402
+        - mpp
+        price:
+          mode: fixed
+          amount: '10000'
+          currency: '0x20c000000000000000000000b9537d11c60e8b50'
+      x-discovery:
+        resources:
+        - url: https://api.algovoi.co.uk/mpp/probe
+          description: MPP probe — canonical Tempo USDCe payment challenge
+          network: tempo
+          amount: '10000'
+          asset: '0x20c000000000000000000000b9537d11c60e8b50'
+      x-operation-id-source: normalized
+      x-operation-id-original: mpp_probe_mpp_probe_delete
+    head:
+      tags:
+      - mpp
+      summary: Mpp Probe
+      description: 'Discovery probe + operator-level paid resource.
+
+
+        No Authorization header → 402 + WWW-Authenticate: Payment challenge.
+
+        Authorization: Payment → verify on-chain → 200 receipt.
+
+
+        Payment goes to the AlgoVoi operator address (not a tenant). No DB
+
+        session needed — facilitator verifies on-chain; receipt is logged.'
+      operationId: headMppProbe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              description: Optional payment proof or invocation parameters
+              example: {}
+        required: false
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '402':
+          description: 'Payment Required — WWW-Authenticate: Payment'
+      minPrice: 10000
+      maxPrice: 10000
+      inputSchema:
+        type: object
+        additionalProperties: true
+      outputSchema:
+        type: object
+        properties:
+          receipt:
+            type: string
+          resource_id:
+            type: string
+          tx_id:
+            type: string
+      x-payment-info:
+        authMode: payment
+        protocols:
+        - x402
+        - mpp
+        price:
+          mode: fixed
+          amount: '10000'
+          currency: '0x20c000000000000000000000b9537d11c60e8b50'
+      x-discovery:
+        resources:
+        - url: https://api.algovoi.co.uk/mpp/probe
+          description: MPP probe — canonical Tempo USDCe payment challenge
+          network: tempo
+          amount: '10000'
+          asset: '0x20c000000000000000000000b9537d11c60e8b50'
+      x-operation-id-source: normalized
+      x-operation-id-original: mpp_probe_mpp_probe_delete
+    patch:
+      tags:
+      - mpp
+      summary: Mpp Probe
+      description: 'Discovery probe + operator-level paid resource.
+
+
+        No Authorization header → 402 + WWW-Authenticate: Payment challenge.
+
+        Authorization: Payment → verify on-chain → 200 receipt.
+
+
+        Payment goes to the AlgoVoi operator address (not a tenant). No DB
+
+        session needed — facilitator verifies on-chain; receipt is logged.'
+      operationId: patchMppProbe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              description: Optional payment proof or invocation parameters
+              example: {}
+        required: false
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '402':
+          description: 'Payment Required — WWW-Authenticate: Payment'
+      minPrice: 10000
+      maxPrice: 10000
+      inputSchema:
+        type: object
+        additionalProperties: true
+      outputSchema:
+        type: object
+        properties:
+          receipt:
+            type: string
+          resource_id:
+            type: string
+          tx_id:
+            type: string
+      x-payment-info:
+        authMode: payment
+        protocols:
+        - x402
+        - mpp
+        price:
+          mode: fixed
+          amount: '10000'
+          currency: '0x20c000000000000000000000b9537d11c60e8b50'
+      x-discovery:
+        resources:
+        - url: https://api.algovoi.co.uk/mpp/probe
+          description: MPP probe — canonical Tempo USDCe payment challenge
+          network: tempo
+          amount: '10000'
+          asset: '0x20c000000000000000000000b9537d11c60e8b50'
+      x-operation-id-source: normalized
+      x-operation-id-original: mpp_probe_mpp_probe_delete
+  /mpp/{resource_id}:
+    get:
+      tags:
+      - mpp
+      summary: Mpp Resource
+      description: 'IETF draft-httpauth-payment resource gate.
+
+
+        No Authorization header → HTTP 401 + WWW-Authenticate: Payment challenge.
+
+        Authorization: Payment → validate challenge echo → verify on-chain → HTTP 200.
+
+
+        The x402 /protected/{resource_id} endpoint is completely unchanged.'
+      operationId: mpp_resource_mpp__resource_id__get
+      parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Resource Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '402':
+          description: Payment Required
+      minPrice: 10000
+      maxPrice: 10000
+      x-payment-info:
+        authMode: payment
+        protocols:
+        - mpp
+        - x402
+        price:
+          mode: fixed
+          amount: '10000'
+          currency: '0x20c000000000000000000000b9537d11c60e8b50'
+  /mpp/sub/{resource_id}:
+    post:
+      tags:
+      - mpp
+      summary: Mpp Subscription Resource
+      description: 'MPP subscription gate (API key auth).
+
+
+        No proof → 402 + intent="subscription" challenge with periodCount/periodUnit.
+
+        Credential present → verify authority tx → create MppSubscription → return subscriptionId.'
+      operationId: mpp_subscription_resource_mpp_sub__resource_id__post
+      parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Resource Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idempotency-Key
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '402':
+          description: Payment Required — subscription challenge
+      x-payment-info:
+        authMode: payment
+        protocols:
+        - mpp
+        intent: subscription
+    get:
+      tags:
+      - mpp
+      summary: Mpp Subscription Resource
+      description: 'MPP subscription gate (API key auth).
+
+
+        No proof → 402 + intent="subscription" challenge with periodCount/periodUnit.
+
+        Credential present → verify authority tx → create MppSubscription → return subscriptionId.'
+      operationId: getMppSubByResourceId
+      parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Resource Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idempotency-Key
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '402':
+          description: Payment Required — subscription challenge
+      x-payment-info:
+        authMode: payment
+        protocols:
+        - mpp
+        intent: subscription
+      x-operation-id-source: normalized
+      x-operation-id-original: mpp_subscription_resource_mpp_sub__resource_id__post
+  /mpp/verify/receipt:
+    post:
+      tags:
+      - mpp
+      summary: Mpp Verify Receipt
+      operationId: mpp_verify_receipt_mpp_verify_receipt_post
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayableReceiptVerifyRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /mpp/verify/rfc9421:
+    post:
+      tags:
+      - mpp
+      summary: Mpp Verify Rfc9421
+      operationId: mpp_verify_rfc9421_mpp_verify_rfc9421_post
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayableRfc9421VerifyRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    MppChallengeResponse:
+      properties:
+        challenge:
+          additionalProperties: true
+          type: object
+          title: Challenge
+        accepts:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Accepts
+      type: object
+      required:
+      - challenge
+      - accepts
+      title: MppChallengeResponse
+    MppChallengeRequest:
+      properties:
+        resource_id:
+          type: string
+          title: Resource Id
+        network:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Network
+      type: object
+      required:
+      - resource_id
+      title: MppChallengeRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PayableRfc9421VerifyRequest:
+      properties:
+        method:
+          type: string
+          title: Method
+        authority:
+          type: string
+          title: Authority
+        path:
+          type: string
+          title: Path
+        scheme:
+          type: string
+          title: Scheme
+          default: https
+        headers:
+          additionalProperties:
+            type: string
+          type: object
+          title: Headers
+        body_b64:
+          type: string
+          title: Body B64
+          default: ''
+        public_key_hex:
+          type: string
+          title: Public Key Hex
+        require_content_digest:
+          type: boolean
+          title: Require Content Digest
+          default: true
+        mode:
+          type: string
+          title: Mode
+          default: rfc9421
+      additionalProperties: false
+      type: object
+      required:
+      - method
+      - authority
+      - path
+      - headers
+      - public_key_hex
+      title: PayableRfc9421VerifyRequest
+    PayableReceiptVerifyRequest:
+      properties:
+        jws:
+          type: string
+          title: Jws
+        expected_payment_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expected Payment Hash
+        receipt_required:
+          type: boolean
+          title: Receipt Required
+          default: false
+        jwks:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Jwks
+      additionalProperties: false
+      type: object
+      required:
+      - jws
+      title: PayableReceiptVerifyRequest
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-pay-openapi.json
+- algovoi-co-uk-gateway-openapi.yml
+- algovoi-co-uk-pay-openapi.yml

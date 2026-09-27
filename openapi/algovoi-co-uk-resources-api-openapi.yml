@@ -1,0 +1,166 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Resources API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged resources across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: Resources
+paths:
+  /resources/{resource_id}:
+    get:
+      tags:
+      - Resources
+      summary: Get Resource
+      operationId: get_resource_resources__resource_id__get
+      parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Resource Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ResourceResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        resource_id:
+          type: string
+          title: Resource Id
+        networks:
+          items:
+            type: string
+          type: array
+          title: Networks
+        amount_microunits:
+          type: integer
+          title: Amount Microunits
+        asset_id:
+          anyOf:
+          - type: integer
+          - type: string
+          - type: 'null'
+          title: Asset Id
+        access_ttl_secs:
+          type: integer
+          title: Access Ttl Secs
+        requirement_ttl_secs:
+          type: integer
+          title: Requirement Ttl Secs
+        note_binding_required:
+          type: boolean
+          title: Note Binding Required
+        is_active:
+          type: boolean
+          title: Is Active
+        price_microalgos:
+          type: integer
+          title: Price Microalgos
+          default: 1000000
+        payment_network:
+          type: string
+          title: Payment Network
+          default: algorand_mainnet
+        price_fiat_cents:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Price Fiat Cents
+        price_fiat_currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Price Fiat Currency
+      type: object
+      required:
+      - id
+      - resource_id
+      - networks
+      - amount_microunits
+      - access_ttl_secs
+      - requirement_ttl_secs
+      - note_binding_required
+      - is_active
+      title: ResourceResponse
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

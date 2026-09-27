@@ -1,0 +1,822 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Recurring API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged recurring across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: recurring
+paths:
+  /v1/recurring/authorities:
+    post:
+      tags:
+      - recurring
+      summary: Create Authority Endpoint
+      description: 'Create a Tier 2 standing authority for an existing subscription.
+
+
+        Returns the server-recorded authority (status=''pending'') plus the
+
+        chain-specific payload the customer''s wallet signs to land the
+
+        on-chain authorisation. The AlgoVoi widget consumes the payload;
+
+        the customer signs the 6-action atomic group; AlgoVoi confirms the
+
+        landing and a separate POST /confirm transitions to ''active''.'
+      operationId: create_authority_endpoint_v1_recurring_authorities_post
+      parameters:
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorityCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorityCreateResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+    get:
+      tags:
+      - recurring
+      summary: List Authorities Endpoint
+      operationId: list_authorities_endpoint_v1_recurring_authorities_get
+      parameters:
+      - name: subscription_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Subscription Id
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by status
+          title: Status
+        description: Filter by status
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 200
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthorityResponse'
+                title: Response List Authorities Endpoint V1 Recurring Authorities Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/recurring/authorities/{authority_id}:
+    get:
+      tags:
+      - recurring
+      summary: Get Authority Endpoint
+      operationId: get_authority_endpoint_v1_recurring_authorities__authority_id__get
+      parameters:
+      - name: authority_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Authority Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorityResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/recurring/authorities/{authority_id}/confirm:
+    post:
+      tags:
+      - recurring
+      summary: Confirm Authority Endpoint
+      description: 'Mark an authority active after on-chain landing.
+
+
+        The tenant calls this once they (or the AlgoVoi widget) has confirmed
+
+        the customer''s signed transaction group landed on-chain. ``on_chain_address``
+
+        carries the chain-specific identifier (e.g. ``app:``).'
+      operationId: confirm_authority_endpoint_v1_recurring_authorities__authority_id__confirm_post
+      parameters:
+      - name: authority_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Authority Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorityConfirmRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorityResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/recurring/authorities/{authority_id}/revoke:
+    post:
+      tags:
+      - recurring
+      summary: Revoke Authority Endpoint
+      operationId: revoke_authority_endpoint_v1_recurring_authorities__authority_id__revoke_post
+      parameters:
+      - name: authority_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Authority Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorityResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/recurring/authorities/{authority_id}/pause:
+    post:
+      tags:
+      - recurring
+      summary: Pause Authority Endpoint
+      operationId: pause_authority_endpoint_v1_recurring_authorities__authority_id__pause_post
+      parameters:
+      - name: authority_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Authority Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorityResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/recurring/authorities/{authority_id}/resume:
+    post:
+      tags:
+      - recurring
+      summary: Resume Authority Endpoint
+      operationId: resume_authority_endpoint_v1_recurring_authorities__authority_id__resume_post
+      parameters:
+      - name: authority_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Authority Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorityResumeRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorityResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/recurring/pulls:
+    post:
+      tags:
+      - recurring
+      summary: Manual Pull Endpoint
+      description: 'Manually request a pull cycle. Returns the (unchanged) authority record.
+
+
+        The actual chain-side pull submission is performed by the Sprint 1.5c
+
+        cycle reaper (which this endpoint signals via setting
+
+        ``next_cycle_due_at = now``). For 1.5b this endpoint validates the
+
+        request shape and updates next_cycle_due_at; the reaper picks up
+
+        on its next sweep.
+
+
+        202 Accepted — the pull will execute on the reaper''s next tick, not
+
+        synchronously.'
+      operationId: manual_pull_endpoint_v1_recurring_pulls_post
+      parameters:
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PullCreate'
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorityResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+components:
+  schemas:
+    AuthorityConfirmRequest:
+      properties:
+        on_chain_address:
+          type: string
+          maxLength: 128
+          minLength: 1
+          title: On Chain Address
+        first_cycle_due_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: First Cycle Due At
+      additionalProperties: false
+      type: object
+      required:
+      - on_chain_address
+      title: AuthorityConfirmRequest
+      description: 'POST /v1/recurring/authorities/{id}/confirm request body.
+
+
+        Submitted after the customer signs the on-chain authorisation. Carries
+
+        the on-chain identifier (e.g. ``app:12345`` for Algorand).'
+    AuthorityResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        tenant_id:
+          type: string
+          format: uuid
+          title: Tenant Id
+        subscription_id:
+          type: string
+          format: uuid
+          title: Subscription Id
+        chain:
+          type: string
+          title: Chain
+        customer_wallet_address:
+          type: string
+          title: Customer Wallet Address
+        on_chain_address:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: On Chain Address
+        cap_amount_minor:
+          type: integer
+          title: Cap Amount Minor
+        cap_period_seconds:
+          type: integer
+          title: Cap Period Seconds
+        per_cycle_amount_minor:
+          type: integer
+          title: Per Cycle Amount Minor
+        asset:
+          type: string
+          title: Asset
+        facilitator_address:
+          type: string
+          title: Facilitator Address
+        merchant_payout_address:
+          type: string
+          title: Merchant Payout Address
+        status:
+          type: string
+          enum:
+          - pending
+          - active
+          - depleted
+          - revoked
+          - paused
+          - errored
+          title: Status
+        cap_remaining_minor:
+          type: integer
+          title: Cap Remaining Minor
+        cycles_pulled:
+          type: integer
+          title: Cycles Pulled
+        cycles_failed:
+          type: integer
+          title: Cycles Failed
+        next_cycle_due_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Next Cycle Due At
+        last_pull_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Pull At
+        last_error:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Error
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        activated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Activated At
+        revoked_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Revoked At
+        expires_at:
+          type: string
+          format: date-time
+          title: Expires At
+        metadata:
+          additionalProperties: true
+          type: object
+          title: Metadata
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      - tenant_id
+      - subscription_id
+      - chain
+      - customer_wallet_address
+      - on_chain_address
+      - cap_amount_minor
+      - cap_period_seconds
+      - per_cycle_amount_minor
+      - asset
+      - facilitator_address
+      - merchant_payout_address
+      - status
+      - cap_remaining_minor
+      - cycles_pulled
+      - cycles_failed
+      - next_cycle_due_at
+      - last_pull_at
+      - last_error
+      - created_at
+      - activated_at
+      - revoked_at
+      - expires_at
+      - metadata
+      title: AuthorityResponse
+      description: Standard authority response. Returned by GET / POST creates.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AuthorityCreate:
+      properties:
+        subscription_id:
+          type: string
+          format: uuid
+          title: Subscription Id
+        chain:
+          type: string
+          title: Chain
+        customer_wallet_address:
+          type: string
+          maxLength: 128
+          minLength: 1
+          title: Customer Wallet Address
+        cap_amount_minor:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Cap Amount Minor
+        cap_period_seconds:
+          type: integer
+          minimum: 86400.0
+          title: Cap Period Seconds
+        per_cycle_amount_minor:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Per Cycle Amount Minor
+        asset:
+          type: string
+          maxLength: 16
+          minLength: 1
+          title: Asset
+          default: USDC
+        metadata:
+          additionalProperties: true
+          type: object
+          title: Metadata
+      additionalProperties: false
+      type: object
+      required:
+      - subscription_id
+      - chain
+      - customer_wallet_address
+      - cap_amount_minor
+      - cap_period_seconds
+      - per_cycle_amount_minor
+      title: AuthorityCreate
+      description: POST /v1/recurring/authorities request body.
+    AuthorityCreateResponse:
+      properties:
+        authority:
+          $ref: '#/components/schemas/AuthorityResponse'
+        customer_signing_payload:
+          additionalProperties: true
+          type: object
+          title: Customer Signing Payload
+        authorisation_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorisation Url
+      additionalProperties: true
+      type: object
+      required:
+      - authority
+      - customer_signing_payload
+      title: AuthorityCreateResponse
+      description: 'POST /v1/recurring/authorities response.
+
+
+        Wraps the server-recorded authority + the chain-specific payload the
+
+        customer''s wallet signs to land the authorisation on-chain.'
+    AuthorityResumeRequest:
+      properties:
+        next_cycle_due_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Next Cycle Due At
+      additionalProperties: false
+      type: object
+      title: AuthorityResumeRequest
+      description: POST /v1/recurring/authorities/{id}/resume request body.
+    PullCreate:
+      properties:
+        authority_id:
+          type: string
+          format: uuid
+          title: Authority Id
+        amount_minor:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Amount Minor
+        note:
+          anyOf:
+          - type: string
+            maxLength: 128
+          - type: 'null'
+          title: Note
+      additionalProperties: false
+      type: object
+      required:
+      - authority_id
+      - amount_minor
+      title: PullCreate
+      description: POST /v1/recurring/pulls request body — manual pull trigger.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

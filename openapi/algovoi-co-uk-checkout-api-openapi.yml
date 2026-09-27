@@ -1,0 +1,813 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Checkout API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged checkout across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: Checkout
+paths:
+  /checkout/{token}/verify:
+    post:
+      tags:
+      - Checkout
+      summary: Verify Checkout
+      description: 'Verify the payer''s on-chain transaction and mark the payment link paid.
+
+
+        The payer must have sent exactly the required amount to the receiver address
+
+        on the correct chain. The facilitator performs the on-chain verification.
+
+
+        Returns the redirect_url on success so the browser JS can redirect.
+
+        Returns 422 if the transaction is invalid or cannot be verified.
+
+        Returns 409 if the link is already paid.
+
+        Returns 410 if the link is expired or cancelled.'
+      operationId: verify_checkout_checkout__token__verify_post
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutVerifyRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutVerifyResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/qr:
+    get:
+      tags:
+      - Checkout
+      summary: Checkout Qr
+      description: 'Generate a QR code PNG for any short string (used for WalletConnect pairing URIs).
+
+        Returns image/png so the browser can use it as without any JS QR library.'
+      operationId: checkout_qr_checkout__token__qr_get
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      - name: data
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Data
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/build-txn:
+    get:
+      tags:
+      - Checkout
+      summary: Checkout Build Txn
+      description: 'Build an unsigned Algorand/VOI transaction for WalletConnect signing.
+
+        Caller supplies ?sender=. Returns {unsigned_txn: } ready
+
+        to pass straight to algo_signTxn — no algosdk needed in the browser.'
+      operationId: checkout_build_txn_checkout__token__build_txn_get
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      - name: sender
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Sender
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/submit-txn:
+    post:
+      tags:
+      - Checkout
+      summary: Checkout Submit Txn
+      description: 'Accept a base64-encoded signed Algorand/VOI transaction, submit it to algod,
+
+        and return the tx_id for verification via the existing /verify endpoint.'
+      operationId: checkout_submit_txn_checkout__token__submit_txn_post
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/detect:
+    get:
+      tags:
+      - Checkout
+      summary: Detect Payment
+      description: 'Auto-detect inbound payment by polling the chain''s indexer/mirror node.
+
+
+        Supports all chains:
+
+        - Algorand/VOI: queries indexer /v2/transactions?address=...¬e-prefix=...
+
+        - Hedera: queries Mirror Node /api/v1/transactions?account.id=...
+
+
+        Returns {"found": true, "tx_id": "..."} when detected, or {"found": false}.'
+      operationId: detect_payment_checkout__token__detect_get
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/submit-sponsored:
+    post:
+      tags:
+      - Checkout
+      summary: Submit Sponsored
+      description: 'Accept a customer''s signed 0-fee transaction and submit it via the
+
+        tenant''s sponsor wallet (atomic group fee pooling).
+
+
+        Body: { "signed_tx": base64, "chain": "algorand-mainnet" | "voi-mainnet" }
+
+
+        If the tenant has no sponsor wallet configured, returns
+
+        {"error": "not_sponsored", "fallback": true} so the client can fall back
+
+        to normal payment flow.'
+      operationId: submit_sponsored_checkout__token__submit_sponsored_post
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              title: Body
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/abandon:
+    post:
+      tags:
+      - Checkout
+      summary: Abandon Checkout
+      description: 'Customer-initiated checkout abandonment.
+
+
+        No `cancel_secret` required: anyone who has the checkout URL can already
+
+        walk away from their own checkout. This endpoint just makes the
+
+        abandonment EXPLICIT to the platform — without it, the merchant order
+
+        stays in `Pending` indefinitely, and OpenCart''s `algovoi.callback`
+
+        polling our `/status` would still see `active`, leading to confusing
+
+        UX where a cancelled checkout returns to the merchant''s checkout page
+
+        instead of the merchant''s "order cancelled" page.
+
+
+        Only `active` links can be abandoned:
+
+        * `paid` → 409 Conflict (let the JS show "Payment confirmed" instead)
+
+        * `cancelled`→ 200 (idempotent — already cancelled)
+
+        * `expired` → 410 Gone
+
+
+        On success: marks `link.status = ''cancelled''` AND notifies the merchant
+
+        platform (OpenCart etc.) to mark the order as Cancelled on their side.
+
+        Always returns the redirect_url so the JS can wire the "Return to store"
+
+        link target.'
+      operationId: abandon_checkout_checkout__token__abandon_post
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/cancel:
+    post:
+      tags:
+      - Checkout
+      summary: Cancel Checkout
+      description: 'Cancel an active checkout link. Sets status to ''cancelled''.
+
+
+        F5 security fix: requires cancel_secret in the request body. The secret
+
+        is generated at link-creation time and returned to the merchant only —
+
+        it is never embedded in the public checkout page. This prevents an
+
+        attacker who merely knows the checkout URL from cancelling the link.
+
+
+        Only active links can be cancelled. Paid/expired/already-cancelled links
+
+        return 409/410. Returns redirect_url so callers can redirect customers.'
+      operationId: cancel_checkout_checkout__token__cancel_post
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelCheckoutRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/xchain/bridge-info:
+    get:
+      tags:
+      - Checkout
+      summary: Xchain Bridge Info
+      description: 'Return all EVM chains Allbridge supports as bridge SOURCES for the
+
+        tenant''s configured destination chain (Algorand USDCa or Solana USDC),
+
+        pre-computed with the exact send amount (checkout amount + bridge fee).
+
+
+        Also returns the destination metadata so the frontend can render the
+
+        right "USDC on " label without a second round-trip.'
+      operationId: xchain_bridge_info_checkout__token__xchain_bridge_info_get
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/xchain/bridge-send:
+    post:
+      tags:
+      - Checkout
+      summary: Xchain Bridge Send
+      description: 'Build the swapAndBridge calldata server-side and return it for MetaMask to sign.
+
+
+        Body schema:
+
+        Required: evm_address, chain_id, usdc_address, bridge_amount
+
+        One of: algo_address (legacy field name, used for Algorand destination)
+
+        recipient_address (preferred — works for any destination)
+
+
+        Returns: { to, data, value } — pass directly to eth_sendTransaction.
+
+
+        The destination chain is taken from the tenant''s xchain_destination_chain
+
+        setting; the frontend doesn''t pass it (and shouldn''t be allowed to,
+
+        because that would let a hostile shopper redirect bridge inflow to a
+
+        different chain).'
+      operationId: xchain_bridge_send_checkout__token__xchain_bridge_send_post
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/xchain/source-tx-recorded:
+    post:
+      tags:
+      - Checkout
+      summary: Xchain Source Tx Recorded
+      description: 'Called by the frontend immediately after MetaMask returns a tx hash for
+
+        the swapAndBridge call. Records the source_tx_hash on the bridge-attempt
+
+        row, advancing its state from `pending_signature` to `pending_bridge`.
+
+
+        Body: { attempt_id: int, source_tx_hash: str }
+
+
+        Idempotent: re-POSTing with the same source_tx_hash for the same
+
+        attempt is a no-op. Mismatched source_tx_hash on a row that already has
+
+        one is rejected with 400 — exactly one source tx per attempt.
+
+
+        Per Comet review 2026-05-04 — without this, AlgoVoi can''t reconcile
+
+        Allbridge''s destination tx back to the shopper''s checkout.'
+      operationId: xchain_source_tx_recorded_checkout__token__xchain_source_tx_recorded_post
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/xchain/bridge-status/{tx_hash}:
+    get:
+      tags:
+      - Checkout
+      summary: Xchain Bridge Status
+      description: 'Poll Allbridge for cross-chain transfer completion + advance the
+
+        bridge-attempt lifecycle.
+
+
+        Reads `tx_hash` as the SOURCE-chain tx (the one MetaMask returned).
+
+        Looks up the persisted attempt by source_tx_hash, polls Allbridge,
+
+        and on completion records the destination tx hash on the attempt
+
+        row so the verifier can run against the SPECIFIC dest tx (not "any
+
+        matching tx in window").
+
+
+        Idempotent — repeated polls only update DB state on transitions.'
+      operationId: xchain_bridge_status_checkout__token__xchain_bridge_status__tx_hash__get
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      - name: tx_hash
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tx Hash
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/xchain/prepare:
+    post:
+      tags:
+      - Checkout
+      summary: Xchain Prepare
+      description: 'Derive the Algorand LogicSig address for an EVM wallet and check funding.
+
+        If sufficiently funded, builds the unsigned payment tx ready for EIP-712 signing.
+
+        Body: { "evm_address": "0x..." }'
+      operationId: xchain_prepare_checkout__token__xchain_prepare_post
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/xchain/prepare-optin:
+    post:
+      tags:
+      - Checkout
+      summary: Xchain Prepare Optin
+      description: 'Fund the LogicSig address from the platform sponsor wallet and build an
+
+        unsigned USDCa opt-in transaction for EIP-712 signing.
+
+        Body: { "evm_address": "0x..." }
+
+        Returns: { "eip712_message": {...} }'
+      operationId: xchain_prepare_optin_checkout__token__xchain_prepare_optin_post
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/xchain/optin-submit:
+    post:
+      tags:
+      - Checkout
+      summary: Xchain Optin Submit
+      description: 'Sign and submit the pending USDCa opt-in transaction.
+
+        Body: { "evm_address": "0x...", "signature": "0x..." }
+
+        Returns: { "optin_tx_id": "..." }'
+      operationId: xchain_optin_submit_checkout__token__xchain_optin_submit_post
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/xchain/submit:
+    post:
+      tags:
+      - Checkout
+      summary: Xchain Submit
+      description: 'Sign and submit the pending xChain transaction using the EVM wallet''s EIP-712 signature.
+
+        Body: { "evm_address": "0x...", "signature": "0x..." }
+
+        Returns { "tx_id": "..." }'
+      operationId: xchain_submit_checkout__token__xchain_submit_post
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /checkout/{token}/status:
+    get:
+      tags:
+      - Checkout
+      summary: Checkout Status
+      description: 'Polling endpoint — returns whether the link has been paid.
+
+
+        Safe to call repeatedly; does not mutate state.
+
+        Returns { "status": "active"|"paid"|"expired"|"cancelled", "redirect_url": str|null }'
+      operationId: checkout_status_checkout__token__status_get
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    CancelCheckoutRequest:
+      properties:
+        cancel_secret:
+          type: string
+          maxLength: 128
+          minLength: 1
+          title: Cancel Secret
+      type: object
+      required:
+      - cancel_secret
+      title: CancelCheckoutRequest
+      description: 'Body for POST /checkout/{token}/cancel (gateway-side).
+
+
+        F5 security fix: the cancel endpoint now requires cancel_secret so that
+
+        only the merchant (who received cancel_secret at link-creation time) can
+
+        cancel a link programmatically. Customers use the in-browser ''abandon''
+
+        flow which navigates them away without touching the backend.'
+    CheckoutVerifyResponse:
+      properties:
+        payment_ledger_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Payment Ledger Id
+        status:
+          type: string
+          title: Status
+        redirect_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Redirect Url
+        settlement_attestation:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Settlement Attestation
+        settlement_attestation_jws:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Settlement Attestation Jws
+      type: object
+      required:
+      - status
+      title: CheckoutVerifyResponse
+      description: Successful verification response.
+    CheckoutVerifyRequest:
+      properties:
+        tx_id:
+          type: string
+          maxLength: 100
+          minLength: 10
+          title: Tx Id
+        chain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Chain
+      type: object
+      required:
+      - tx_id
+      title: CheckoutVerifyRequest
+      description: Body for POST /checkout/{token}/verify (gateway-side, unauthenticated).
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

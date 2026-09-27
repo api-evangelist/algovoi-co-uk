@@ -1,0 +1,605 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Recurr API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged recurr across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: recurr
+paths:
+  /v1/recurr/auth/challenge:
+    post:
+      tags:
+      - recurr
+      summary: Challenge Endpoint
+      operationId: challenge_endpoint_v1_recurr_auth_challenge_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/shared__schemas__recurr__ChallengeRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/shared__schemas__recurr__ChallengeResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/recurr/auth/verify:
+    post:
+      tags:
+      - recurr
+      summary: Verify Endpoint
+      operationId: verify_endpoint_v1_recurr_auth_verify_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/shared__schemas__recurr__VerifyRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/shared__schemas__recurr__VerifyResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/recurr/me/subscriptions:
+    get:
+      tags:
+      - recurr
+      summary: My Subscriptions
+      description: 'Cross-tenant. Returns every subscription where the wallet matches a
+
+        customer row, regardless of which tenant owns that subscription.'
+      operationId: my_subscriptions_v1_recurr_me_subscriptions_get
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 200
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubscriptionResponse'
+                title: Response My Subscriptions V1 Recurr Me Subscriptions Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/recurr/me/subscriptions/{subscription_id}:
+    get:
+      tags:
+      - recurr
+      summary: My Subscription Detail
+      operationId: my_subscription_detail_v1_recurr_me_subscriptions__subscription_id__get
+      parameters:
+      - name: subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Subscription Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/recurr/me/subscriptions/{subscription_id}/cancel:
+    post:
+      tags:
+      - recurr
+      summary: My Subscription Cancel
+      operationId: my_subscription_cancel_v1_recurr_me_subscriptions__subscription_id__cancel_post
+      parameters:
+      - name: subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Subscription Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/recurr/me/invoices:
+    get:
+      tags:
+      - recurr
+      summary: My Invoices
+      operationId: my_invoices_v1_recurr_me_invoices_get
+      parameters:
+      - name: subscription_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Subscription Id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 200
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubscriptionInvoiceResponse'
+                title: Response My Invoices V1 Recurr Me Invoices Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+components:
+  schemas:
+    SubscriptionResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        tenant_id:
+          type: string
+          format: uuid
+          title: Tenant Id
+        customer_id:
+          type: string
+          format: uuid
+          title: Customer Id
+        amount_minor:
+          type: integer
+          title: Amount Minor
+        currency:
+          type: string
+          title: Currency
+        chain:
+          type: string
+          title: Chain
+        receiver_address:
+          type: string
+          title: Receiver Address
+        cadence:
+          type: string
+          enum:
+          - weekly
+          - monthly
+          - quarterly
+          - annual
+          - custom
+          title: Cadence
+        custom_interval_days:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Custom Interval Days
+        billing_anchor_day:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Billing Anchor Day
+        billing_timezone:
+          type: string
+          title: Billing Timezone
+        next_due_at:
+          type: string
+          format: date-time
+          title: Next Due At
+        cycle_anchor:
+          type: string
+          enum:
+          - anniversary
+          - calendar
+          title: Cycle Anchor
+        status:
+          type: string
+          enum:
+          - active
+          - past_due
+          - paused
+          - cancelled
+          title: Status
+        paused_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Paused At
+        cancelled_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Cancelled At
+        cancel_at_period_end:
+          type: boolean
+          title: Cancel At Period End
+        notify_channels:
+          items:
+            type: string
+          type: array
+          title: Notify Channels
+        notify_lead_hours:
+          type: integer
+          title: Notify Lead Hours
+        failed_payment_policy:
+          additionalProperties: true
+          type: object
+          title: Failed Payment Policy
+        fx_lock_policy:
+          type: string
+          enum:
+          - send
+          - payment
+          title: Fx Lock Policy
+        cancel_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cancel Url
+        metadata:
+          additionalProperties: true
+          type: object
+          title: Metadata
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - tenant_id
+      - customer_id
+      - amount_minor
+      - currency
+      - chain
+      - receiver_address
+      - cadence
+      - custom_interval_days
+      - billing_anchor_day
+      - billing_timezone
+      - next_due_at
+      - cycle_anchor
+      - status
+      - paused_at
+      - cancelled_at
+      - cancel_at_period_end
+      - notify_channels
+      - notify_lead_hours
+      - failed_payment_policy
+      - fx_lock_policy
+      - metadata
+      - created_at
+      title: SubscriptionResponse
+    shared__schemas__recurr__ChallengeRequest:
+      properties:
+        chain:
+          type: string
+          maxLength: 64
+          minLength: 3
+          title: Chain
+        wallet_address:
+          type: string
+          maxLength: 128
+          minLength: 6
+          title: Wallet Address
+      additionalProperties: false
+      type: object
+      required:
+      - chain
+      - wallet_address
+      title: ChallengeRequest
+      description: "Tenant-agnostic. Wallet alone is the identity for Recurr customer auth.\n\nPer-chain address shapes:\n  - EVM (Base, Tempo, etc.):  0x + 40 hex chars   (42 total)\n  - Algorand / VOI:           base32 with checksum (58 total)\n  - Solana:                   base58 (32-44 chars)\n  - Stellar:                  G... StrKey (56 total)\n  - Hedera:                   shard.realm.num    (>= 6 chars, e.g. ``0.0.0``)"
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    shared__schemas__recurr__ChallengeResponse:
+      properties:
+        nonce:
+          type: string
+          title: Nonce
+        message:
+          type: string
+          title: Message
+        expires_at:
+          type: string
+          format: date-time
+          title: Expires At
+      type: object
+      required:
+      - nonce
+      - message
+      - expires_at
+      title: ChallengeResponse
+    shared__schemas__recurr__VerifyResponse:
+      properties:
+        customer_jwt:
+          type: string
+          title: Customer Jwt
+        expires_at:
+          type: string
+          format: date-time
+          title: Expires At
+        wallet_address:
+          type: string
+          title: Wallet Address
+        chain:
+          type: string
+          title: Chain
+        tenant_count:
+          type: integer
+          title: Tenant Count
+          default: 0
+      type: object
+      required:
+      - customer_jwt
+      - expires_at
+      - wallet_address
+      - chain
+      title: VerifyResponse
+    shared__schemas__recurr__VerifyRequest:
+      properties:
+        nonce:
+          type: string
+          maxLength: 64
+          minLength: 8
+          title: Nonce
+        signature:
+          type: string
+          maxLength: 512
+          minLength: 8
+          title: Signature
+      additionalProperties: false
+      type: object
+      required:
+      - nonce
+      - signature
+      title: VerifyRequest
+    SubscriptionInvoiceResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        subscription_id:
+          type: string
+          format: uuid
+          title: Subscription Id
+        amount_minor_at_send:
+          type: integer
+          title: Amount Minor At Send
+        currency_at_send:
+          type: string
+          title: Currency At Send
+        fx_rate_at_send:
+          anyOf:
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Fx Rate At Send
+        crypto_amount_microunits_expected:
+          type: integer
+          title: Crypto Amount Microunits Expected
+        due_at:
+          type: string
+          format: date-time
+          title: Due At
+        payment_link_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payment Link Token
+        link_sent_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Link Sent At
+        paid_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Paid At
+        paid_amount_microunits:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Paid Amount Microunits
+        paid_tx_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paid Tx Id
+        status:
+          type: string
+          enum:
+          - pending
+          - paid
+          - missed
+          - retrying
+          title: Status
+        attempts:
+          type: integer
+          title: Attempts
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - subscription_id
+      - amount_minor_at_send
+      - currency_at_send
+      - fx_rate_at_send
+      - crypto_amount_microunits_expected
+      - due_at
+      - payment_link_token
+      - link_sent_at
+      - paid_at
+      - paid_amount_microunits
+      - paid_tx_id
+      - status
+      - attempts
+      - created_at
+      title: SubscriptionInvoiceResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

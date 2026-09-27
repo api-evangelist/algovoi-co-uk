@@ -1,0 +1,114 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Profiles API
+  version: 0.1.0
+  contact:
+    email: research@algovoi.co.uk
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  x-discovery-url: https://agent-trust-bench.algovoi.co.uk/discovery/resources
+  x-stats-html-url: https://agent-trust-bench.algovoi.co.uk/stats
+  x-stats-url: https://agent-trust-bench.algovoi.co.uk/stats.json
+  x-well-known-url: https://agent-trust-bench.algovoi.co.uk/.well-known/x402.json
+  description: 'Operations tagged profiles across 2 of this provider''s published API definitions: algovoi-co-uk-agent-trust-bench-openapi.json, algovoi-co-uk-agent-trust-bench-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://agent-trust-bench.algovoi.co.uk
+  description: Production
+tags:
+- name: Profiles
+  description: Payable and free bench profiles
+paths:
+  /{profile_id}:
+    get:
+      operationId: get_profile
+      summary: Request a bench profile (returns 402 challenge or 200 content)
+      description: The primary bench endpoint. Returns a 402 Payment Required with a multi-chain x402 challenge for paying profiles, or 200 for free control profiles. Profile IDs are enumerated in /discovery/resources.
+      parameters:
+      - name: profile_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Bench profile identifier (e.g. 'cheap', 'injection', 'mismatch')
+        example: cheap
+      responses:
+        '200':
+          description: Content returned after claimed payment (or for free profiles)
+          content:
+            application/json:
+              schema:
+                type: object
+        '402':
+          description: Payment Required — x402 multi-chain challenge
+          headers:
+            Payment-Required:
+              description: Base64-encoded x402 v2 Payment-Required JSON
+              schema:
+                type: string
+            X-PAYMENT-REQUIRED:
+              description: Alias for Payment-Required (some clients use this header name)
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  x402Version:
+                    type: integer
+                    example: 2
+                  accepts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        scheme:
+                          type: string
+                          example: exact
+                        network:
+                          type: string
+                          example: eip155:8453
+                        asset:
+                          type: string
+                        payTo:
+                          type: string
+                        maxAmountRequired:
+                          type: string
+                        maxTimeoutSeconds:
+                          type: integer
+                        mimeType:
+                          type: string
+                        extra:
+                          type: object
+                  error:
+                    type: string
+                  paidWith:
+                    type: object
+        '404':
+          description: Unknown profile_id
+      tags:
+      - Profiles
+    servers:
+    - url: https://agent-trust-bench.algovoi.co.uk
+      description: Production
+  /freebie:
+    get:
+      operationId: get_freebie
+      summary: Always-free control endpoint (no payment required)
+      description: Returns 200 with a signed content token without requesting payment. Use as a baseline control to verify your agent correctly distinguishes free and paid endpoints.
+      responses:
+        '200':
+          description: Free content
+          content:
+            application/json:
+              schema:
+                type: object
+      tags:
+      - Profiles
+    servers:
+    - url: https://agent-trust-bench.algovoi.co.uk
+      description: Production
+x-refined-from:
+- algovoi-co-uk-agent-trust-bench-openapi.json
+- algovoi-co-uk-agent-trust-bench-openapi.yml

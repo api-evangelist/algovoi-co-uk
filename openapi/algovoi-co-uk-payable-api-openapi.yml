@@ -1,0 +1,409 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Payable API
+  version: 1.0.0
+  description: 'Operations tagged payable across 2 of this provider''s published API definitions: algovoi-co-uk-pay-openapi.json, algovoi-co-uk-pay-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: payable
+paths:
+  /pay/v1/index:
+    get:
+      tags:
+      - payable
+      summary: Payable Index
+      operationId: payable_index_pay_v1_index_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /pay/v1/negotiate:
+    get:
+      tags:
+      - payable
+      summary: Negotiate Capabilities
+      operationId: negotiate_capabilities_pay_v1_negotiate_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      tags:
+      - payable
+      summary: Negotiate
+      operationId: negotiate_pay_v1_negotiate_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NegotiateRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /pay/v1/verify/receipt:
+    get:
+      tags:
+      - payable
+      summary: Probe Receipt
+      operationId: probe_receipt_pay_v1_verify_receipt_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      tags:
+      - payable
+      summary: Pay Verify Receipt
+      operationId: pay_verify_receipt_pay_v1_verify_receipt_post
+      parameters:
+      - name: x-payment
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayableReceiptVerifyRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '402':
+          description: 'Payment Required: strict x402 v2 challenge (accepts[]).'
+          content:
+            application/json:
+              schema:
+                type: object
+      x-payment-info:
+        protocols:
+        - x402
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.01'
+  /pay/v1/verify/rfc9421:
+    get:
+      tags:
+      - payable
+      summary: Probe Rfc9421
+      operationId: probe_rfc9421_pay_v1_verify_rfc9421_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      tags:
+      - payable
+      summary: Pay Verify Rfc9421
+      operationId: pay_verify_rfc9421_pay_v1_verify_rfc9421_post
+      parameters:
+      - name: x-payment
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayableRfc9421VerifyRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '402':
+          description: 'Payment Required: strict x402 v2 challenge (accepts[]).'
+          content:
+            application/json:
+              schema:
+                type: object
+      x-payment-info:
+        protocols:
+        - x402
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.01'
+  /pay/v1/screen/url:
+    get:
+      tags:
+      - payable
+      summary: Probe Url Screen
+      operationId: probe_url_screen_pay_v1_screen_url_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      tags:
+      - payable
+      summary: Pay Screen Url
+      operationId: pay_screen_url_pay_v1_screen_url_post
+      parameters:
+      - name: x-payment
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayableUrlScreenRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '402':
+          description: 'Payment Required: strict x402 v2 challenge (accepts[]).'
+          content:
+            application/json:
+              schema:
+                type: object
+      x-payment-info:
+        protocols:
+        - x402
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.01'
+  /pay/v1/compliance/receipt:
+    get:
+      tags:
+      - payable
+      summary: Probe Compliance
+      operationId: probe_compliance_pay_v1_compliance_receipt_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      tags:
+      - payable
+      summary: Pay Compliance Receipt
+      operationId: pay_compliance_receipt_pay_v1_compliance_receipt_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PayableUrlScreenRequest:
+      properties:
+        url:
+          type: string
+          maxLength: 2048
+          minLength: 1
+          title: Url
+        follow_redirects:
+          type: boolean
+          title: Follow Redirects
+          default: true
+        do_tls:
+          type: boolean
+          title: Do Tls
+          default: true
+        do_rdap:
+          type: boolean
+          title: Do Rdap
+          default: true
+      additionalProperties: false
+      type: object
+      required:
+      - url
+      title: PayableUrlScreenRequest
+    NegotiateRequest:
+      properties:
+        chains:
+          items:
+            type: string
+            maxLength: 128
+          type: array
+          maxItems: 64
+          title: Chains
+        protocols:
+          anyOf:
+          - items:
+              type: string
+              maxLength: 128
+            type: array
+            maxItems: 8
+          - type: 'null'
+          title: Protocols
+        service_id:
+          anyOf:
+          - type: string
+            maxLength: 128
+          - type: 'null'
+          title: Service Id
+      additionalProperties: false
+      type: object
+      title: NegotiateRequest
+    PayableRfc9421VerifyRequest:
+      properties:
+        method:
+          type: string
+          title: Method
+        authority:
+          type: string
+          title: Authority
+        path:
+          type: string
+          title: Path
+        scheme:
+          type: string
+          title: Scheme
+          default: https
+        headers:
+          additionalProperties:
+            type: string
+          type: object
+          title: Headers
+        body_b64:
+          type: string
+          title: Body B64
+          default: ''
+        public_key_hex:
+          type: string
+          title: Public Key Hex
+        require_content_digest:
+          type: boolean
+          title: Require Content Digest
+          default: true
+        mode:
+          type: string
+          title: Mode
+          default: rfc9421
+      additionalProperties: false
+      type: object
+      required:
+      - method
+      - authority
+      - path
+      - headers
+      - public_key_hex
+      title: PayableRfc9421VerifyRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    PayableReceiptVerifyRequest:
+      properties:
+        jws:
+          type: string
+          title: Jws
+        expected_payment_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expected Payment Hash
+        receipt_required:
+          type: boolean
+          title: Receipt Required
+          default: false
+        jwks:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Jwks
+      additionalProperties: false
+      type: object
+      required:
+      - jws
+      title: PayableReceiptVerifyRequest
+x-refined-from:
+- algovoi-co-uk-pay-openapi.json
+- algovoi-co-uk-pay-openapi.yml

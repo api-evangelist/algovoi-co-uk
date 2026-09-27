@@ -1,0 +1,975 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Subscriptions API
+  version: 1.0.0-phase1c
+  x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
+  description: 'Operations tagged Subscriptions across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+tags:
+- name: Subscriptions
+paths:
+  /v1/subscriptions:
+    post:
+      tags:
+      - Subscriptions
+      summary: Create Subscription Endpoint
+      operationId: create_subscription_endpoint_v1_subscriptions_post
+      parameters:
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+    get:
+      tags:
+      - Subscriptions
+      summary: List Subscriptions Endpoint
+      operationId: list_subscriptions_endpoint_v1_subscriptions_get
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by status
+          title: Status
+        description: Filter by status
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 200
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubscriptionResponse'
+                title: Response List Subscriptions Endpoint V1 Subscriptions Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/subscriptions/{subscription_id}:
+    get:
+      tags:
+      - Subscriptions
+      summary: Get Subscription Endpoint
+      operationId: get_subscription_endpoint_v1_subscriptions__subscription_id__get
+      parameters:
+      - name: subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Subscription Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+    patch:
+      tags:
+      - Subscriptions
+      summary: Update Subscription Endpoint
+      operationId: update_subscription_endpoint_v1_subscriptions__subscription_id__patch
+      parameters:
+      - name: subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Subscription Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/subscriptions/{subscription_id}/cancel:
+    post:
+      tags:
+      - Subscriptions
+      summary: Cancel Subscription Endpoint
+      operationId: cancel_subscription_endpoint_v1_subscriptions__subscription_id__cancel_post
+      parameters:
+      - name: subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Subscription Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - $ref: '#/components/schemas/CancelSubscriptionBody'
+              - type: 'null'
+              title: Body
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/subscriptions/{subscription_id}/pause:
+    post:
+      tags:
+      - Subscriptions
+      summary: Pause Subscription Endpoint
+      operationId: pause_subscription_endpoint_v1_subscriptions__subscription_id__pause_post
+      parameters:
+      - name: subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Subscription Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/subscriptions/{subscription_id}/resume:
+    post:
+      tags:
+      - Subscriptions
+      summary: Resume Subscription Endpoint
+      operationId: resume_subscription_endpoint_v1_subscriptions__subscription_id__resume_post
+      parameters:
+      - name: subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Subscription Id
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+  /v1/subscriptions/{subscription_id}/invoices:
+    get:
+      tags:
+      - Subscriptions
+      summary: List Subscription Invoices Endpoint
+      operationId: list_subscription_invoices_endpoint_v1_subscriptions__subscription_id__invoices_get
+      parameters:
+      - name: subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Subscription Id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 200
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: tenant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Tenant Id
+      - name: x-tenant-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Tenant-Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubscriptionInvoiceResponse'
+                title: Response List Subscription Invoices Endpoint V1 Subscriptions  Subscription Id  Invoices Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-payment-info:
+        authMode: api_key
+components:
+  schemas:
+    SubscriptionResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        tenant_id:
+          type: string
+          format: uuid
+          title: Tenant Id
+        customer_id:
+          type: string
+          format: uuid
+          title: Customer Id
+        amount_minor:
+          type: integer
+          title: Amount Minor
+        currency:
+          type: string
+          title: Currency
+        chain:
+          type: string
+          title: Chain
+        receiver_address:
+          type: string
+          title: Receiver Address
+        cadence:
+          type: string
+          enum:
+          - weekly
+          - monthly
+          - quarterly
+          - annual
+          - custom
+          title: Cadence
+        custom_interval_days:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Custom Interval Days
+        billing_anchor_day:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Billing Anchor Day
+        billing_timezone:
+          type: string
+          title: Billing Timezone
+        next_due_at:
+          type: string
+          format: date-time
+          title: Next Due At
+        cycle_anchor:
+          type: string
+          enum:
+          - anniversary
+          - calendar
+          title: Cycle Anchor
+        status:
+          type: string
+          enum:
+          - active
+          - past_due
+          - paused
+          - cancelled
+          title: Status
+        paused_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Paused At
+        cancelled_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Cancelled At
+        cancel_at_period_end:
+          type: boolean
+          title: Cancel At Period End
+        notify_channels:
+          items:
+            type: string
+          type: array
+          title: Notify Channels
+        notify_lead_hours:
+          type: integer
+          title: Notify Lead Hours
+        failed_payment_policy:
+          additionalProperties: true
+          type: object
+          title: Failed Payment Policy
+        fx_lock_policy:
+          type: string
+          enum:
+          - send
+          - payment
+          title: Fx Lock Policy
+        cancel_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cancel Url
+        metadata:
+          additionalProperties: true
+          type: object
+          title: Metadata
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - tenant_id
+      - customer_id
+      - amount_minor
+      - currency
+      - chain
+      - receiver_address
+      - cadence
+      - custom_interval_days
+      - billing_anchor_day
+      - billing_timezone
+      - next_due_at
+      - cycle_anchor
+      - status
+      - paused_at
+      - cancelled_at
+      - cancel_at_period_end
+      - notify_channels
+      - notify_lead_hours
+      - failed_payment_policy
+      - fx_lock_policy
+      - metadata
+      - created_at
+      title: SubscriptionResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SubscriptionUpdate:
+      properties:
+        notify_channels:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Notify Channels
+        notify_lead_hours:
+          anyOf:
+          - type: integer
+            maximum: 720.0
+            minimum: 1.0
+          - type: 'null'
+          title: Notify Lead Hours
+        failed_payment_policy:
+          anyOf:
+          - $ref: '#/components/schemas/FailedPaymentPolicy'
+          - type: 'null'
+        cancel_at_period_end:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Cancel At Period End
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+      additionalProperties: false
+      type: object
+      title: SubscriptionUpdate
+      description: 'PATCH-style partial update. Some fields (chain, currency, cadence) are
+
+        deliberately immutable post-creation — change those by cancelling and
+
+        creating a new subscription.'
+    CancelSubscriptionBody:
+      properties:
+        at_period_end:
+          type: boolean
+          title: At Period End
+          default: false
+      type: object
+      title: CancelSubscriptionBody
+    CustomerRef:
+      properties:
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          title: Email
+        wallet_address:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          title: Wallet Address
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+      additionalProperties: false
+      type: object
+      title: CustomerRef
+      description: 'Embedded customer ref accepted by subscription create. Either email or
+
+        wallet_address is required; both is fine.'
+    SubscriptionInvoiceResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        subscription_id:
+          type: string
+          format: uuid
+          title: Subscription Id
+        amount_minor_at_send:
+          type: integer
+          title: Amount Minor At Send
+        currency_at_send:
+          type: string
+          title: Currency At Send
+        fx_rate_at_send:
+          anyOf:
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Fx Rate At Send
+        crypto_amount_microunits_expected:
+          type: integer
+          title: Crypto Amount Microunits Expected
+        due_at:
+          type: string
+          format: date-time
+          title: Due At
+        payment_link_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payment Link Token
+        link_sent_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Link Sent At
+        paid_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Paid At
+        paid_amount_microunits:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Paid Amount Microunits
+        paid_tx_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paid Tx Id
+        status:
+          type: string
+          enum:
+          - pending
+          - paid
+          - missed
+          - retrying
+          title: Status
+        attempts:
+          type: integer
+          title: Attempts
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - subscription_id
+      - amount_minor_at_send
+      - currency_at_send
+      - fx_rate_at_send
+      - crypto_amount_microunits_expected
+      - due_at
+      - payment_link_token
+      - link_sent_at
+      - paid_at
+      - paid_amount_microunits
+      - paid_tx_id
+      - status
+      - attempts
+      - created_at
+      title: SubscriptionInvoiceResponse
+    FailedPaymentPolicy:
+      properties:
+        max_retries:
+          type: integer
+          maximum: 20.0
+          minimum: 0.0
+          title: Max Retries
+          default: 3
+        intervals_hours:
+          items:
+            type: integer
+          type: array
+          title: Intervals Hours
+        on_fail:
+          type: string
+          enum:
+          - cancel
+          - past_due
+          title: On Fail
+          default: cancel
+      additionalProperties: false
+      type: object
+      title: FailedPaymentPolicy
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SubscriptionCreate:
+      properties:
+        customer_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Customer Id
+        customer:
+          anyOf:
+          - $ref: '#/components/schemas/CustomerRef'
+          - type: 'null'
+        amount:
+          type: number
+          exclusiveMinimum: 0.0
+          title: Amount
+          description: Major-units fiat (e.g. 49.99 GBP) or USDC.
+        currency:
+          type: string
+          maxLength: 4
+          minLength: 3
+          title: Currency
+          description: ISO 4217 (3-letter) or 'USDC'.
+        chain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Chain
+          description: Override tenant's default network for this sub.
+        cadence:
+          type: string
+          enum:
+          - weekly
+          - monthly
+          - quarterly
+          - annual
+          - custom
+          title: Cadence
+        custom_interval_days:
+          anyOf:
+          - type: integer
+            maximum: 366.0
+            minimum: 1.0
+          - type: 'null'
+          title: Custom Interval Days
+        billing_anchor_day:
+          anyOf:
+          - type: integer
+            maximum: 31.0
+            minimum: 1.0
+          - type: 'null'
+          title: Billing Anchor Day
+        billing_timezone:
+          type: string
+          title: Billing Timezone
+          default: UTC
+        cycle_anchor:
+          type: string
+          enum:
+          - anniversary
+          - calendar
+          title: Cycle Anchor
+          default: anniversary
+        starts_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Starts At
+          description: First due date. Defaults to NOW() + cadence.
+        notify_channels:
+          items:
+            type: string
+          type: array
+          title: Notify Channels
+        notify_lead_hours:
+          type: integer
+          maximum: 720.0
+          minimum: 1.0
+          title: Notify Lead Hours
+          default: 72
+        failed_payment_policy:
+          anyOf:
+          - $ref: '#/components/schemas/FailedPaymentPolicy'
+          - type: 'null'
+        fx_lock_policy:
+          type: string
+          enum:
+          - send
+          - payment
+          title: Fx Lock Policy
+          default: send
+        cancel_at_period_end:
+          type: boolean
+          title: Cancel At Period End
+          default: false
+        consent_terms_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Consent Terms Version
+        consent_scope:
+          additionalProperties: true
+          type: object
+          title: Consent Scope
+        metadata:
+          additionalProperties: true
+          type: object
+          title: Metadata
+      additionalProperties: false
+      type: object
+      required:
+      - amount
+      - currency
+      - cadence
+      title: SubscriptionCreate
+      description: Request body for POST /v1/subscriptions.
+x-refined-from:
+- algovoi-co-uk-gateway-openapi.json
+- algovoi-co-uk-gateway-openapi.yml

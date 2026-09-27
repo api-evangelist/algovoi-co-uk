@@ -1,0 +1,109 @@
+openapi: 3.2.0
+info:
+  title: Algovoi Co Uk Discovery API
+  version: 0.1.0
+  contact:
+    email: research@algovoi.co.uk
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  x-discovery-url: https://agent-trust-bench.algovoi.co.uk/discovery/resources
+  x-stats-html-url: https://agent-trust-bench.algovoi.co.uk/stats
+  x-stats-url: https://agent-trust-bench.algovoi.co.uk/stats.json
+  x-well-known-url: https://agent-trust-bench.algovoi.co.uk/.well-known/x402.json
+  description: 'Operations tagged discovery across 2 of this provider''s published API definitions: algovoi-co-uk-agent-trust-bench-openapi.json, algovoi-co-uk-agent-trust-bench-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://agent-trust-bench.algovoi.co.uk
+  description: Production
+tags:
+- name: Discovery
+  description: Resource discovery and manifest endpoints
+paths:
+  /discovery/resources:
+    get:
+      operationId: list_resources
+      summary: Bazaar-format resource catalog
+      description: Returns all 160 bench profiles in the Bazaar discovery shape (resource URL, accepts[], metadata). Suitable for autonomous agents and x402 crawlers to enumerate the full surface. Linked from .well-known/x402.json via discovery_url.
+      parameters:
+      - name: origin
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Optional CORS preflight origin (returned in Access-Control-Allow-Origin)
+      responses:
+        '200':
+          description: Resource catalog
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resources:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        resource:
+                          type: string
+                          format: uri
+                        type:
+                          type: string
+                          example: http
+                        lastUpdated:
+                          type: string
+                          format: date
+                        metadata:
+                          type: object
+                        accepts:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              scheme:
+                                type: string
+                                example: exact
+                              network:
+                                type: string
+                                example: eip155:8453
+                              asset:
+                                type: string
+                              payTo:
+                                type: string
+                              maxAmountRequired:
+                                type: string
+                              maxTimeoutSeconds:
+                                type: integer
+                              mimeType:
+                                type: string
+                              extra:
+                                type: object
+                  count:
+                    type: integer
+                  description:
+                    type: string
+      tags:
+      - Discovery
+    servers:
+    - url: https://agent-trust-bench.algovoi.co.uk
+      description: Production
+  /.well-known/x402.json:
+    get:
+      operationId: well_known_x402
+      summary: x402 discovery manifest
+      description: Standard x402 well-known document. Points crawlers at /discovery/resources (discovery_url) and the MCP server entry point.
+      responses:
+        '200':
+          description: x402 manifest
+          content:
+            application/json:
+              schema:
+                type: object
+      tags:
+      - Discovery
+    servers:
+    - url: https://agent-trust-bench.algovoi.co.uk
+      description: Production
+x-refined-from:
+- algovoi-co-uk-agent-trust-bench-openapi.json
+- algovoi-co-uk-agent-trust-bench-openapi.yml
