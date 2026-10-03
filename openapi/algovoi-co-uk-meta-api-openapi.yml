@@ -1,6 +1,7 @@
 openapi: 3.2.0
 info:
-  title: Algovoi Co Uk Meta API
+  title: AlgoVoi Agent Trust Bench Meta API
+  description: Public x402 research endpoints — 187 adversarial and benign payment profiles across 42 threat categories. Free to use, no account required. Machine-readable resource catalog at /discovery/resources.
   version: 0.1.0
   contact:
     email: research@algovoi.co.uk
@@ -8,10 +9,9 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT
   x-discovery-url: https://agent-trust-bench.algovoi.co.uk/discovery/resources
-  x-stats-html-url: https://agent-trust-bench.algovoi.co.uk/stats
-  x-stats-url: https://agent-trust-bench.algovoi.co.uk/stats.json
   x-well-known-url: https://agent-trust-bench.algovoi.co.uk/.well-known/x402.json
-  description: 'Operations tagged meta across 2 of this provider''s published API definitions: algovoi-co-uk-agent-trust-bench-openapi.json, algovoi-co-uk-agent-trust-bench-openapi.yml. Each path carries the servers of the definition it was published in.'
+  x-stats-url: https://agent-trust-bench.algovoi.co.uk/stats.json
+  x-stats-html-url: https://agent-trust-bench.algovoi.co.uk/stats
 servers:
 - url: https://agent-trust-bench.algovoi.co.uk
   description: Production
@@ -33,9 +33,6 @@ paths:
                 type: object
       tags:
       - Meta
-    servers:
-    - url: https://agent-trust-bench.algovoi.co.uk
-      description: Production
   /openapi.json:
     get:
       operationId: openapi_schema
@@ -49,9 +46,6 @@ paths:
                 type: object
       tags:
       - Meta
-    servers:
-    - url: https://agent-trust-bench.algovoi.co.uk
-      description: Production
   /health:
     get:
       operationId: health
@@ -70,9 +64,3 @@ paths:
                     type: string
       tags:
       - Meta
-    servers:
-    - url: https://agent-trust-bench.algovoi.co.uk
-      description: Production
-x-refined-from:
-- algovoi-co-uk-agent-trust-bench-openapi.json
-- algovoi-co-uk-agent-trust-bench-openapi.yml

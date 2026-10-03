@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Algovoi Co Uk Payable API
+  title: AlgoVoi Core Payable API
+  description: Tenant-free metered signed-verification service (/pay/v1).
   version: 1.0.0
-  description: 'Operations tagged payable across 2 of this provider''s published API definitions: algovoi-co-uk-pay-openapi.json, algovoi-co-uk-pay-openapi.yml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: payable
 paths:
@@ -249,39 +249,6 @@ paths:
               schema: {}
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    PayableUrlScreenRequest:
-      properties:
-        url:
-          type: string
-          maxLength: 2048
-          minLength: 1
-          title: Url
-        follow_redirects:
-          type: boolean
-          title: Follow Redirects
-          default: true
-        do_tls:
-          type: boolean
-          title: Do Tls
-          default: true
-        do_rdap:
-          type: boolean
-          title: Do Rdap
-          default: true
-      additionalProperties: false
-      type: object
-      required:
-      - url
-      title: PayableUrlScreenRequest
     NegotiateRequest:
       properties:
         chains:
@@ -309,6 +276,30 @@ components:
       additionalProperties: false
       type: object
       title: NegotiateRequest
+    PayableUrlScreenRequest:
+      properties:
+        url:
+          type: string
+          maxLength: 2048
+          minLength: 1
+          title: Url
+        follow_redirects:
+          type: boolean
+          title: Follow Redirects
+          default: true
+        do_tls:
+          type: boolean
+          title: Do Tls
+          default: true
+        do_rdap:
+          type: boolean
+          title: Do Rdap
+          default: true
+      additionalProperties: false
+      type: object
+      required:
+      - url
+      title: PayableUrlScreenRequest
     PayableRfc9421VerifyRequest:
       properties:
         method:
@@ -379,6 +370,15 @@ components:
       - msg
       - type
       title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     PayableReceiptVerifyRequest:
       properties:
         jws:
@@ -404,6 +404,5 @@ components:
       required:
       - jws
       title: PayableReceiptVerifyRequest
-x-refined-from:
-- algovoi-co-uk-pay-openapi.json
-- algovoi-co-uk-pay-openapi.yml
+x-discovery:
+  ownershipProofs: []

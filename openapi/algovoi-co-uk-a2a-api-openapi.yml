@@ -4,7 +4,7 @@ info:
   x-refined-note:
   - x-guidance differs across the merged source definitions and was not carried
   version: '1.0'
-  description: 'Operations tagged A2a across 4 of this provider''s published API definitions: algovoi-co-uk-clinic-openapi.json, algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-clinic-openapi.yml, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged A2a across 2 of this provider''s published API definitions: algovoi-co-uk-clinic-openapi.json, algovoi-co-uk-gateway-openapi.json. Each path carries the servers of the definition it was published in.'
 tags:
 - name: A2a
 paths:
@@ -707,29 +707,6 @@ paths:
         authMode: api_key
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    _SendMessageRequest:
-      properties:
-        message:
-          $ref: '#/components/schemas/_Message'
-        configuration:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Configuration
-      type: object
-      required:
-      - message
-      title: _SendMessageRequest
     _Message:
       properties:
         messageId:
@@ -762,32 +739,6 @@ components:
           title: Metadata
       type: object
       title: _Message
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     _Part:
       properties:
         kind:
@@ -839,8 +790,55 @@ components:
       additionalProperties: true
       type: object
       title: _Part
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    _SendMessageRequest:
+      properties:
+        message:
+          $ref: '#/components/schemas/_Message'
+        configuration:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Configuration
+      type: object
+      required:
+      - message
+      title: _SendMessageRequest
 x-refined-from:
 - algovoi-co-uk-clinic-openapi.json
 - algovoi-co-uk-gateway-openapi.json
-- algovoi-co-uk-clinic-openapi.yml
-- algovoi-co-uk-gateway-openapi.yml

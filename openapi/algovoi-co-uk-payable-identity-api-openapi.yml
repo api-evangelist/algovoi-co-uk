@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Algovoi Co Uk Payable Identity API
+  title: AlgoVoi Payable Core Payable Identity API
+  description: Tenant-free metered signed-verification service (/pay/v1).
   version: 1.0.0
-  description: 'Operations tagged payable-identity across 2 of this provider''s published API definitions: algovoi-co-uk-pay-openapi.json, algovoi-co-uk-pay-openapi.yml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: payable-identity
 paths:
@@ -33,6 +33,35 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ReceiptVerifyRequest:
+      properties:
+        jws:
+          type: string
+          title: Jws
+          description: Compact JWS string (header.payload.signature) as returned by /compliance/screen (compliance_receipt_jws field) or /verify (settlement_attestation_jws field).
+        expected_payment_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expected Payment Hash
+          description: 'If supplied, the receipt''s payment_hash field must equal this value. Use to bind a receipt to a specific transaction. Format: ''sha256:<hex>''.'
+        receipt_required:
+          type: boolean
+          title: Receipt Required
+          description: If True, treat a missing JWS as a MISSING_ENVELOPE error rather than a format error.
+          default: false
+        jwks:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Jwks
+          description: 'Optional external JWKS dict ({''keys'': [...]}) for verifying receipts signed by a third-party provider. If omitted, AlgoVoi''s own platform key is used.'
+      type: object
+      required:
+      - jws
+      title: ReceiptVerifyRequest
+      description: Request body for POST /v1/receipt/verify.
     HTTPValidationError:
       properties:
         detail:
@@ -68,35 +97,6 @@ components:
       - msg
       - type
       title: ValidationError
-    ReceiptVerifyRequest:
-      properties:
-        jws:
-          type: string
-          title: Jws
-          description: Compact JWS string (header.payload.signature) as returned by /compliance/screen (compliance_receipt_jws field) or /verify (settlement_attestation_jws field).
-        expected_payment_hash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Expected Payment Hash
-          description: 'If supplied, the receipt''s payment_hash field must equal this value. Use to bind a receipt to a specific transaction. Format: ''sha256:<hex>''.'
-        receipt_required:
-          type: boolean
-          title: Receipt Required
-          description: If True, treat a missing JWS as a MISSING_ENVELOPE error rather than a format error.
-          default: false
-        jwks:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Jwks
-          description: 'Optional external JWKS dict ({''keys'': [...]}) for verifying receipts signed by a third-party provider. If omitted, AlgoVoi''s own platform key is used.'
-      type: object
-      required:
-      - jws
-      title: ReceiptVerifyRequest
-      description: Request body for POST /v1/receipt/verify.
     ReceiptVerifyResponse:
       properties:
         verified:
@@ -177,6 +177,5 @@ components:
       - verified
       title: ReceiptVerifyResponse
       description: Verification result.
-x-refined-from:
-- algovoi-co-uk-pay-openapi.json
-- algovoi-co-uk-pay-openapi.yml
+x-discovery:
+  ownershipProofs: []

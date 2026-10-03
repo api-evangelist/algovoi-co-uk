@@ -1,9 +1,9 @@
 openapi: 3.2.0
 info:
-  title: Algovoi Co Uk Atb License API
+  title: AlgoVoi Gateway Atb License API
+  description: Public-facing x402 payment gateway.
   version: 1.0.0-phase1c
   x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
-  description: 'Operations tagged atb-license across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: atb-license
 paths:
@@ -46,36 +46,6 @@ paths:
         authMode: api_key
 components:
   schemas:
-    ActivateResponse:
-      properties:
-        token:
-          type: string
-          title: Token
-        expires_at:
-          type: string
-          title: Expires At
-        license_kid:
-          type: string
-          title: License Kid
-      type: object
-      required:
-      - token
-      - expires_at
-      - license_kid
-      title: ActivateResponse
-    ActivateRequest:
-      properties:
-        operator_did:
-          type: string
-          title: Operator Did
-        nonce:
-          type: string
-          title: Nonce
-      type: object
-      required:
-      - operator_did
-      - nonce
-      title: ActivateRequest
     ValidationError:
       properties:
         loc:
@@ -111,6 +81,39 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-x-refined-from:
-- algovoi-co-uk-gateway-openapi.json
-- algovoi-co-uk-gateway-openapi.yml
+    ActivateResponse:
+      properties:
+        token:
+          type: string
+          title: Token
+        expires_at:
+          type: string
+          title: Expires At
+        license_kid:
+          type: string
+          title: License Kid
+      type: object
+      required:
+      - token
+      - expires_at
+      - license_kid
+      title: ActivateResponse
+    ActivateRequest:
+      properties:
+        operator_did:
+          type: string
+          title: Operator Did
+        nonce:
+          type: string
+          title: Nonce
+      type: object
+      required:
+      - operator_did
+      - nonce
+      title: ActivateRequest
+x-discovery:
+  ownershipProofs:
+  - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633
+  resources:
+  - https://api.algovoi.co.uk/mpp/probe
+  resourcesCatalog: https://api.algovoi.co.uk/discovery/resources

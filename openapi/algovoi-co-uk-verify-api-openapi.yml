@@ -4,7 +4,7 @@ info:
   x-refined-note:
   - x-guidance differs across the merged source definitions and was not carried
   version: '1.0'
-  description: 'Operations tagged Verify across 6 of this provider''s published API definitions: algovoi-co-uk-audit-verifier-openapi.json, algovoi-co-uk-clinic-openapi.json, algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-audit-verifier-openapi.yml, algovoi-co-uk-clinic-openapi.yml, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Verify across 3 of this provider''s published API definitions: algovoi-co-uk-audit-verifier-openapi.json, algovoi-co-uk-clinic-openapi.json, algovoi-co-uk-gateway-openapi.json. Each path carries the servers of the definition it was published in.'
 tags:
 - name: Verify
 paths:
@@ -298,28 +298,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    MppVerifyRequest:
-      properties:
-        tx_id:
-          type: string
-          title: Tx Id
-        network:
-          type: string
-          title: Network
-        resource_id:
-          type: string
-          title: Resource Id
-        tenant_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Tenant Id
-      type: object
-      required:
-      - tx_id
-      - network
-      - resource_id
-      title: MppVerifyRequest
     ValidationError_2:
       properties:
         loc:
@@ -372,6 +350,28 @@ components:
       required:
       - verified
       title: MppVerifyResponse
+    MppVerifyRequest:
+      properties:
+        tx_id:
+          type: string
+          title: Tx Id
+        network:
+          type: string
+          title: Network
+        resource_id:
+          type: string
+          title: Resource Id
+        tenant_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tenant Id
+      type: object
+      required:
+      - tx_id
+      - network
+      - resource_id
+      title: MppVerifyRequest
     ActionRefResponse:
       properties:
         action_ref:
@@ -430,56 +430,6 @@ components:
       - scope
       - timestamp_ms
       title: ActionRefRequest
-    Rfc9421VerifyResponse:
-      properties:
-        valid:
-          type: boolean
-          title: Valid
-        signature_valid:
-          type: boolean
-          title: Signature Valid
-        content_digest_valid:
-          type: boolean
-          title: Content Digest Valid
-        signing_base:
-          type: string
-          title: Signing Base
-        covered_components:
-          items:
-            type: string
-          type: array
-          title: Covered Components
-        parameters:
-          additionalProperties: true
-          type: object
-          title: Parameters
-        label:
-          type: string
-          title: Label
-        errors:
-          items:
-            type: string
-          type: array
-          title: Errors
-        spec_ref:
-          type: string
-          title: Spec Ref
-        digest_spec_ref:
-          type: string
-          title: Digest Spec Ref
-      type: object
-      required:
-      - valid
-      - signature_valid
-      - content_digest_valid
-      - signing_base
-      - covered_components
-      - parameters
-      - label
-      - errors
-      - spec_ref
-      - digest_spec_ref
-      title: Rfc9421VerifyResponse
     Rfc9421VerifyRequest:
       properties:
         method:
@@ -532,59 +482,57 @@ components:
       - headers
       - public_key_hex
       title: Rfc9421VerifyRequest
+    Rfc9421VerifyResponse:
+      properties:
+        valid:
+          type: boolean
+          title: Valid
+        signature_valid:
+          type: boolean
+          title: Signature Valid
+        content_digest_valid:
+          type: boolean
+          title: Content Digest Valid
+        signing_base:
+          type: string
+          title: Signing Base
+        covered_components:
+          items:
+            type: string
+          type: array
+          title: Covered Components
+        parameters:
+          additionalProperties: true
+          type: object
+          title: Parameters
+        label:
+          type: string
+          title: Label
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+        spec_ref:
+          type: string
+          title: Spec Ref
+        digest_spec_ref:
+          type: string
+          title: Digest Spec Ref
+      type: object
+      required:
+      - valid
+      - signature_valid
+      - content_digest_valid
+      - signing_base
+      - covered_components
+      - parameters
+      - label
+      - errors
+      - spec_ref
+      - digest_spec_ref
+      title: Rfc9421VerifyResponse
     ValidationError_3:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ValidationError_4:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ValidationError_5:
       properties:
         loc:
           items:
@@ -614,6 +562,3 @@ x-refined-from:
 - algovoi-co-uk-audit-verifier-openapi.json
 - algovoi-co-uk-clinic-openapi.json
 - algovoi-co-uk-gateway-openapi.json
-- algovoi-co-uk-audit-verifier-openapi.yml
-- algovoi-co-uk-clinic-openapi.yml
-- algovoi-co-uk-gateway-openapi.yml

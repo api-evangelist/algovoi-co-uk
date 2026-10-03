@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Algovoi Co Uk .well Known API
+  title: AlgoVoi Verifiable-Comms Agent .well Known API
+  description: 'Support-first agent: verify signed agent messages offline. Free.'
   version: 0.1.0
-  description: 'Operations tagged .well Known across 2 of this provider''s published API definitions: algovoi-co-uk-clinic-openapi.json, algovoi-co-uk-clinic-openapi.yml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: .well Known
 paths:
@@ -30,6 +30,3 @@ paths:
               schema: {}
       tags:
       - .well Known
-x-refined-from:
-- algovoi-co-uk-clinic-openapi.json
-- algovoi-co-uk-clinic-openapi.yml

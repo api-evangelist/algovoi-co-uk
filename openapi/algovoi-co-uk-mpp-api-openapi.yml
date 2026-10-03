@@ -4,7 +4,7 @@ info:
   x-refined-note:
   - x-guidance differs across the merged source definitions and was not carried
   version: '1.0'
-  description: 'Operations tagged mpp across 4 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-pay-openapi.json, algovoi-co-uk-gateway-openapi.yml, algovoi-co-uk-pay-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged mpp across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-pay-openapi.json. Each path carries the servers of the definition it was published in.'
 tags:
 - name: mpp
 paths:
@@ -808,37 +808,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    MppChallengeResponse:
-      properties:
-        challenge:
-          additionalProperties: true
-          type: object
-          title: Challenge
-        accepts:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Accepts
-      type: object
-      required:
-      - challenge
-      - accepts
-      title: MppChallengeResponse
-    MppChallengeRequest:
-      properties:
-        resource_id:
-          type: string
-          title: Resource Id
-        network:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Network
-      type: object
-      required:
-      - resource_id
-      title: MppChallengeRequest
     ValidationError:
       properties:
         loc:
@@ -865,6 +834,20 @@ components:
       - msg
       - type
       title: ValidationError
+    MppChallengeRequest:
+      properties:
+        resource_id:
+          type: string
+          title: Resource Id
+        network:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Network
+      type: object
+      required:
+      - resource_id
+      title: MppChallengeRequest
     HTTPValidationError:
       properties:
         detail:
@@ -874,6 +857,23 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    MppChallengeResponse:
+      properties:
+        challenge:
+          additionalProperties: true
+          type: object
+          title: Challenge
+        accepts:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Accepts
+      type: object
+      required:
+      - challenge
+      - accepts
+      title: MppChallengeResponse
     PayableRfc9421VerifyRequest:
       properties:
         method:
@@ -946,5 +946,3 @@ components:
 x-refined-from:
 - algovoi-co-uk-gateway-openapi.json
 - algovoi-co-uk-pay-openapi.json
-- algovoi-co-uk-gateway-openapi.yml
-- algovoi-co-uk-pay-openapi.yml

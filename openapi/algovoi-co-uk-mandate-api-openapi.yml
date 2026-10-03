@@ -1,9 +1,9 @@
 openapi: 3.2.0
 info:
-  title: Algovoi Co Uk Mandate API
+  title: AlgoVoi Gateway Mandate API
+  description: Public-facing x402 payment gateway.
   version: 1.0.0-phase1c
   x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
-  description: 'Operations tagged mandate across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: mandate
 paths:
@@ -92,36 +92,6 @@ components:
       - remaining_balance_minor
       - access_token
       title: MandatePayResponse
-    MandatePayRequest:
-      properties:
-        tenant_id:
-          type: string
-          format: uuid
-          title: Tenant Id
-          description: UUID of the merchant tenant
-        resource_id:
-          type: string
-          format: uuid
-          title: Resource Id
-          description: UUID of the resource to pay for
-        max_amount_minor:
-          type: integer
-          minimum: 0.0
-          title: Max Amount Minor
-          description: Agent-supplied spending ceiling in GBP pence (self-guard). 0 = no agent cap (mandate's own balance/period cap still applies).
-          default: 0
-        description:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          title: Description
-          description: Optional human-readable label for the charge ledger
-      type: object
-      required:
-      - tenant_id
-      - resource_id
-      title: MandatePayRequest
     ValidationError:
       properties:
         loc:
@@ -157,6 +127,39 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-x-refined-from:
-- algovoi-co-uk-gateway-openapi.json
-- algovoi-co-uk-gateway-openapi.yml
+    MandatePayRequest:
+      properties:
+        tenant_id:
+          type: string
+          format: uuid
+          title: Tenant Id
+          description: UUID of the merchant tenant
+        resource_id:
+          type: string
+          format: uuid
+          title: Resource Id
+          description: UUID of the resource to pay for
+        max_amount_minor:
+          type: integer
+          minimum: 0.0
+          title: Max Amount Minor
+          description: Agent-supplied spending ceiling in GBP pence (self-guard). 0 = no agent cap (mandate's own balance/period cap still applies).
+          default: 0
+        description:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          title: Description
+          description: Optional human-readable label for the charge ledger
+      type: object
+      required:
+      - tenant_id
+      - resource_id
+      title: MandatePayRequest
+x-discovery:
+  ownershipProofs:
+  - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633
+  resources:
+  - https://api.algovoi.co.uk/mpp/probe
+  resourcesCatalog: https://api.algovoi.co.uk/discovery/resources

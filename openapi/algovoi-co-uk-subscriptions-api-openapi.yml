@@ -1,9 +1,9 @@
 openapi: 3.2.0
 info:
-  title: Algovoi Co Uk Subscriptions API
+  title: AlgoVoi Gateway Subscriptions API
+  description: Public-facing x402 payment gateway.
   version: 1.0.0-phase1c
   x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
-  description: 'Operations tagged Subscriptions across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: Subscriptions
 paths:
@@ -495,6 +495,32 @@ paths:
         authMode: api_key
 components:
   schemas:
+    CustomerRef:
+      properties:
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          title: Email
+        wallet_address:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          title: Wallet Address
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+      additionalProperties: false
+      type: object
+      title: CustomerRef
+      description: 'Embedded customer ref accepted by subscription create. Either email or
+
+        wallet_address is required; both is fine.'
     SubscriptionResponse:
       properties:
         id:
@@ -633,88 +659,6 @@ components:
       - metadata
       - created_at
       title: SubscriptionResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    SubscriptionUpdate:
-      properties:
-        notify_channels:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Notify Channels
-        notify_lead_hours:
-          anyOf:
-          - type: integer
-            maximum: 720.0
-            minimum: 1.0
-          - type: 'null'
-          title: Notify Lead Hours
-        failed_payment_policy:
-          anyOf:
-          - $ref: '#/components/schemas/FailedPaymentPolicy'
-          - type: 'null'
-        cancel_at_period_end:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Cancel At Period End
-        metadata:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Metadata
-      additionalProperties: false
-      type: object
-      title: SubscriptionUpdate
-      description: 'PATCH-style partial update. Some fields (chain, currency, cadence) are
-
-        deliberately immutable post-creation — change those by cancelling and
-
-        creating a new subscription.'
-    CancelSubscriptionBody:
-      properties:
-        at_period_end:
-          type: boolean
-          title: At Period End
-          default: false
-      type: object
-      title: CancelSubscriptionBody
-    CustomerRef:
-      properties:
-        email:
-          anyOf:
-          - type: string
-            format: email
-          - type: 'null'
-          title: Email
-        wallet_address:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          title: Wallet Address
-        metadata:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Metadata
-      additionalProperties: false
-      type: object
-      title: CustomerRef
-      description: 'Embedded customer ref accepted by subscription create. Either email or
-
-        wallet_address is required; both is fine.'
     SubscriptionInvoiceResponse:
       properties:
         id:
@@ -804,6 +748,45 @@ components:
       - attempts
       - created_at
       title: SubscriptionInvoiceResponse
+    SubscriptionUpdate:
+      properties:
+        notify_channels:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Notify Channels
+        notify_lead_hours:
+          anyOf:
+          - type: integer
+            maximum: 720.0
+            minimum: 1.0
+          - type: 'null'
+          title: Notify Lead Hours
+        failed_payment_policy:
+          anyOf:
+          - $ref: '#/components/schemas/FailedPaymentPolicy'
+          - type: 'null'
+        cancel_at_period_end:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Cancel At Period End
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+      additionalProperties: false
+      type: object
+      title: SubscriptionUpdate
+      description: 'PATCH-style partial update. Some fields (chain, currency, cadence) are
+
+        deliberately immutable post-creation — change those by cancelling and
+
+        creating a new subscription.'
     FailedPaymentPolicy:
       properties:
         max_retries:
@@ -827,32 +810,14 @@ components:
       additionalProperties: false
       type: object
       title: FailedPaymentPolicy
-    ValidationError:
+    CancelSubscriptionBody:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+        at_period_end:
+          type: boolean
+          title: At Period End
+          default: false
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: CancelSubscriptionBody
     SubscriptionCreate:
       properties:
         customer_id:
@@ -970,6 +935,44 @@ components:
       - cadence
       title: SubscriptionCreate
       description: Request body for POST /v1/subscriptions.
-x-refined-from:
-- algovoi-co-uk-gateway-openapi.json
-- algovoi-co-uk-gateway-openapi.yml
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+x-discovery:
+  ownershipProofs:
+  - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633
+  resources:
+  - https://api.algovoi.co.uk/mpp/probe
+  resourcesCatalog: https://api.algovoi.co.uk/discovery/resources

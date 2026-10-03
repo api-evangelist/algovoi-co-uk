@@ -1,9 +1,9 @@
 openapi: 3.2.0
 info:
-  title: Algovoi Co Uk Agent Auth API
+  title: AlgoVoi Gateway Agent Auth API
+  description: Public-facing x402 payment gateway.
   version: 1.0.0-phase1c
   x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
-  description: 'Operations tagged agent-auth across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: agent-auth
 paths:
@@ -108,65 +108,6 @@ paths:
         authMode: api_key
 components:
   schemas:
-    TokenResponse:
-      properties:
-        token:
-          type: string
-          title: Token
-        token_type:
-          type: string
-          title: Token Type
-          default: Bearer
-        expires_in:
-          type: integer
-          title: Expires In
-        spend_cap_usd:
-          type: number
-          title: Spend Cap Usd
-        jti:
-          type: string
-          title: Jti
-      type: object
-      required:
-      - token
-      - expires_in
-      - spend_cap_usd
-      - jti
-      title: TokenResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    SessionStatusResponse:
-      properties:
-        jti:
-          type: string
-          title: Jti
-        spend_cap_usd:
-          type: number
-          title: Spend Cap Usd
-        spent_usd:
-          type: number
-          title: Spent Usd
-        remaining_usd:
-          type: number
-          title: Remaining Usd
-        active:
-          type: boolean
-          title: Active
-      type: object
-      required:
-      - jti
-      - spend_cap_usd
-      - spent_usd
-      - remaining_usd
-      - active
-      title: SessionStatusResponse
     TokenRequest:
       properties:
         atb_zk_credential:
@@ -199,6 +140,56 @@ components:
           description: Session lifetime in seconds. Defaults to 3600. Max 86400 (24 h).
       type: object
       title: TokenRequest
+    TokenResponse:
+      properties:
+        token:
+          type: string
+          title: Token
+        token_type:
+          type: string
+          title: Token Type
+          default: Bearer
+        expires_in:
+          type: integer
+          title: Expires In
+        spend_cap_usd:
+          type: number
+          title: Spend Cap Usd
+        jti:
+          type: string
+          title: Jti
+      type: object
+      required:
+      - token
+      - expires_in
+      - spend_cap_usd
+      - jti
+      title: TokenResponse
+    SessionStatusResponse:
+      properties:
+        jti:
+          type: string
+          title: Jti
+        spend_cap_usd:
+          type: number
+          title: Spend Cap Usd
+        spent_usd:
+          type: number
+          title: Spent Usd
+        remaining_usd:
+          type: number
+          title: Remaining Usd
+        active:
+          type: boolean
+          title: Active
+      type: object
+      required:
+      - jti
+      - spend_cap_usd
+      - spent_usd
+      - remaining_usd
+      - active
+      title: SessionStatusResponse
     ValidationError:
       properties:
         loc:
@@ -225,6 +216,18 @@ components:
       - msg
       - type
       title: ValidationError
-x-refined-from:
-- algovoi-co-uk-gateway-openapi.json
-- algovoi-co-uk-gateway-openapi.yml
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+x-discovery:
+  ownershipProofs:
+  - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633
+  resources:
+  - https://api.algovoi.co.uk/mpp/probe
+  resourcesCatalog: https://api.algovoi.co.uk/discovery/resources

@@ -1,9 +1,9 @@
 openapi: 3.2.0
 info:
-  title: Algovoi Co Uk Recurring API
+  title: AlgoVoi Gateway Recurring API
+  description: Public-facing x402 payment gateway.
   version: 1.0.0-phase1c
   x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
-  description: 'Operations tagged recurring across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: recurring
 paths:
@@ -519,6 +519,89 @@ paths:
         authMode: api_key
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PullCreate:
+      properties:
+        authority_id:
+          type: string
+          format: uuid
+          title: Authority Id
+        amount_minor:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Amount Minor
+        note:
+          anyOf:
+          - type: string
+            maxLength: 128
+          - type: 'null'
+          title: Note
+      additionalProperties: false
+      type: object
+      required:
+      - authority_id
+      - amount_minor
+      title: PullCreate
+      description: POST /v1/recurring/pulls request body — manual pull trigger.
+    AuthorityCreateResponse:
+      properties:
+        authority:
+          $ref: '#/components/schemas/AuthorityResponse'
+        customer_signing_payload:
+          additionalProperties: true
+          type: object
+          title: Customer Signing Payload
+        authorisation_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorisation Url
+      additionalProperties: true
+      type: object
+      required:
+      - authority
+      - customer_signing_payload
+      title: AuthorityCreateResponse
+      description: 'POST /v1/recurring/authorities response.
+
+
+        Wraps the server-recorded authority + the chain-specific payload the
+
+        customer''s wallet signs to land the authorisation on-chain.'
     AuthorityConfirmRequest:
       properties:
         on_chain_address:
@@ -543,6 +626,65 @@ components:
         Submitted after the customer signs the on-chain authorisation. Carries
 
         the on-chain identifier (e.g. ``app:12345`` for Algorand).'
+    AuthorityCreate:
+      properties:
+        subscription_id:
+          type: string
+          format: uuid
+          title: Subscription Id
+        chain:
+          type: string
+          title: Chain
+        customer_wallet_address:
+          type: string
+          maxLength: 128
+          minLength: 1
+          title: Customer Wallet Address
+        cap_amount_minor:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Cap Amount Minor
+        cap_period_seconds:
+          type: integer
+          minimum: 86400.0
+          title: Cap Period Seconds
+        per_cycle_amount_minor:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Per Cycle Amount Minor
+        asset:
+          type: string
+          maxLength: 16
+          minLength: 1
+          title: Asset
+          default: USDC
+        metadata:
+          additionalProperties: true
+          type: object
+          title: Metadata
+      additionalProperties: false
+      type: object
+      required:
+      - subscription_id
+      - chain
+      - customer_wallet_address
+      - cap_amount_minor
+      - cap_period_seconds
+      - per_cycle_amount_minor
+      title: AuthorityCreate
+      description: POST /v1/recurring/authorities request body.
+    AuthorityResumeRequest:
+      properties:
+        next_cycle_due_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Next Cycle Due At
+      additionalProperties: false
+      type: object
+      title: AuthorityResumeRequest
+      description: POST /v1/recurring/authorities/{id}/resume request body.
     AuthorityResponse:
       properties:
         id:
@@ -675,148 +817,9 @@ components:
       - metadata
       title: AuthorityResponse
       description: Standard authority response. Returned by GET / POST creates.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    AuthorityCreate:
-      properties:
-        subscription_id:
-          type: string
-          format: uuid
-          title: Subscription Id
-        chain:
-          type: string
-          title: Chain
-        customer_wallet_address:
-          type: string
-          maxLength: 128
-          minLength: 1
-          title: Customer Wallet Address
-        cap_amount_minor:
-          type: integer
-          exclusiveMinimum: 0.0
-          title: Cap Amount Minor
-        cap_period_seconds:
-          type: integer
-          minimum: 86400.0
-          title: Cap Period Seconds
-        per_cycle_amount_minor:
-          type: integer
-          exclusiveMinimum: 0.0
-          title: Per Cycle Amount Minor
-        asset:
-          type: string
-          maxLength: 16
-          minLength: 1
-          title: Asset
-          default: USDC
-        metadata:
-          additionalProperties: true
-          type: object
-          title: Metadata
-      additionalProperties: false
-      type: object
-      required:
-      - subscription_id
-      - chain
-      - customer_wallet_address
-      - cap_amount_minor
-      - cap_period_seconds
-      - per_cycle_amount_minor
-      title: AuthorityCreate
-      description: POST /v1/recurring/authorities request body.
-    AuthorityCreateResponse:
-      properties:
-        authority:
-          $ref: '#/components/schemas/AuthorityResponse'
-        customer_signing_payload:
-          additionalProperties: true
-          type: object
-          title: Customer Signing Payload
-        authorisation_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Authorisation Url
-      additionalProperties: true
-      type: object
-      required:
-      - authority
-      - customer_signing_payload
-      title: AuthorityCreateResponse
-      description: 'POST /v1/recurring/authorities response.
-
-
-        Wraps the server-recorded authority + the chain-specific payload the
-
-        customer''s wallet signs to land the authorisation on-chain.'
-    AuthorityResumeRequest:
-      properties:
-        next_cycle_due_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Next Cycle Due At
-      additionalProperties: false
-      type: object
-      title: AuthorityResumeRequest
-      description: POST /v1/recurring/authorities/{id}/resume request body.
-    PullCreate:
-      properties:
-        authority_id:
-          type: string
-          format: uuid
-          title: Authority Id
-        amount_minor:
-          type: integer
-          exclusiveMinimum: 0.0
-          title: Amount Minor
-        note:
-          anyOf:
-          - type: string
-            maxLength: 128
-          - type: 'null'
-          title: Note
-      additionalProperties: false
-      type: object
-      required:
-      - authority_id
-      - amount_minor
-      title: PullCreate
-      description: POST /v1/recurring/pulls request body — manual pull trigger.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-x-refined-from:
-- algovoi-co-uk-gateway-openapi.json
-- algovoi-co-uk-gateway-openapi.yml
+x-discovery:
+  ownershipProofs:
+  - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633
+  resources:
+  - https://api.algovoi.co.uk/mpp/probe
+  resourcesCatalog: https://api.algovoi.co.uk/discovery/resources

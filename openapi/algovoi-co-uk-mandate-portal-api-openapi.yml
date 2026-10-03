@@ -1,9 +1,9 @@
 openapi: 3.2.0
 info:
-  title: Algovoi Co Uk Mandate Portal API
+  title: AlgoVoi Gateway Mandate Portal API
+  description: Public-facing x402 payment gateway.
   version: 1.0.0-phase1c
   x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
-  description: 'Operations tagged mandate-portal across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: mandate-portal
 paths:
@@ -164,76 +164,6 @@ paths:
         authMode: api_key
 components:
   schemas:
-    ChargeItemPublic:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        amount_minor:
-          type: integer
-          title: Amount Minor
-        currency:
-          type: string
-          title: Currency
-        chain:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Chain
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        status:
-          type: string
-          title: Status
-        charged_at:
-          type: string
-          format: date-time
-          title: Charged At
-      type: object
-      required:
-      - id
-      - amount_minor
-      - currency
-      - chain
-      - description
-      - status
-      - charged_at
-      title: ChargeItemPublic
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    TopupCaptureResponse:
-      properties:
-        mandate_id:
-          type: string
-          format: uuid
-          title: Mandate Id
-        new_balance_minor:
-          type: integer
-          title: New Balance Minor
-        added_minor:
-          type: integer
-          title: Added Minor
-        paypal_order_id:
-          type: string
-          title: Paypal Order Id
-      type: object
-      required:
-      - mandate_id
-      - new_balance_minor
-      - added_minor
-      - paypal_order_id
-      title: TopupCaptureResponse
     TopupInitiateResponse:
       properties:
         mandate_id:
@@ -256,6 +186,27 @@ components:
       - approval_url
       - amount_minor
       title: TopupInitiateResponse
+    TopupInitiateRequest:
+      properties:
+        amount_minor:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Amount Minor
+          description: Top-up amount in GBP pence
+        return_url:
+          type: string
+          title: Return Url
+          description: URL to redirect after PayPal approval
+        cancel_url:
+          type: string
+          title: Cancel Url
+          description: URL to redirect on cancellation
+      type: object
+      required:
+      - amount_minor
+      - return_url
+      - cancel_url
+      title: TopupInitiateRequest
     MandatePortalResponse:
       properties:
         mandate_id:
@@ -317,27 +268,45 @@ components:
       - expires_at
       - recent_charges
       title: MandatePortalResponse
-    TopupInitiateRequest:
+    ChargeItemPublic:
       properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
         amount_minor:
           type: integer
-          exclusiveMinimum: 0.0
           title: Amount Minor
-          description: Top-up amount in GBP pence
-        return_url:
+        currency:
           type: string
-          title: Return Url
-          description: URL to redirect after PayPal approval
-        cancel_url:
+          title: Currency
+        chain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Chain
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        status:
           type: string
-          title: Cancel Url
-          description: URL to redirect on cancellation
+          title: Status
+        charged_at:
+          type: string
+          format: date-time
+          title: Charged At
       type: object
       required:
+      - id
       - amount_minor
-      - return_url
-      - cancel_url
-      title: TopupInitiateRequest
+      - currency
+      - chain
+      - description
+      - status
+      - charged_at
+      title: ChargeItemPublic
     ValidationError:
       properties:
         loc:
@@ -364,6 +333,40 @@ components:
       - msg
       - type
       title: ValidationError
-x-refined-from:
-- algovoi-co-uk-gateway-openapi.json
-- algovoi-co-uk-gateway-openapi.yml
+    TopupCaptureResponse:
+      properties:
+        mandate_id:
+          type: string
+          format: uuid
+          title: Mandate Id
+        new_balance_minor:
+          type: integer
+          title: New Balance Minor
+        added_minor:
+          type: integer
+          title: Added Minor
+        paypal_order_id:
+          type: string
+          title: Paypal Order Id
+      type: object
+      required:
+      - mandate_id
+      - new_balance_minor
+      - added_minor
+      - paypal_order_id
+      title: TopupCaptureResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+x-discovery:
+  ownershipProofs:
+  - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633
+  resources:
+  - https://api.algovoi.co.uk/mpp/probe
+  resourcesCatalog: https://api.algovoi.co.uk/discovery/resources

@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Algovoi Co Uk Payable A2a API
+  title: AlgoVoi Payable Core Payable A2a API
+  description: Tenant-free metered signed-verification service (/pay/v1).
   version: 1.0.0
-  description: 'Operations tagged payable-a2a across 2 of this provider''s published API definitions: algovoi-co-uk-pay-openapi.json, algovoi-co-uk-pay-openapi.yml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: payable-a2a
 paths:
@@ -18,6 +18,5 @@ paths:
           content:
             application/json:
               schema: {}
-x-refined-from:
-- algovoi-co-uk-pay-openapi.json
-- algovoi-co-uk-pay-openapi.yml
+x-discovery:
+  ownershipProofs: []

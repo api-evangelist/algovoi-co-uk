@@ -1,9 +1,9 @@
 openapi: 3.2.0
 info:
-  title: Algovoi Co Uk Recurr API
+  title: AlgoVoi Gateway Recurr API
+  description: Public-facing x402 payment gateway.
   version: 1.0.0-phase1c
   x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
-  description: 'Operations tagged recurr across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: recurr
 paths:
@@ -257,6 +257,50 @@ paths:
         authMode: api_key
 components:
   schemas:
+    shared__schemas__recurr__VerifyResponse:
+      properties:
+        customer_jwt:
+          type: string
+          title: Customer Jwt
+        expires_at:
+          type: string
+          format: date-time
+          title: Expires At
+        wallet_address:
+          type: string
+          title: Wallet Address
+        chain:
+          type: string
+          title: Chain
+        tenant_count:
+          type: integer
+          title: Tenant Count
+          default: 0
+      type: object
+      required:
+      - customer_jwt
+      - expires_at
+      - wallet_address
+      - chain
+      title: VerifyResponse
+    shared__schemas__recurr__ChallengeResponse:
+      properties:
+        nonce:
+          type: string
+          title: Nonce
+        message:
+          type: string
+          title: Message
+        expires_at:
+          type: string
+          format: date-time
+          title: Expires At
+      type: object
+      required:
+      - nonce
+      - message
+      - expires_at
+      title: ChallengeResponse
     SubscriptionResponse:
       properties:
         id:
@@ -395,96 +439,6 @@ components:
       - metadata
       - created_at
       title: SubscriptionResponse
-    shared__schemas__recurr__ChallengeRequest:
-      properties:
-        chain:
-          type: string
-          maxLength: 64
-          minLength: 3
-          title: Chain
-        wallet_address:
-          type: string
-          maxLength: 128
-          minLength: 6
-          title: Wallet Address
-      additionalProperties: false
-      type: object
-      required:
-      - chain
-      - wallet_address
-      title: ChallengeRequest
-      description: "Tenant-agnostic. Wallet alone is the identity for Recurr customer auth.\n\nPer-chain address shapes:\n  - EVM (Base, Tempo, etc.):  0x + 40 hex chars   (42 total)\n  - Algorand / VOI:           base32 with checksum (58 total)\n  - Solana:                   base58 (32-44 chars)\n  - Stellar:                  G... StrKey (56 total)\n  - Hedera:                   shard.realm.num    (>= 6 chars, e.g. ``0.0.0``)"
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    shared__schemas__recurr__ChallengeResponse:
-      properties:
-        nonce:
-          type: string
-          title: Nonce
-        message:
-          type: string
-          title: Message
-        expires_at:
-          type: string
-          format: date-time
-          title: Expires At
-      type: object
-      required:
-      - nonce
-      - message
-      - expires_at
-      title: ChallengeResponse
-    shared__schemas__recurr__VerifyResponse:
-      properties:
-        customer_jwt:
-          type: string
-          title: Customer Jwt
-        expires_at:
-          type: string
-          format: date-time
-          title: Expires At
-        wallet_address:
-          type: string
-          title: Wallet Address
-        chain:
-          type: string
-          title: Chain
-        tenant_count:
-          type: integer
-          title: Tenant Count
-          default: 0
-      type: object
-      required:
-      - customer_jwt
-      - expires_at
-      - wallet_address
-      - chain
-      title: VerifyResponse
-    shared__schemas__recurr__VerifyRequest:
-      properties:
-        nonce:
-          type: string
-          maxLength: 64
-          minLength: 8
-          title: Nonce
-        signature:
-          type: string
-          maxLength: 512
-          minLength: 8
-          title: Signature
-      additionalProperties: false
-      type: object
-      required:
-      - nonce
-      - signature
-      title: VerifyRequest
     SubscriptionInvoiceResponse:
       properties:
         id:
@@ -574,6 +528,24 @@ components:
       - attempts
       - created_at
       title: SubscriptionInvoiceResponse
+    shared__schemas__recurr__VerifyRequest:
+      properties:
+        nonce:
+          type: string
+          maxLength: 64
+          minLength: 8
+          title: Nonce
+        signature:
+          type: string
+          maxLength: 512
+          minLength: 8
+          title: Signature
+      additionalProperties: false
+      type: object
+      required:
+      - nonce
+      - signature
+      title: VerifyRequest
     ValidationError:
       properties:
         loc:
@@ -600,6 +572,37 @@ components:
       - msg
       - type
       title: ValidationError
-x-refined-from:
-- algovoi-co-uk-gateway-openapi.json
-- algovoi-co-uk-gateway-openapi.yml
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    shared__schemas__recurr__ChallengeRequest:
+      properties:
+        chain:
+          type: string
+          maxLength: 64
+          minLength: 3
+          title: Chain
+        wallet_address:
+          type: string
+          maxLength: 128
+          minLength: 6
+          title: Wallet Address
+      additionalProperties: false
+      type: object
+      required:
+      - chain
+      - wallet_address
+      title: ChallengeRequest
+      description: "Tenant-agnostic. Wallet alone is the identity for Recurr customer auth.\n\nPer-chain address shapes:\n  - EVM (Base, Tempo, etc.):  0x + 40 hex chars   (42 total)\n  - Algorand / VOI:           base32 with checksum (58 total)\n  - Solana:                   base58 (32-44 chars)\n  - Stellar:                  G... StrKey (56 total)\n  - Hedera:                   shard.realm.num    (>= 6 chars, e.g. ``0.0.0``)"
+x-discovery:
+  ownershipProofs:
+  - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633
+  resources:
+  - https://api.algovoi.co.uk/mpp/probe
+  resourcesCatalog: https://api.algovoi.co.uk/discovery/resources

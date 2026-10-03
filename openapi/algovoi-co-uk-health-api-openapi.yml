@@ -4,7 +4,7 @@ info:
   x-refined-note:
   - x-guidance differs across the merged source definitions and was not carried
   version: '1.0'
-  description: 'Operations tagged Health across 6 of this provider''s published API definitions: algovoi-co-uk-audit-verifier-openapi.json, algovoi-co-uk-clinic-openapi.json, algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-audit-verifier-openapi.yml, algovoi-co-uk-clinic-openapi.yml, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Health across 3 of this provider''s published API definitions: algovoi-co-uk-audit-verifier-openapi.json, algovoi-co-uk-clinic-openapi.json, algovoi-co-uk-gateway-openapi.json. Each path carries the servers of the definition it was published in.'
 tags:
 - name: Health
 paths:
@@ -28,6 +28,3 @@ x-refined-from:
 - algovoi-co-uk-audit-verifier-openapi.json
 - algovoi-co-uk-clinic-openapi.json
 - algovoi-co-uk-gateway-openapi.json
-- algovoi-co-uk-audit-verifier-openapi.yml
-- algovoi-co-uk-clinic-openapi.yml
-- algovoi-co-uk-gateway-openapi.yml

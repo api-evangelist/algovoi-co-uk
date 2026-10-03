@@ -1,9 +1,9 @@
 openapi: 3.2.0
 info:
-  title: Algovoi Co Uk Checkout API
+  title: AlgoVoi Gateway Checkout API
+  description: Public-facing x402 payment gateway.
   version: 1.0.0-phase1c
   x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
-  description: 'Operations tagged checkout across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: Checkout
 paths:
@@ -703,15 +703,23 @@ paths:
         authMode: api_key
 components:
   schemas:
-    HTTPValidationError:
+    CheckoutVerifyRequest:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        tx_id:
+          type: string
+          maxLength: 100
+          minLength: 10
+          title: Tx Id
+        chain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Chain
       type: object
-      title: HTTPValidationError
+      required:
+      - tx_id
+      title: CheckoutVerifyRequest
+      description: Body for POST /checkout/{token}/verify (gateway-side, unauthenticated).
     CancelCheckoutRequest:
       properties:
         cancel_secret:
@@ -765,23 +773,6 @@ components:
       - status
       title: CheckoutVerifyResponse
       description: Successful verification response.
-    CheckoutVerifyRequest:
-      properties:
-        tx_id:
-          type: string
-          maxLength: 100
-          minLength: 10
-          title: Tx Id
-        chain:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Chain
-      type: object
-      required:
-      - tx_id
-      title: CheckoutVerifyRequest
-      description: Body for POST /checkout/{token}/verify (gateway-side, unauthenticated).
     ValidationError:
       properties:
         loc:
@@ -808,6 +799,18 @@ components:
       - msg
       - type
       title: ValidationError
-x-refined-from:
-- algovoi-co-uk-gateway-openapi.json
-- algovoi-co-uk-gateway-openapi.yml
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+x-discovery:
+  ownershipProofs:
+  - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633
+  resources:
+  - https://api.algovoi.co.uk/mpp/probe
+  resourcesCatalog: https://api.algovoi.co.uk/discovery/resources

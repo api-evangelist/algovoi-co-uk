@@ -1,9 +1,9 @@
 openapi: 3.2.0
 info:
-  title: Algovoi Co Uk Compliance API
+  title: AlgoVoi Gateway Compliance API
+  description: Public-facing x402 payment gateway.
   version: 1.0.0-phase1c
   x-guidance: To access payment-gated resources, send the required payment proof header. Use GET /mpp/{resource_id} for MPP or GET /protected/{resource_id} for x402.
-  description: 'Operations tagged compliance across 2 of this provider''s published API definitions: algovoi-co-uk-gateway-openapi.json, algovoi-co-uk-gateway-openapi.yml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: Compliance
 paths:
@@ -171,6 +171,44 @@ paths:
         authMode: api_key
 components:
   schemas:
+    SettlementEvidenceResponse:
+      properties:
+        settled_payment_ref:
+          type: string
+          title: Settled Payment Ref
+        status:
+          type: string
+          title: Status
+        network:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Network
+        round:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Round
+        captured_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Captured At
+        last_error:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Error
+        chain_binding:
+          anyOf:
+          - $ref: '#/components/schemas/ChainBinding'
+          - type: 'null'
+      type: object
+      required:
+      - settled_payment_ref
+      - status
+      title: SettlementEvidenceResponse
+      description: Status of chain-evidence capture for a settled payment.
     ScreenResponse:
       properties:
         verdict:
@@ -311,6 +349,66 @@ components:
       - jws
       title: ReceiptVerifyRequest
       description: Request body for POST /v1/receipt/verify.
+    TrustQueryResponse:
+      properties:
+        trust_outcome:
+          type: string
+          title: Trust Outcome
+        composite_hash:
+          type: string
+          title: Composite Hash
+        receipt_count:
+          type: integer
+          title: Receipt Count
+        ctq_response:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Ctq Response
+        ctq_response_jws:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ctq Response Jws
+      type: object
+      required:
+      - trust_outcome
+      - composite_hash
+      - receipt_count
+      title: TrustQueryResponse
+    TrustQueryRequest:
+      properties:
+        receipts:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Receipts
+          default: []
+      type: object
+      title: TrustQueryRequest
+    ChainBinding:
+      properties:
+        scheme:
+          type: string
+          title: Scheme
+          default: avm-proofpack/1
+        bundle_sha256:
+          type: string
+          title: Bundle Sha256
+          description: sha256 hex of the canonical bundle file bytes
+        bundle:
+          additionalProperties: true
+          type: object
+          title: Bundle
+          description: The avm-proofpack state-proof evidence bundle
+      type: object
+      required:
+      - bundle_sha256
+      - bundle
+      title: ChainBinding
+      description: Offline-verifiable chain evidence for a settled payment.
     ReceiptVerifyResponse:
       properties:
         verified:
@@ -376,113 +474,6 @@ components:
       - verified
       title: ReceiptVerifyResponse
       description: Verification result.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ChainBinding:
-      properties:
-        scheme:
-          type: string
-          title: Scheme
-          default: avm-proofpack/1
-        bundle_sha256:
-          type: string
-          title: Bundle Sha256
-          description: sha256 hex of the canonical bundle file bytes
-        bundle:
-          additionalProperties: true
-          type: object
-          title: Bundle
-          description: The avm-proofpack state-proof evidence bundle
-      type: object
-      required:
-      - bundle_sha256
-      - bundle
-      title: ChainBinding
-      description: Offline-verifiable chain evidence for a settled payment.
-    SettlementEvidenceResponse:
-      properties:
-        settled_payment_ref:
-          type: string
-          title: Settled Payment Ref
-        status:
-          type: string
-          title: Status
-        network:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Network
-        round:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Round
-        captured_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Captured At
-        last_error:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Last Error
-        chain_binding:
-          anyOf:
-          - $ref: '#/components/schemas/ChainBinding'
-          - type: 'null'
-      type: object
-      required:
-      - settled_payment_ref
-      - status
-      title: SettlementEvidenceResponse
-      description: Status of chain-evidence capture for a settled payment.
-    TrustQueryRequest:
-      properties:
-        receipts:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Receipts
-          default: []
-      type: object
-      title: TrustQueryRequest
-    TrustQueryResponse:
-      properties:
-        trust_outcome:
-          type: string
-          title: Trust Outcome
-        composite_hash:
-          type: string
-          title: Composite Hash
-        receipt_count:
-          type: integer
-          title: Receipt Count
-        ctq_response:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Ctq Response
-        ctq_response_jws:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Ctq Response Jws
-      type: object
-      required:
-      - trust_outcome
-      - composite_hash
-      - receipt_count
-      title: TrustQueryResponse
     ValidationError:
       properties:
         loc:
@@ -509,6 +500,15 @@ components:
       - msg
       - type
       title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ScreenRequest:
       properties:
         recipient_address:
@@ -538,6 +538,9 @@ components:
       - recipient_address
       - network
       title: ScreenRequest
-x-refined-from:
-- algovoi-co-uk-gateway-openapi.json
-- algovoi-co-uk-gateway-openapi.yml
+x-discovery:
+  ownershipProofs:
+  - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633
+  resources:
+  - https://api.algovoi.co.uk/mpp/probe
+  resourcesCatalog: https://api.algovoi.co.uk/discovery/resources
