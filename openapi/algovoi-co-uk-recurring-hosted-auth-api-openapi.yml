@@ -116,86 +116,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    HostedAuthConfirmResponse:
-      properties:
-        authority_id:
-          type: string
-          format: uuid
-          title: Authority Id
-        status:
-          type: string
-          title: Status
-        on_chain_address:
-          type: string
-          title: On Chain Address
-        activated_at:
-          type: string
-          format: date-time
-          title: Activated At
-        redirect_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Redirect Url
-      type: object
-      required:
-      - authority_id
-      - status
-      - on_chain_address
-      - activated_at
-      title: HostedAuthConfirmResponse
-    HostedAuthMerchant:
-      properties:
-        name:
-          type: string
-          title: Name
-          description: Merchant display name
-        logo_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Logo Url
-          description: Merchant logo, if uploaded
-        brand_primary_color:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Brand Primary Color
-          description: 'Hex colour, e.g. #3b82f6'
-        contact_email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Contact Email
-          description: Customer support contact
-      type: object
-      required:
-      - name
-      title: HostedAuthMerchant
-      description: Subset of merchant info safe to expose on a public endpoint.
-    HostedAuthConfirmRequest:
-      properties:
-        on_chain_address:
-          type: string
-          maxLength: 200
-          minLength: 1
-          title: On Chain Address
-        on_chain_tx_id:
-          anyOf:
-          - type: string
-            maxLength: 1000
-          - type: 'null'
-          title: On Chain Tx Id
-        first_cycle_due_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: First Cycle Due At
-      type: object
-      required:
-      - on_chain_address
-      title: HostedAuthConfirmRequest
     HostedAuthResolveResponse:
       properties:
         authority_id:
@@ -256,6 +176,86 @@ components:
       - customer_signing_payload
       - merchant
       title: HostedAuthResolveResponse
+    HostedAuthMerchant:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Merchant display name
+        logo_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Logo Url
+          description: Merchant logo, if uploaded
+        brand_primary_color:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Brand Primary Color
+          description: 'Hex colour, e.g. #3b82f6'
+        contact_email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contact Email
+          description: Customer support contact
+      type: object
+      required:
+      - name
+      title: HostedAuthMerchant
+      description: Subset of merchant info safe to expose on a public endpoint.
+    HostedAuthConfirmResponse:
+      properties:
+        authority_id:
+          type: string
+          format: uuid
+          title: Authority Id
+        status:
+          type: string
+          title: Status
+        on_chain_address:
+          type: string
+          title: On Chain Address
+        activated_at:
+          type: string
+          format: date-time
+          title: Activated At
+        redirect_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Redirect Url
+      type: object
+      required:
+      - authority_id
+      - status
+      - on_chain_address
+      - activated_at
+      title: HostedAuthConfirmResponse
+    HostedAuthConfirmRequest:
+      properties:
+        on_chain_address:
+          type: string
+          maxLength: 200
+          minLength: 1
+          title: On Chain Address
+        on_chain_tx_id:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: On Chain Tx Id
+        first_cycle_due_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: First Cycle Due At
+      type: object
+      required:
+      - on_chain_address
+      title: HostedAuthConfirmRequest
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633

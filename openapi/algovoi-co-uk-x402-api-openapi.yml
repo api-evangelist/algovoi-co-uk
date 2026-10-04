@@ -117,6 +117,50 @@ paths:
         authMode: api_key
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    gateway__app__routers__verify__ChallengeRequest:
+      properties:
+        resource_id:
+          type: string
+          title: Resource Id
+      type: object
+      required:
+      - resource_id
+      title: ChallengeRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     gateway__app__routers__verify__ChallengeResponse:
       properties:
         resource_id:
@@ -156,72 +200,6 @@ components:
       - amount_microalgos
       - payment_reference
       title: ChallengeResponse
-    gateway__app__routers__verify__VerifyRequest:
-      properties:
-        resource_id:
-          type: string
-          title: Resource Id
-        network:
-          type: string
-          title: Network
-        tx_id:
-          type: string
-          title: Tx Id
-        price_token:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Price Token
-      type: object
-      required:
-      - resource_id
-      - network
-      - tx_id
-      title: VerifyRequest
-    gateway__app__routers__verify__ChallengeRequest:
-      properties:
-        resource_id:
-          type: string
-          title: Resource Id
-      type: object
-      required:
-      - resource_id
-      title: ChallengeRequest
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     gateway__app__routers__verify__VerifyResponse:
       properties:
         verified:
@@ -252,6 +230,28 @@ components:
       required:
       - verified
       title: VerifyResponse
+    gateway__app__routers__verify__VerifyRequest:
+      properties:
+        resource_id:
+          type: string
+          title: Resource Id
+        network:
+          type: string
+          title: Network
+        tx_id:
+          type: string
+          title: Tx Id
+        price_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Price Token
+      type: object
+      required:
+      - resource_id
+      - network
+      - tx_id
+      title: VerifyRequest
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633

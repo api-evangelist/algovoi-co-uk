@@ -73,6 +73,40 @@ paths:
         authMode: api_key
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PayoutCreateResponse:
+      properties:
+        payout_id:
+          type: string
+          title: Payout Id
+        tx_id:
+          type: string
+          title: Tx Id
+        network:
+          type: string
+          title: Network
+        amount_usd_cents:
+          type: integer
+          title: Amount Usd Cents
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - payout_id
+      - tx_id
+      - network
+      - amount_usd_cents
+      - status
+      title: PayoutCreateResponse
     ValidationError:
       properties:
         loc:
@@ -136,40 +170,6 @@ components:
       - network
       - reference
       title: PayoutCreate
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    PayoutCreateResponse:
-      properties:
-        payout_id:
-          type: string
-          title: Payout Id
-        tx_id:
-          type: string
-          title: Tx Id
-        network:
-          type: string
-          title: Network
-        amount_usd_cents:
-          type: integer
-          title: Amount Usd Cents
-        status:
-          type: string
-          title: Status
-      type: object
-      required:
-      - payout_id
-      - tx_id
-      - network
-      - amount_usd_cents
-      - status
-      title: PayoutCreateResponse
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633

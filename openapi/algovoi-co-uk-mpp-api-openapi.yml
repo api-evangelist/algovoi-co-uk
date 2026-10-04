@@ -808,46 +808,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    MppChallengeRequest:
-      properties:
-        resource_id:
-          type: string
-          title: Resource Id
-        network:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Network
-      type: object
-      required:
-      - resource_id
-      title: MppChallengeRequest
     HTTPValidationError:
       properties:
         detail:
@@ -874,6 +834,46 @@ components:
       - challenge
       - accepts
       title: MppChallengeResponse
+    MppChallengeRequest:
+      properties:
+        resource_id:
+          type: string
+          title: Resource Id
+        network:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Network
+      type: object
+      required:
+      - resource_id
+      title: MppChallengeRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     PayableRfc9421VerifyRequest:
       properties:
         method:

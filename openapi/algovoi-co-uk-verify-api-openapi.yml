@@ -268,6 +268,15 @@ paths:
         authMode: api_key
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -283,41 +292,6 @@ components:
         type:
           type: string
           title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ValidationError_2:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
       type: object
       required:
       - loc
@@ -372,6 +346,82 @@ components:
       - network
       - resource_id
       title: MppVerifyRequest
+    ValidationError_2:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Rfc9421VerifyResponse:
+      properties:
+        valid:
+          type: boolean
+          title: Valid
+        signature_valid:
+          type: boolean
+          title: Signature Valid
+        content_digest_valid:
+          type: boolean
+          title: Content Digest Valid
+        signing_base:
+          type: string
+          title: Signing Base
+        covered_components:
+          items:
+            type: string
+          type: array
+          title: Covered Components
+        parameters:
+          additionalProperties: true
+          type: object
+          title: Parameters
+        label:
+          type: string
+          title: Label
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+        spec_ref:
+          type: string
+          title: Spec Ref
+        digest_spec_ref:
+          type: string
+          title: Digest Spec Ref
+      type: object
+      required:
+      - valid
+      - signature_valid
+      - content_digest_valid
+      - signing_base
+      - covered_components
+      - parameters
+      - label
+      - errors
+      - spec_ref
+      - digest_spec_ref
+      title: Rfc9421VerifyResponse
     ActionRefResponse:
       properties:
         action_ref:
@@ -405,6 +455,32 @@ components:
       - implementations_attested
       - attestation_ref
       title: ActionRefResponse
+    ValidationError_3:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ActionRefRequest:
       properties:
         agent_id:
@@ -482,82 +558,6 @@ components:
       - headers
       - public_key_hex
       title: Rfc9421VerifyRequest
-    Rfc9421VerifyResponse:
-      properties:
-        valid:
-          type: boolean
-          title: Valid
-        signature_valid:
-          type: boolean
-          title: Signature Valid
-        content_digest_valid:
-          type: boolean
-          title: Content Digest Valid
-        signing_base:
-          type: string
-          title: Signing Base
-        covered_components:
-          items:
-            type: string
-          type: array
-          title: Covered Components
-        parameters:
-          additionalProperties: true
-          type: object
-          title: Parameters
-        label:
-          type: string
-          title: Label
-        errors:
-          items:
-            type: string
-          type: array
-          title: Errors
-        spec_ref:
-          type: string
-          title: Spec Ref
-        digest_spec_ref:
-          type: string
-          title: Digest Spec Ref
-      type: object
-      required:
-      - valid
-      - signature_valid
-      - content_digest_valid
-      - signing_base
-      - covered_components
-      - parameters
-      - label
-      - errors
-      - spec_ref
-      - digest_spec_ref
-      title: Rfc9421VerifyResponse
-    ValidationError_3:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
 x-refined-from:
 - algovoi-co-uk-audit-verifier-openapi.json
 - algovoi-co-uk-clinic-openapi.json

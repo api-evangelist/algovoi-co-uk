@@ -108,63 +108,6 @@ paths:
         authMode: api_key
 components:
   schemas:
-    TokenRequest:
-      properties:
-        atb_zk_credential:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Atb Zk Credential
-          description: Base64url ATB ZKP Phase 2 cert. Provide this OR federation_token.
-        federation_token:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Federation Token
-          description: Pre-composed federation token from algovoi-federation-validator. Provide this OR atb_zk_credential. Requires FEDERATION_VALIDATOR_ENABLED=true.
-        spend_cap_usd:
-          anyOf:
-          - type: number
-            maximum: 10000.0
-            minimum: 0.0
-          - type: 'null'
-          title: Spend Cap Usd
-          description: Per-session spend cap in USD. Defaults to 100.0. Set to 0 to allow dry-run session (no payments).
-        ttl_secs:
-          anyOf:
-          - type: integer
-            maximum: 86400.0
-            minimum: 60.0
-          - type: 'null'
-          title: Ttl Secs
-          description: Session lifetime in seconds. Defaults to 3600. Max 86400 (24 h).
-      type: object
-      title: TokenRequest
-    TokenResponse:
-      properties:
-        token:
-          type: string
-          title: Token
-        token_type:
-          type: string
-          title: Token Type
-          default: Bearer
-        expires_in:
-          type: integer
-          title: Expires In
-        spend_cap_usd:
-          type: number
-          title: Spend Cap Usd
-        jti:
-          type: string
-          title: Jti
-      type: object
-      required:
-      - token
-      - expires_in
-      - spend_cap_usd
-      - jti
-      title: TokenResponse
     SessionStatusResponse:
       properties:
         jti:
@@ -225,6 +168,63 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    TokenRequest:
+      properties:
+        atb_zk_credential:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Atb Zk Credential
+          description: Base64url ATB ZKP Phase 2 cert. Provide this OR federation_token.
+        federation_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Federation Token
+          description: Pre-composed federation token from algovoi-federation-validator. Provide this OR atb_zk_credential. Requires FEDERATION_VALIDATOR_ENABLED=true.
+        spend_cap_usd:
+          anyOf:
+          - type: number
+            maximum: 10000.0
+            minimum: 0.0
+          - type: 'null'
+          title: Spend Cap Usd
+          description: Per-session spend cap in USD. Defaults to 100.0. Set to 0 to allow dry-run session (no payments).
+        ttl_secs:
+          anyOf:
+          - type: integer
+            maximum: 86400.0
+            minimum: 60.0
+          - type: 'null'
+          title: Ttl Secs
+          description: Session lifetime in seconds. Defaults to 3600. Max 86400 (24 h).
+      type: object
+      title: TokenRequest
+    TokenResponse:
+      properties:
+        token:
+          type: string
+          title: Token
+        token_type:
+          type: string
+          title: Token Type
+          default: Bearer
+        expires_in:
+          type: integer
+          title: Expires In
+        spend_cap_usd:
+          type: number
+          title: Spend Cap Usd
+        jti:
+          type: string
+          title: Jti
+      type: object
+      required:
+      - token
+      - expires_in
+      - spend_cap_usd
+      - jti
+      title: TokenResponse
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633

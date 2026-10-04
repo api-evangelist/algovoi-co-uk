@@ -720,59 +720,6 @@ components:
       - tx_id
       title: CheckoutVerifyRequest
       description: Body for POST /checkout/{token}/verify (gateway-side, unauthenticated).
-    CancelCheckoutRequest:
-      properties:
-        cancel_secret:
-          type: string
-          maxLength: 128
-          minLength: 1
-          title: Cancel Secret
-      type: object
-      required:
-      - cancel_secret
-      title: CancelCheckoutRequest
-      description: 'Body for POST /checkout/{token}/cancel (gateway-side).
-
-
-        F5 security fix: the cancel endpoint now requires cancel_secret so that
-
-        only the merchant (who received cancel_secret at link-creation time) can
-
-        cancel a link programmatically. Customers use the in-browser ''abandon''
-
-        flow which navigates them away without touching the backend.'
-    CheckoutVerifyResponse:
-      properties:
-        payment_ledger_id:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Payment Ledger Id
-        status:
-          type: string
-          title: Status
-        redirect_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Redirect Url
-        settlement_attestation:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Settlement Attestation
-        settlement_attestation_jws:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Settlement Attestation Jws
-      type: object
-      required:
-      - status
-      title: CheckoutVerifyResponse
-      description: Successful verification response.
     ValidationError:
       properties:
         loc:
@@ -808,6 +755,59 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    CheckoutVerifyResponse:
+      properties:
+        payment_ledger_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Payment Ledger Id
+        status:
+          type: string
+          title: Status
+        redirect_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Redirect Url
+        settlement_attestation:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Settlement Attestation
+        settlement_attestation_jws:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Settlement Attestation Jws
+      type: object
+      required:
+      - status
+      title: CheckoutVerifyResponse
+      description: Successful verification response.
+    CancelCheckoutRequest:
+      properties:
+        cancel_secret:
+          type: string
+          maxLength: 128
+          minLength: 1
+          title: Cancel Secret
+      type: object
+      required:
+      - cancel_secret
+      title: CancelCheckoutRequest
+      description: 'Body for POST /checkout/{token}/cancel (gateway-side).
+
+
+        F5 security fix: the cancel endpoint now requires cancel_secret so that
+
+        only the merchant (who received cancel_secret at link-creation time) can
+
+        cancel a link programmatically. Customers use the in-browser ''abandon''
+
+        flow which navigates them away without touching the backend.'
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633

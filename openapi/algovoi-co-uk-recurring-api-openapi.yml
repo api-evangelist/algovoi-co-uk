@@ -554,78 +554,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    PullCreate:
-      properties:
-        authority_id:
-          type: string
-          format: uuid
-          title: Authority Id
-        amount_minor:
-          type: integer
-          exclusiveMinimum: 0.0
-          title: Amount Minor
-        note:
-          anyOf:
-          - type: string
-            maxLength: 128
-          - type: 'null'
-          title: Note
-      additionalProperties: false
-      type: object
-      required:
-      - authority_id
-      - amount_minor
-      title: PullCreate
-      description: POST /v1/recurring/pulls request body — manual pull trigger.
-    AuthorityCreateResponse:
-      properties:
-        authority:
-          $ref: '#/components/schemas/AuthorityResponse'
-        customer_signing_payload:
-          additionalProperties: true
-          type: object
-          title: Customer Signing Payload
-        authorisation_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Authorisation Url
-      additionalProperties: true
-      type: object
-      required:
-      - authority
-      - customer_signing_payload
-      title: AuthorityCreateResponse
-      description: 'POST /v1/recurring/authorities response.
-
-
-        Wraps the server-recorded authority + the chain-specific payload the
-
-        customer''s wallet signs to land the authorisation on-chain.'
-    AuthorityConfirmRequest:
-      properties:
-        on_chain_address:
-          type: string
-          maxLength: 128
-          minLength: 1
-          title: On Chain Address
-        first_cycle_due_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: First Cycle Due At
-      additionalProperties: false
-      type: object
-      required:
-      - on_chain_address
-      title: AuthorityConfirmRequest
-      description: 'POST /v1/recurring/authorities/{id}/confirm request body.
-
-
-        Submitted after the customer signs the on-chain authorisation. Carries
-
-        the on-chain identifier (e.g. ``app:12345`` for Algorand).'
     AuthorityCreate:
       properties:
         subscription_id:
@@ -673,18 +601,30 @@ components:
       - per_cycle_amount_minor
       title: AuthorityCreate
       description: POST /v1/recurring/authorities request body.
-    AuthorityResumeRequest:
+    AuthorityConfirmRequest:
       properties:
-        next_cycle_due_at:
+        on_chain_address:
+          type: string
+          maxLength: 128
+          minLength: 1
+          title: On Chain Address
+        first_cycle_due_at:
           anyOf:
           - type: string
             format: date-time
           - type: 'null'
-          title: Next Cycle Due At
+          title: First Cycle Due At
       additionalProperties: false
       type: object
-      title: AuthorityResumeRequest
-      description: POST /v1/recurring/authorities/{id}/resume request body.
+      required:
+      - on_chain_address
+      title: AuthorityConfirmRequest
+      description: 'POST /v1/recurring/authorities/{id}/confirm request body.
+
+
+        Submitted after the customer signs the on-chain authorisation. Carries
+
+        the on-chain identifier (e.g. ``app:12345`` for Algorand).'
     AuthorityResponse:
       properties:
         id:
@@ -817,6 +757,66 @@ components:
       - metadata
       title: AuthorityResponse
       description: Standard authority response. Returned by GET / POST creates.
+    PullCreate:
+      properties:
+        authority_id:
+          type: string
+          format: uuid
+          title: Authority Id
+        amount_minor:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Amount Minor
+        note:
+          anyOf:
+          - type: string
+            maxLength: 128
+          - type: 'null'
+          title: Note
+      additionalProperties: false
+      type: object
+      required:
+      - authority_id
+      - amount_minor
+      title: PullCreate
+      description: POST /v1/recurring/pulls request body — manual pull trigger.
+    AuthorityCreateResponse:
+      properties:
+        authority:
+          $ref: '#/components/schemas/AuthorityResponse'
+        customer_signing_payload:
+          additionalProperties: true
+          type: object
+          title: Customer Signing Payload
+        authorisation_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorisation Url
+      additionalProperties: true
+      type: object
+      required:
+      - authority
+      - customer_signing_payload
+      title: AuthorityCreateResponse
+      description: 'POST /v1/recurring/authorities response.
+
+
+        Wraps the server-recorded authority + the chain-specific payload the
+
+        customer''s wallet signs to land the authorisation on-chain.'
+    AuthorityResumeRequest:
+      properties:
+        next_cycle_due_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Next Cycle Due At
+      additionalProperties: false
+      type: object
+      title: AuthorityResumeRequest
+      description: POST /v1/recurring/authorities/{id}/resume request body.
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633

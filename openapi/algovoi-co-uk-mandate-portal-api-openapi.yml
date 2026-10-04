@@ -164,28 +164,6 @@ paths:
         authMode: api_key
 components:
   schemas:
-    TopupInitiateResponse:
-      properties:
-        mandate_id:
-          type: string
-          format: uuid
-          title: Mandate Id
-        paypal_order_id:
-          type: string
-          title: Paypal Order Id
-        approval_url:
-          type: string
-          title: Approval Url
-        amount_minor:
-          type: integer
-          title: Amount Minor
-      type: object
-      required:
-      - mandate_id
-      - paypal_order_id
-      - approval_url
-      - amount_minor
-      title: TopupInitiateResponse
     TopupInitiateRequest:
       properties:
         amount_minor:
@@ -268,6 +246,85 @@ components:
       - expires_at
       - recent_charges
       title: MandatePortalResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TopupInitiateResponse:
+      properties:
+        mandate_id:
+          type: string
+          format: uuid
+          title: Mandate Id
+        paypal_order_id:
+          type: string
+          title: Paypal Order Id
+        approval_url:
+          type: string
+          title: Approval Url
+        amount_minor:
+          type: integer
+          title: Amount Minor
+      type: object
+      required:
+      - mandate_id
+      - paypal_order_id
+      - approval_url
+      - amount_minor
+      title: TopupInitiateResponse
+    TopupCaptureResponse:
+      properties:
+        mandate_id:
+          type: string
+          format: uuid
+          title: Mandate Id
+        new_balance_minor:
+          type: integer
+          title: New Balance Minor
+        added_minor:
+          type: integer
+          title: Added Minor
+        paypal_order_id:
+          type: string
+          title: Paypal Order Id
+      type: object
+      required:
+      - mandate_id
+      - new_balance_minor
+      - added_minor
+      - paypal_order_id
+      title: TopupCaptureResponse
     ChargeItemPublic:
       properties:
         id:
@@ -307,63 +364,6 @@ components:
       - status
       - charged_at
       title: ChargeItemPublic
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    TopupCaptureResponse:
-      properties:
-        mandate_id:
-          type: string
-          format: uuid
-          title: Mandate Id
-        new_balance_minor:
-          type: integer
-          title: New Balance Minor
-        added_minor:
-          type: integer
-          title: Added Minor
-        paypal_order_id:
-          type: string
-          title: Paypal Order Id
-      type: object
-      required:
-      - mandate_id
-      - new_balance_minor
-      - added_minor
-      - paypal_order_id
-      title: TopupCaptureResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633

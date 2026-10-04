@@ -707,6 +707,41 @@ paths:
         authMode: api_key
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     _Message:
       properties:
         messageId:
@@ -739,6 +774,20 @@ components:
           title: Metadata
       type: object
       title: _Message
+    _SendMessageRequest:
+      properties:
+        message:
+          $ref: '#/components/schemas/_Message'
+        configuration:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Configuration
+      type: object
+      required:
+      - message
+      title: _SendMessageRequest
     _Part:
       properties:
         kind:
@@ -790,55 +839,6 @@ components:
       additionalProperties: true
       type: object
       title: _Part
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    _SendMessageRequest:
-      properties:
-        message:
-          $ref: '#/components/schemas/_Message'
-        configuration:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Configuration
-      type: object
-      required:
-      - message
-      title: _SendMessageRequest
 x-refined-from:
 - algovoi-co-uk-clinic-openapi.json
 - algovoi-co-uk-gateway-openapi.json

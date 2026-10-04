@@ -63,77 +63,6 @@ paths:
         authMode: api_key
 components:
   schemas:
-    DynamicPaymentLinkResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        token:
-          type: string
-          title: Token
-        checkout_url:
-          type: string
-          title: Checkout Url
-        amount_microunits:
-          type: integer
-          title: Amount Microunits
-        asset_id:
-          type: string
-          title: Asset Id
-        chain:
-          type: string
-          title: Chain
-        label:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Label
-        expires_at:
-          type: string
-          format: date-time
-          title: Expires At
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-      type: object
-      required:
-      - id
-      - token
-      - checkout_url
-      - amount_microunits
-      - asset_id
-      - chain
-      - label
-      - expires_at
-      - created_at
-      title: DynamicPaymentLinkResponse
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     HTTPValidationError:
       properties:
         detail:
@@ -188,6 +117,77 @@ components:
       - currency
       - label
       title: DynamicPaymentLinkCreate
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    DynamicPaymentLinkResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        token:
+          type: string
+          title: Token
+        checkout_url:
+          type: string
+          title: Checkout Url
+        amount_microunits:
+          type: integer
+          title: Amount Microunits
+        asset_id:
+          type: string
+          title: Asset Id
+        chain:
+          type: string
+          title: Chain
+        label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Label
+        expires_at:
+          type: string
+          format: date-time
+          title: Expires At
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - token
+      - checkout_url
+      - amount_microunits
+      - asset_id
+      - chain
+      - label
+      - expires_at
+      - created_at
+      title: DynamicPaymentLinkResponse
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633
