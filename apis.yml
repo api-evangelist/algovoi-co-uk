@@ -80,6 +80,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - A2A
+  tags_raw:
   - A2a
   properties:
   - type: OpenAPI
@@ -172,6 +174,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - Agent Auth
+  tags_raw:
   - agent-auth
   properties:
   - type: OpenAPI
@@ -450,6 +454,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - AP2
+  tags_raw:
   - Ap2
   properties:
   - type: OpenAPI
@@ -726,6 +732,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - Checkout
+  tags_raw:
   - checkout
   properties:
   - type: OpenAPI
@@ -818,6 +826,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - Compliance
+  tags_raw:
   - compliance
   properties:
   - type: OpenAPI
@@ -1002,6 +1012,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - Discovery
+  tags_raw:
   - discovery
   properties:
   - type: OpenAPI
@@ -1186,6 +1198,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - Mandate
+  tags_raw:
   - mandate
   properties:
   - type: OpenAPI
@@ -1462,6 +1476,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - Meta
+  tags_raw:
   - meta
   properties:
   - type: OpenAPI
@@ -1554,6 +1570,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - MPP
+  tags_raw:
   - mpp
   properties:
   - type: OpenAPI
@@ -2106,6 +2124,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - Profiles
+  tags_raw:
   - profiles
   properties:
   - type: OpenAPI
@@ -2198,6 +2218,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - Public
+  tags_raw:
   - public
   properties:
   - type: OpenAPI
@@ -2566,6 +2588,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - Recurring
+  tags_raw:
   - recurring
   properties:
   - type: OpenAPI
@@ -2842,6 +2866,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - Resources
+  tags_raw:
   - resources
   properties:
   - type: OpenAPI
@@ -2934,6 +2960,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - Sign Up
+  tags_raw:
   - signup
   properties:
   - type: OpenAPI
@@ -3026,6 +3054,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - Subscription
+  tags_raw:
   - Subscriptions
   properties:
   - type: OpenAPI
@@ -3578,6 +3608,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/algovoi-co-uk-capability-edges.yml
+  name: AlgoVoi Business Capability Map
 - type: Overlay
   url: overlays/algovoi-co-uk-pay-overlay.yaml
 - type: AgentSkill
