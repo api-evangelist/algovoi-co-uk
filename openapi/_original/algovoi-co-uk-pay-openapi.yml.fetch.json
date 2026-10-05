@@ -1,0 +1,12 @@
+{
+ "url": "https://pay.algovoi.co.uk/openapi.json",
+ "requested_url": "https://pay.algovoi.co.uk/openapi.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 25732,
+ "sha256": "f755a77ac5ad4c58d98f4c834c90fcbb8747cb90d17d545c554e30e1716b2d24",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 1.0), but the bytes differ, so the archive is an earlier or reformatted copy."
+}
