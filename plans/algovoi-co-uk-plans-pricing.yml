@@ -78,3 +78,84 @@ plans:
 - {id: keystone-components, name: Keystone components, type: free, price: 0, currency: USD, billing_period: none, description: 'Keystone Journey and Keystone Revocation — free, offline-verifiable references; Crypto-Agility free with Substrate 2.'}
 enterprise:
   note: '"Multi deployment, warranty, indemnity, an SLA or a custom binding are available" — contact hello@algovoi.co.uk. Two commercial packages (algovoi-federation-validator, algovoi-zkp-receipt) need an AlgoVoi Commercial License v1.0 for production; evaluation is free.'
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  - metered
+  - one-time
+  units:
+  - request
+  - transaction
+  plans:
+  - name: AlgoVoi Pay — pay-as-you-go rail
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - request
+    periods:
+    - per-use
+  - name: Gateway — 60-day testnet trial
+    access: free
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: Gateway — $1,000 free mainnet allowance
+    access: free
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: Gateway — paid plan
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - transaction
+    periods:
+    - per-use
+  - name: Payment Rails (self-hosted)
+    access: other
+    model: one-time
+    model_how: stated
+    units: []
+    periods: []
+  - name: Verifiable Compliance Suite (self-hosted)
+    access: other
+    model: one-time
+    model_how: stated
+    units: []
+    periods: []
+  - name: Payment Mandate
+    access: other
+    model: one-time
+    model_how: stated
+    units: []
+    periods: []
+  - name: Privacy Proofs
+    access: other
+    model: one-time
+    model_how: stated
+    units: []
+    periods: []
+  - name: Evidence Auditor
+    access: other
+    model: one-time
+    model_how: stated
+    units: []
+    periods: []
+  - name: Reseal
+    access: other
+    model: one-time
+    model_how: stated
+    units: []
+    periods: []
+  - name: Keystone components
+    access: free
+    model: free
+    model_how: derived
+    units: []
+    periods: []
