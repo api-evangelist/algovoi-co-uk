@@ -62,15 +62,6 @@ paths:
         authMode: api_key
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ProvisionRequest:
       properties:
         license_key:
@@ -97,6 +88,15 @@ components:
       - fed_pub_b64
       - namespace
       title: ProvisionRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:

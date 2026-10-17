@@ -720,6 +720,36 @@ components:
       - tx_id
       title: CheckoutVerifyRequest
       description: Body for POST /checkout/{token}/verify (gateway-side, unauthenticated).
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    CancelCheckoutRequest:
+      properties:
+        cancel_secret:
+          type: string
+          maxLength: 128
+          minLength: 1
+          title: Cancel Secret
+      type: object
+      required:
+      - cancel_secret
+      title: CancelCheckoutRequest
+      description: 'Body for POST /checkout/{token}/cancel (gateway-side).
+
+
+        F5 security fix: the cancel endpoint now requires cancel_secret so that
+
+        only the merchant (who received cancel_secret at link-creation time) can
+
+        cancel a link programmatically. Customers use the in-browser ''abandon''
+
+        flow which navigates them away without touching the backend.'
     ValidationError:
       properties:
         loc:
@@ -746,15 +776,6 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     CheckoutVerifyResponse:
       properties:
         payment_ledger_id:
@@ -787,27 +808,6 @@ components:
       - status
       title: CheckoutVerifyResponse
       description: Successful verification response.
-    CancelCheckoutRequest:
-      properties:
-        cancel_secret:
-          type: string
-          maxLength: 128
-          minLength: 1
-          title: Cancel Secret
-      type: object
-      required:
-      - cancel_secret
-      title: CancelCheckoutRequest
-      description: 'Body for POST /checkout/{token}/cancel (gateway-side).
-
-
-        F5 security fix: the cancel endpoint now requires cancel_secret so that
-
-        only the merchant (who received cancel_secret at link-creation time) can
-
-        cancel a link programmatically. Customers use the in-browser ''abandon''
-
-        flow which navigates them away without touching the backend.'
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633

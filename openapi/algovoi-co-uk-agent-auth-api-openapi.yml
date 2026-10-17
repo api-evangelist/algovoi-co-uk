@@ -108,57 +108,31 @@ paths:
         authMode: api_key
 components:
   schemas:
-    SessionStatusResponse:
+    TokenResponse:
       properties:
-        jti:
+        token:
           type: string
-          title: Jti
+          title: Token
+        token_type:
+          type: string
+          title: Token Type
+          default: Bearer
+        expires_in:
+          type: integer
+          title: Expires In
         spend_cap_usd:
           type: number
           title: Spend Cap Usd
-        spent_usd:
-          type: number
-          title: Spent Usd
-        remaining_usd:
-          type: number
-          title: Remaining Usd
-        active:
-          type: boolean
-          title: Active
+        jti:
+          type: string
+          title: Jti
       type: object
       required:
-      - jti
+      - token
+      - expires_in
       - spend_cap_usd
-      - spent_usd
-      - remaining_usd
-      - active
-      title: SessionStatusResponse
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - jti
+      title: TokenResponse
     HTTPValidationError:
       properties:
         detail:
@@ -200,31 +174,57 @@ components:
           description: Session lifetime in seconds. Defaults to 3600. Max 86400 (24 h).
       type: object
       title: TokenRequest
-    TokenResponse:
+    ValidationError:
       properties:
-        token:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
-          title: Token
-        token_type:
+          title: Message
+        type:
           type: string
-          title: Token Type
-          default: Bearer
-        expires_in:
-          type: integer
-          title: Expires In
-        spend_cap_usd:
-          type: number
-          title: Spend Cap Usd
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SessionStatusResponse:
+      properties:
         jti:
           type: string
           title: Jti
+        spend_cap_usd:
+          type: number
+          title: Spend Cap Usd
+        spent_usd:
+          type: number
+          title: Spent Usd
+        remaining_usd:
+          type: number
+          title: Remaining Usd
+        active:
+          type: boolean
+          title: Active
       type: object
       required:
-      - token
-      - expires_in
-      - spend_cap_usd
       - jti
-      title: TokenResponse
+      - spend_cap_usd
+      - spent_usd
+      - remaining_usd
+      - active
+      title: SessionStatusResponse
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633

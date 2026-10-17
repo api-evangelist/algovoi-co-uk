@@ -371,6 +371,26 @@ paths:
         authMode: api_key
 components:
   schemas:
+    Ap2VerifyRequest:
+      properties:
+        mandate:
+          additionalProperties: true
+          type: object
+          title: Mandate
+        merchant_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Merchant Id
+        tenant_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tenant Id
+      type: object
+      required:
+      - mandate
+      title: Ap2VerifyRequest
     HTTPValidationError:
       properties:
         detail:
@@ -420,66 +440,6 @@ components:
       required:
       - verified
       title: Ap2VerifyResponse
-    Ap2VerifyRequest:
-      properties:
-        mandate:
-          additionalProperties: true
-          type: object
-          title: Mandate
-        merchant_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Merchant Id
-        tenant_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Tenant Id
-      type: object
-      required:
-      - mandate
-      title: Ap2VerifyRequest
-    AP2ExtensionInfo:
-      properties:
-        uri:
-          type: string
-          title: Uri
-        name:
-          type: string
-          title: Name
-        version:
-          type: string
-          title: Version
-        description:
-          type: string
-          title: Description
-      additionalProperties: false
-      type: object
-      required:
-      - uri
-      - name
-      - version
-      - description
-      title: AP2ExtensionInfo
-      description: Single extension entry for GET /ap2/extensions discovery response.
-    AP2ExtensionsResponse:
-      properties:
-        ap2_version:
-          type: string
-          title: Ap2 Version
-          default: '0.1'
-        extensions:
-          items:
-            $ref: '#/components/schemas/AP2ExtensionInfo'
-          type: array
-          title: Extensions
-      additionalProperties: false
-      type: object
-      required:
-      - extensions
-      title: AP2ExtensionsResponse
-      description: GET /ap2/extensions — list of extensions this gateway supports.
     ContactAddress:
       properties:
         country:
@@ -540,262 +500,29 @@ components:
 
 
         Spec: https://www.w3.org/TR/contact-picker/#contactaddress'
-    AP2PayRequest:
+    AP2ExtensionInfo:
       properties:
-        cart_id:
+        uri:
           type: string
-          title: Cart Id
-        mandate:
-          $ref: '#/components/schemas/PaymentMandate'
+          title: Uri
+        name:
+          type: string
+          title: Name
+        version:
+          type: string
+          title: Version
+        description:
+          type: string
+          title: Description
       additionalProperties: false
       type: object
       required:
-      - cart_id
-      - mandate
-      title: AP2PayRequest
-      description: POST /ap2/pay — agent submits a PaymentMandate with user_authorization.
-    AP2PayResponse:
-      properties:
-        payment_id:
-          type: string
-          format: uuid
-          title: Payment Id
-        network:
-          type: string
-          title: Network
-        receiver:
-          type: string
-          title: Receiver
-        amount_microunits:
-          type: integer
-          title: Amount Microunits
-        price_token:
-          type: string
-          title: Price Token
-        payment_reference:
-          type: string
-          title: Payment Reference
-        cart_mandate_hash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Cart Mandate Hash
-      additionalProperties: false
-      type: object
-      required:
-      - network
-      - receiver
-      - amount_microunits
-      - price_token
-      - payment_reference
-      title: AP2PayResponse
-      description: 'x402-style payment challenge returned to the agent.
-
-
-        For AlgoVoi crypto payments, this echoes the crypto extension data
-
-        (network, receiver, amount_microunits) so the agent can submit an
-
-        on-chain transaction. The cart_mandate_hash is the RFC 8785 JCS hash
-
-        of CartContents — the agent MUST include this in the tx note field
-
-        for on-chain anchoring (enforced by the facilitator verify step).'
-    PaymentMethodData:
-      properties:
-        supported_methods:
-          type: string
-          title: Supported Methods
-          description: A string identifying the payment method.
-        data:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Data
-          description: Payment method specific details.
-      type: object
-      required:
-      - supported_methods
-      title: PaymentMethodData
-      description: 'W3C PaymentMethodData — identifies a payment method and method-specific data.
-
-
-        For AlgoVoi crypto payments, `supported_methods` is set to the AlgoVoi
-
-        crypto extension URI (https://api.algovoi.co.uk/ap2/extensions/crypto-algo/v1)
-
-        and `data` contains the CryptoPaymentDetails struct (see ap2_ext_crypto.py).
-
-
-        Spec: https://www.w3.org/TR/payment-request/#dom-paymentmethoddata'
-    AP2ConfirmRequest:
-      properties:
-        payment_id:
-          type: string
-          format: uuid
-          title: Payment Id
-        tx_id:
-          type: string
-          maxLength: 128
-          minLength: 1
-          title: Tx Id
-        network:
-          type: string
-          title: Network
-      additionalProperties: false
-      type: object
-      required:
-      - payment_id
-      - tx_id
-      - network
-      title: AP2ConfirmRequest
-      description: POST /ap2/confirm — agent confirms on-chain tx_id.
-    PaymentDetailsInit:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: Unique identifier for the payment request.
-        display_items:
-          items:
-            $ref: '#/components/schemas/PaymentItem'
-          type: array
-          title: Display Items
-          description: Items displayed to the user.
-        shipping_options:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/PaymentShippingOption'
-            type: array
-          - type: 'null'
-          title: Shipping Options
-        modifiers:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/PaymentDetailsModifier'
-            type: array
-          - type: 'null'
-          title: Modifiers
-        total:
-          $ref: '#/components/schemas/PaymentItem'
-          description: The total payment amount.
-      type: object
-      required:
-      - id
-      - display_items
-      - total
-      title: PaymentDetailsInit
-      description: 'W3C PaymentDetailsInit — the details of the payment being requested.
-
-
-        Spec: https://www.w3.org/TR/payment-request/#dom-paymentdetailsinit'
-    IntentMandate:
-      properties:
-        user_cart_confirmation_required:
-          type: boolean
-          title: User Cart Confirmation Required
-          description: If false, the agent can make purchases on the user's behalf once all purchase conditions have been satisfied. This must be true if the intent mandate is not signed by the user.
-          default: true
-        natural_language_description:
-          type: string
-          title: Natural Language Description
-          description: The natural language description of the user's intent. This is generated by the shopping agent, and confirmed by the user. The goal is to have informed consent by the user.
-        merchants:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Merchants
-          description: Merchants allowed to fulfill the intent. If not set, the shopping agent is able to work with any suitable merchant.
-        skus:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Skus
-          description: A list of specific product SKUs. If not set, any SKU is allowed.
-        requires_refundability:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Requires Refundability
-          description: If true, items must be refundable.
-          default: false
-        intent_expiry:
-          type: string
-          title: Intent Expiry
-          description: When the intent mandate expires, in ISO 8601 format.
-      type: object
-      required:
-      - natural_language_description
-      - intent_expiry
-      title: IntentMandate
-      description: 'Represents the user''s purchase intent.
-
-
-        For human-present flows this contains the core shopping bounds. For
-
-        human-not-present flows additional fields will be added in future spec
-
-        versions.
-
-
-        Spec source: ap2/types/mandate.py'
-    AP2ConfirmResponse:
-      properties:
-        verified:
-          type: boolean
-          title: Verified
-        access_token:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Access Token
-        error:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Error
-        settlement_attestation:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Settlement Attestation
-        settlement_attestation_jws:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Settlement Attestation Jws
-      additionalProperties: false
-      type: object
-      required:
-      - verified
-      title: AP2ConfirmResponse
-    AP2CartResponse:
-      properties:
-        cart_id:
-          type: string
-          title: Cart Id
-        status:
-          type: string
-          enum:
-          - locked
-          - pending_user_confirmation
-          title: Status
-        expires_at:
-          type: string
-          title: Expires At
-      additionalProperties: false
-      type: object
-      required:
-      - cart_id
-      - status
-      - expires_at
-      title: AP2CartResponse
+      - uri
+      - name
+      - version
+      - description
+      title: AP2ExtensionInfo
+      description: Single extension entry for GET /ap2/extensions discovery response.
     CartContents:
       properties:
         id:
@@ -834,166 +561,6 @@ components:
 
 
         Spec source: ap2/types/mandate.py'
-    PaymentOptions:
-      properties:
-        request_payer_name:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Request Payer Name
-          default: false
-        request_payer_email:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Request Payer Email
-          default: false
-        request_payer_phone:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Request Payer Phone
-          default: false
-        request_shipping:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Request Shipping
-          default: true
-        shipping_type:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Shipping Type
-          description: '`shipping`, `delivery`, or `pickup`.'
-      type: object
-      title: PaymentOptions
-      description: 'W3C PaymentOptions — which payer details to collect.
-
-
-        Spec: https://www.w3.org/TR/payment-request/#dom-paymentoptions'
-    PaymentMandate:
-      properties:
-        payment_mandate_contents:
-          $ref: '#/components/schemas/PaymentMandateContents'
-          description: The data contents of the payment mandate.
-        user_authorization:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Authorization
-          description: Base64url-encoded SD-JWT-VC verifiable presentation binding the user's consent to the CartMandate + PaymentMandateContents hashes via a key-binding JWT's transaction_data claim.
-      type: object
-      required:
-      - payment_mandate_contents
-      title: PaymentMandate
-      description: 'User''s instructions and authorization for payment.
-
-
-        user_authorization is a base64url-encoded SD-JWT-VC (Selective Disclosure
-
-        Verifiable Credential) containing an issuer-signed JWT authorizing a ''cnf''
-
-        claim and a key-binding JWT with transaction_data including the hashes of
-
-        CartMandate and PaymentMandateContents (RFC 8785 JCS).
-
-
-        Spec source: ap2/types/mandate.py'
-    AP2CartRequest:
-      properties:
-        intent_id:
-          type: string
-          format: uuid
-          title: Intent Id
-        mandate:
-          $ref: '#/components/schemas/CartMandate'
-      additionalProperties: false
-      type: object
-      required:
-      - intent_id
-      - mandate
-      title: AP2CartRequest
-      description: POST /ap2/cart — agent submits a merchant-signed CartMandate.
-    PaymentDetailsModifier:
-      properties:
-        supported_methods:
-          type: string
-          title: Supported Methods
-          description: The payment method ID that this modifier applies to.
-        total:
-          anyOf:
-          - $ref: '#/components/schemas/PaymentItem'
-          - type: 'null'
-          description: Overrides the original item total.
-        additional_display_items:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/PaymentItem'
-            type: array
-          - type: 'null'
-          title: Additional Display Items
-        data:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Data
-      type: object
-      required:
-      - supported_methods
-      title: PaymentDetailsModifier
-      description: 'W3C PaymentDetailsModifier — method-specific price adjustments.
-
-
-        Spec: https://www.w3.org/TR/payment-request/#dom-paymentdetailsmodifier'
-    AP2IntentResponse:
-      properties:
-        intent_id:
-          type: string
-          format: uuid
-          title: Intent Id
-        status:
-          type: string
-          const: accepted
-          title: Status
-          default: accepted
-        expires_at:
-          type: string
-          title: Expires At
-      additionalProperties: false
-      type: object
-      required:
-      - expires_at
-      title: AP2IntentResponse
-    PaymentRequest:
-      properties:
-        method_data:
-          items:
-            $ref: '#/components/schemas/PaymentMethodData'
-          type: array
-          title: Method Data
-          description: Supported payment methods.
-        details:
-          $ref: '#/components/schemas/PaymentDetailsInit'
-          description: Financial details of the transaction.
-        options:
-          anyOf:
-          - $ref: '#/components/schemas/PaymentOptions'
-          - type: 'null'
-        shipping_address:
-          anyOf:
-          - $ref: '#/components/schemas/ContactAddress'
-          - type: 'null'
-      type: object
-      required:
-      - method_data
-      - details
-      title: PaymentRequest
-      description: 'W3C PaymentRequest — the top-level request for payment.
-
-
-        Spec: https://www.w3.org/TR/payment-request/#paymentrequest-interface'
     AP2StatusResponse:
       properties:
         cart_id:
@@ -1038,6 +605,76 @@ components:
       - mandate_chain_status
       title: AP2StatusResponse
       description: GET /ap2/status/{cart_id}
+    AP2ExtensionsResponse:
+      properties:
+        ap2_version:
+          type: string
+          title: Ap2 Version
+          default: '0.1'
+        extensions:
+          items:
+            $ref: '#/components/schemas/AP2ExtensionInfo'
+          type: array
+          title: Extensions
+      additionalProperties: false
+      type: object
+      required:
+      - extensions
+      title: AP2ExtensionsResponse
+      description: GET /ap2/extensions — list of extensions this gateway supports.
+    PaymentDetailsInit:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the payment request.
+        display_items:
+          items:
+            $ref: '#/components/schemas/PaymentItem'
+          type: array
+          title: Display Items
+          description: Items displayed to the user.
+        shipping_options:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/PaymentShippingOption'
+            type: array
+          - type: 'null'
+          title: Shipping Options
+        modifiers:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/PaymentDetailsModifier'
+            type: array
+          - type: 'null'
+          title: Modifiers
+        total:
+          $ref: '#/components/schemas/PaymentItem'
+          description: The total payment amount.
+      type: object
+      required:
+      - id
+      - display_items
+      - total
+      title: PaymentDetailsInit
+      description: 'W3C PaymentDetailsInit — the details of the payment being requested.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentdetailsinit'
+    AP2PayRequest:
+      properties:
+        cart_id:
+          type: string
+          title: Cart Id
+        mandate:
+          $ref: '#/components/schemas/PaymentMandate'
+      additionalProperties: false
+      type: object
+      required:
+      - cart_id
+      - mandate
+      title: AP2PayRequest
+      description: POST /ap2/pay — agent submits a PaymentMandate with user_authorization.
     PaymentMandateContents:
       properties:
         payment_mandate_id:
@@ -1074,48 +711,21 @@ components:
 
 
         Spec source: ap2/types/mandate.py'
-    CartMandate:
+    AP2CartRequest:
       properties:
-        contents:
-          $ref: '#/components/schemas/CartContents'
-          description: The contents of the cart.
-        merchant_authorization:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Merchant Authorization
-          description: 'A base64url-encoded JSON Web Token (JWT) that digitally signs the cart contents. Header: alg + kid. Payload: iss, sub, aud, iat, exp, jti, cart_hash (RFC 8785 JCS hash of CartContents).'
-      type: object
-      required:
-      - contents
-      title: CartMandate
-      description: 'A cart whose contents have been digitally signed by the merchant.
-
-
-        merchant_authorization is a base64url-encoded JWT (typically RS256) with
-
-        claims: iss, sub, aud, iat, exp (5-15 min), jti, cart_hash. The cart_hash
-
-        is computed via RFC 8785 JCS over CartContents.
-
-
-        Spec source: ap2/types/mandate.py'
-    AP2IntentRequest:
-      properties:
+        intent_id:
+          type: string
+          format: uuid
+          title: Intent Id
         mandate:
-          $ref: '#/components/schemas/IntentMandate'
-        user_authorization:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Authorization
-          description: Optional base64url SD-JWT-VC authorizing the intent.
+          $ref: '#/components/schemas/CartMandate'
       additionalProperties: false
       type: object
       required:
+      - intent_id
       - mandate
-      title: AP2IntentRequest
-      description: POST /ap2/intent — agent submits a signed IntentMandate.
+      title: AP2CartRequest
+      description: POST /ap2/cart — agent submits a merchant-signed CartMandate.
     PaymentResponse:
       properties:
         request_id:
@@ -1170,54 +780,34 @@ components:
 
 
         Spec: https://www.w3.org/TR/payment-request/#paymentresponse-interface'
-    PaymentCurrencyAmount:
+    PaymentRequest:
       properties:
-        currency:
-          type: string
-          title: Currency
-          description: Three-letter ISO 4217 currency code.
-        value:
-          type: number
-          title: Value
-          description: The monetary value.
-      type: object
-      required:
-      - currency
-      - value
-      title: PaymentCurrencyAmount
-      description: 'W3C PaymentCurrencyAmount — monetary value with ISO 4217 currency code.
-
-
-        Spec: https://www.w3.org/TR/payment-request/#dom-paymentcurrencyamount'
-    PaymentItem:
-      properties:
-        label:
-          type: string
-          title: Label
-          description: Human-readable description of the item.
-        amount:
-          $ref: '#/components/schemas/PaymentCurrencyAmount'
-          description: The monetary amount of the item.
-        pending:
+        method_data:
+          items:
+            $ref: '#/components/schemas/PaymentMethodData'
+          type: array
+          title: Method Data
+          description: Supported payment methods.
+        details:
+          $ref: '#/components/schemas/PaymentDetailsInit'
+          description: Financial details of the transaction.
+        options:
           anyOf:
-          - type: boolean
+          - $ref: '#/components/schemas/PaymentOptions'
           - type: 'null'
-          title: Pending
-          description: If true, the amount is not final.
-        refund_period:
-          type: integer
-          title: Refund Period
-          description: The refund duration for this item, in days.
-          default: 30
+        shipping_address:
+          anyOf:
+          - $ref: '#/components/schemas/ContactAddress'
+          - type: 'null'
       type: object
       required:
-      - label
-      - amount
-      title: PaymentItem
-      description: 'W3C PaymentItem — an item for purchase and its price.
+      - method_data
+      - details
+      title: PaymentRequest
+      description: 'W3C PaymentRequest — the top-level request for payment.
 
 
-        Spec: https://www.w3.org/TR/payment-request/#dom-paymentitem'
+        Spec: https://www.w3.org/TR/payment-request/#paymentrequest-interface'
     PaymentShippingOption:
       properties:
         id:
@@ -1248,39 +838,104 @@ components:
 
 
         Spec: https://www.w3.org/TR/payment-request/#dom-paymentshippingoption'
-    PaymentDetailsModifier_2:
+    AP2CartResponse:
+      properties:
+        cart_id:
+          type: string
+          title: Cart Id
+        status:
+          type: string
+          enum:
+          - locked
+          - pending_user_confirmation
+          title: Status
+        expires_at:
+          type: string
+          title: Expires At
+      additionalProperties: false
+      type: object
+      required:
+      - cart_id
+      - status
+      - expires_at
+      title: AP2CartResponse
+    PaymentMethodData:
       properties:
         supported_methods:
           type: string
           title: Supported Methods
-          description: The payment method ID that this modifier applies to.
-        total:
-          anyOf:
-          - $ref: '#/components/schemas/PaymentItem_2'
-          - type: 'null'
-          description: Overrides the original item total.
-        additional_display_items:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/PaymentItem_2'
-            type: array
-          - type: 'null'
-          title: Additional Display Items
+          description: A string identifying the payment method.
         data:
           anyOf:
           - additionalProperties: true
             type: object
           - type: 'null'
           title: Data
+          description: Payment method specific details.
       type: object
       required:
       - supported_methods
-      title: PaymentDetailsModifier
-      description: 'W3C PaymentDetailsModifier: method-specific price adjustments.
+      title: PaymentMethodData
+      description: 'W3C PaymentMethodData — identifies a payment method and method-specific data.
 
 
-        Spec: https://www.w3.org/TR/payment-request/#dom-paymentdetailsmodifier'
-    PaymentOptions_2:
+        For AlgoVoi crypto payments, `supported_methods` is set to the AlgoVoi
+
+        crypto extension URI (https://api.algovoi.co.uk/ap2/extensions/crypto-algo/v1)
+
+        and `data` contains the CryptoPaymentDetails struct (see ap2_ext_crypto.py).
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentmethoddata'
+    AP2ConfirmRequest:
+      properties:
+        payment_id:
+          type: string
+          format: uuid
+          title: Payment Id
+        tx_id:
+          type: string
+          maxLength: 128
+          minLength: 1
+          title: Tx Id
+        network:
+          type: string
+          title: Network
+      additionalProperties: false
+      type: object
+      required:
+      - payment_id
+      - tx_id
+      - network
+      title: AP2ConfirmRequest
+      description: POST /ap2/confirm — agent confirms on-chain tx_id.
+    CartMandate:
+      properties:
+        contents:
+          $ref: '#/components/schemas/CartContents'
+          description: The contents of the cart.
+        merchant_authorization:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Merchant Authorization
+          description: 'A base64url-encoded JSON Web Token (JWT) that digitally signs the cart contents. Header: alg + kid. Payload: iss, sub, aud, iat, exp, jti, cart_hash (RFC 8785 JCS hash of CartContents).'
+      type: object
+      required:
+      - contents
+      title: CartMandate
+      description: 'A cart whose contents have been digitally signed by the merchant.
+
+
+        merchant_authorization is a base64url-encoded JWT (typically RS256) with
+
+        claims: iss, sub, aud, iat, exp (5-15 min), jti, cart_hash. The cart_hash
+
+        is computed via RFC 8785 JCS over CartContents.
+
+
+        Spec source: ap2/types/mandate.py'
+    PaymentOptions:
       properties:
         request_payer_name:
           anyOf:
@@ -1314,10 +969,308 @@ components:
           description: '`shipping`, `delivery`, or `pickup`.'
       type: object
       title: PaymentOptions
-      description: 'W3C PaymentOptions: which payer details to collect.
+      description: 'W3C PaymentOptions — which payer details to collect.
 
 
         Spec: https://www.w3.org/TR/payment-request/#dom-paymentoptions'
+    PaymentItem:
+      properties:
+        label:
+          type: string
+          title: Label
+          description: Human-readable description of the item.
+        amount:
+          $ref: '#/components/schemas/PaymentCurrencyAmount'
+          description: The monetary amount of the item.
+        pending:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Pending
+          description: If true, the amount is not final.
+        refund_period:
+          type: integer
+          title: Refund Period
+          description: The refund duration for this item, in days.
+          default: 30
+      type: object
+      required:
+      - label
+      - amount
+      title: PaymentItem
+      description: 'W3C PaymentItem — an item for purchase and its price.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentitem'
+    IntentMandate:
+      properties:
+        user_cart_confirmation_required:
+          type: boolean
+          title: User Cart Confirmation Required
+          description: If false, the agent can make purchases on the user's behalf once all purchase conditions have been satisfied. This must be true if the intent mandate is not signed by the user.
+          default: true
+        natural_language_description:
+          type: string
+          title: Natural Language Description
+          description: The natural language description of the user's intent. This is generated by the shopping agent, and confirmed by the user. The goal is to have informed consent by the user.
+        merchants:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Merchants
+          description: Merchants allowed to fulfill the intent. If not set, the shopping agent is able to work with any suitable merchant.
+        skus:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Skus
+          description: A list of specific product SKUs. If not set, any SKU is allowed.
+        requires_refundability:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Requires Refundability
+          description: If true, items must be refundable.
+          default: false
+        intent_expiry:
+          type: string
+          title: Intent Expiry
+          description: When the intent mandate expires, in ISO 8601 format.
+      type: object
+      required:
+      - natural_language_description
+      - intent_expiry
+      title: IntentMandate
+      description: 'Represents the user''s purchase intent.
+
+
+        For human-present flows this contains the core shopping bounds. For
+
+        human-not-present flows additional fields will be added in future spec
+
+        versions.
+
+
+        Spec source: ap2/types/mandate.py'
+    PaymentCurrencyAmount:
+      properties:
+        currency:
+          type: string
+          title: Currency
+          description: Three-letter ISO 4217 currency code.
+        value:
+          type: number
+          title: Value
+          description: The monetary value.
+      type: object
+      required:
+      - currency
+      - value
+      title: PaymentCurrencyAmount
+      description: 'W3C PaymentCurrencyAmount — monetary value with ISO 4217 currency code.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentcurrencyamount'
+    PaymentMandate:
+      properties:
+        payment_mandate_contents:
+          $ref: '#/components/schemas/PaymentMandateContents'
+          description: The data contents of the payment mandate.
+        user_authorization:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Authorization
+          description: Base64url-encoded SD-JWT-VC verifiable presentation binding the user's consent to the CartMandate + PaymentMandateContents hashes via a key-binding JWT's transaction_data claim.
+      type: object
+      required:
+      - payment_mandate_contents
+      title: PaymentMandate
+      description: 'User''s instructions and authorization for payment.
+
+
+        user_authorization is a base64url-encoded SD-JWT-VC (Selective Disclosure
+
+        Verifiable Credential) containing an issuer-signed JWT authorizing a ''cnf''
+
+        claim and a key-binding JWT with transaction_data including the hashes of
+
+        CartMandate and PaymentMandateContents (RFC 8785 JCS).
+
+
+        Spec source: ap2/types/mandate.py'
+    AP2PayResponse:
+      properties:
+        payment_id:
+          type: string
+          format: uuid
+          title: Payment Id
+        network:
+          type: string
+          title: Network
+        receiver:
+          type: string
+          title: Receiver
+        amount_microunits:
+          type: integer
+          title: Amount Microunits
+        price_token:
+          type: string
+          title: Price Token
+        payment_reference:
+          type: string
+          title: Payment Reference
+        cart_mandate_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cart Mandate Hash
+      additionalProperties: false
+      type: object
+      required:
+      - network
+      - receiver
+      - amount_microunits
+      - price_token
+      - payment_reference
+      title: AP2PayResponse
+      description: 'x402-style payment challenge returned to the agent.
+
+
+        For AlgoVoi crypto payments, this echoes the crypto extension data
+
+        (network, receiver, amount_microunits) so the agent can submit an
+
+        on-chain transaction. The cart_mandate_hash is the RFC 8785 JCS hash
+
+        of CartContents — the agent MUST include this in the tx note field
+
+        for on-chain anchoring (enforced by the facilitator verify step).'
+    PaymentDetailsModifier:
+      properties:
+        supported_methods:
+          type: string
+          title: Supported Methods
+          description: The payment method ID that this modifier applies to.
+        total:
+          anyOf:
+          - $ref: '#/components/schemas/PaymentItem'
+          - type: 'null'
+          description: Overrides the original item total.
+        additional_display_items:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/PaymentItem'
+            type: array
+          - type: 'null'
+          title: Additional Display Items
+        data:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Data
+      type: object
+      required:
+      - supported_methods
+      title: PaymentDetailsModifier
+      description: 'W3C PaymentDetailsModifier — method-specific price adjustments.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentdetailsmodifier'
+    AP2ConfirmResponse:
+      properties:
+        verified:
+          type: boolean
+          title: Verified
+        access_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Access Token
+        error:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error
+        settlement_attestation:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Settlement Attestation
+        settlement_attestation_jws:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Settlement Attestation Jws
+      additionalProperties: false
+      type: object
+      required:
+      - verified
+      title: AP2ConfirmResponse
+    AP2IntentRequest:
+      properties:
+        mandate:
+          $ref: '#/components/schemas/IntentMandate'
+        user_authorization:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Authorization
+          description: Optional base64url SD-JWT-VC authorizing the intent.
+      additionalProperties: false
+      type: object
+      required:
+      - mandate
+      title: AP2IntentRequest
+      description: POST /ap2/intent — agent submits a signed IntentMandate.
+    AP2IntentResponse:
+      properties:
+        intent_id:
+          type: string
+          format: uuid
+          title: Intent Id
+        status:
+          type: string
+          const: accepted
+          title: Status
+          default: accepted
+        expires_at:
+          type: string
+          title: Expires At
+      additionalProperties: false
+      type: object
+      required:
+      - expires_at
+      title: AP2IntentResponse
+    Ap2PayRequest:
+      properties:
+        cart:
+          $ref: '#/components/schemas/CartMandate'
+        mandate:
+          $ref: '#/components/schemas/PaymentMandate'
+        input:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Input
+        x_payment:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X Payment
+      additionalProperties: false
+      type: object
+      required:
+      - cart
+      - mandate
+      title: Ap2PayRequest
     PaymentMethodData_2:
       properties:
         supported_methods:
@@ -1346,6 +1299,21 @@ components:
 
 
         Spec: https://www.w3.org/TR/payment-request/#dom-paymentmethoddata'
+    Ap2CartRequest:
+      properties:
+        service_id:
+          type: string
+          title: Service Id
+        network:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Network
+      additionalProperties: false
+      type: object
+      required:
+      - service_id
+      title: Ap2CartRequest
     PaymentResponse_2:
       properties:
         request_id:
@@ -1400,29 +1368,6 @@ components:
 
 
         Spec: https://www.w3.org/TR/payment-request/#paymentresponse-interface'
-    Ap2PayRequest:
-      properties:
-        cart:
-          $ref: '#/components/schemas/CartMandate'
-        mandate:
-          $ref: '#/components/schemas/PaymentMandate'
-        input:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Input
-        x_payment:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: X Payment
-      additionalProperties: false
-      type: object
-      required:
-      - cart
-      - mandate
-      title: Ap2PayRequest
     PaymentRequest_2:
       properties:
         method_data:
@@ -1451,6 +1396,67 @@ components:
 
 
         Spec: https://www.w3.org/TR/payment-request/#paymentrequest-interface'
+    PaymentDetailsModifier_2:
+      properties:
+        supported_methods:
+          type: string
+          title: Supported Methods
+          description: The payment method ID that this modifier applies to.
+        total:
+          anyOf:
+          - $ref: '#/components/schemas/PaymentItem_2'
+          - type: 'null'
+          description: Overrides the original item total.
+        additional_display_items:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/PaymentItem_2'
+            type: array
+          - type: 'null'
+          title: Additional Display Items
+        data:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Data
+      type: object
+      required:
+      - supported_methods
+      title: PaymentDetailsModifier
+      description: 'W3C PaymentDetailsModifier: method-specific price adjustments.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentdetailsmodifier'
+    PaymentItem_2:
+      properties:
+        label:
+          type: string
+          title: Label
+          description: Human-readable description of the item.
+        amount:
+          $ref: '#/components/schemas/PaymentCurrencyAmount_2'
+          description: The monetary amount of the item.
+        pending:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Pending
+          description: If true, the amount is not final.
+        refund_period:
+          type: integer
+          title: Refund Period
+          description: The refund duration for this item, in days.
+          default: 30
+      type: object
+      required:
+      - label
+      - amount
+      title: PaymentItem
+      description: 'W3C PaymentItem: an item for purchase and its price.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentitem'
     PaymentDetailsInit_2:
       properties:
         id:
@@ -1490,6 +1496,44 @@ components:
 
 
         Spec: https://www.w3.org/TR/payment-request/#dom-paymentdetailsinit'
+    PaymentOptions_2:
+      properties:
+        request_payer_name:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Request Payer Name
+          default: false
+        request_payer_email:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Request Payer Email
+          default: false
+        request_payer_phone:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Request Payer Phone
+          default: false
+        request_shipping:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Request Shipping
+          default: true
+        shipping_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Shipping Type
+          description: '`shipping`, `delivery`, or `pickup`.'
+      type: object
+      title: PaymentOptions
+      description: 'W3C PaymentOptions: which payer details to collect.
+
+
+        Spec: https://www.w3.org/TR/payment-request/#dom-paymentoptions'
     PaymentCurrencyAmount_2:
       properties:
         currency:
@@ -1509,50 +1553,6 @@ components:
 
 
         Spec: https://www.w3.org/TR/payment-request/#dom-paymentcurrencyamount'
-    PaymentItem_2:
-      properties:
-        label:
-          type: string
-          title: Label
-          description: Human-readable description of the item.
-        amount:
-          $ref: '#/components/schemas/PaymentCurrencyAmount_2'
-          description: The monetary amount of the item.
-        pending:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Pending
-          description: If true, the amount is not final.
-        refund_period:
-          type: integer
-          title: Refund Period
-          description: The refund duration for this item, in days.
-          default: 30
-      type: object
-      required:
-      - label
-      - amount
-      title: PaymentItem
-      description: 'W3C PaymentItem: an item for purchase and its price.
-
-
-        Spec: https://www.w3.org/TR/payment-request/#dom-paymentitem'
-    Ap2CartRequest:
-      properties:
-        service_id:
-          type: string
-          title: Service Id
-        network:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Network
-      additionalProperties: false
-      type: object
-      required:
-      - service_id
-      title: Ap2CartRequest
 x-refined-from:
 - algovoi-co-uk-gateway-openapi.json
 - algovoi-co-uk-pay-openapi.json

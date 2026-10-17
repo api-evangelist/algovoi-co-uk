@@ -808,15 +808,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     MppChallengeResponse:
       properties:
         challenge:
@@ -834,20 +825,15 @@ components:
       - challenge
       - accepts
       title: MppChallengeResponse
-    MppChallengeRequest:
+    HTTPValidationError:
       properties:
-        resource_id:
-          type: string
-          title: Resource Id
-        network:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Network
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      required:
-      - resource_id
-      title: MppChallengeRequest
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -874,6 +860,45 @@ components:
       - msg
       - type
       title: ValidationError
+    MppChallengeRequest:
+      properties:
+        resource_id:
+          type: string
+          title: Resource Id
+        network:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Network
+      type: object
+      required:
+      - resource_id
+      title: MppChallengeRequest
+    PayableReceiptVerifyRequest:
+      properties:
+        jws:
+          type: string
+          title: Jws
+        expected_payment_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expected Payment Hash
+        receipt_required:
+          type: boolean
+          title: Receipt Required
+          default: false
+        jwks:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Jwks
+      additionalProperties: false
+      type: object
+      required:
+      - jws
+      title: PayableReceiptVerifyRequest
     PayableRfc9421VerifyRequest:
       properties:
         method:
@@ -918,31 +943,6 @@ components:
       - headers
       - public_key_hex
       title: PayableRfc9421VerifyRequest
-    PayableReceiptVerifyRequest:
-      properties:
-        jws:
-          type: string
-          title: Jws
-        expected_payment_hash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Expected Payment Hash
-        receipt_required:
-          type: boolean
-          title: Receipt Required
-          default: false
-        jwks:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Jwks
-      additionalProperties: false
-      type: object
-      required:
-      - jws
-      title: PayableReceiptVerifyRequest
 x-refined-from:
 - algovoi-co-uk-gateway-openapi.json
 - algovoi-co-uk-pay-openapi.json

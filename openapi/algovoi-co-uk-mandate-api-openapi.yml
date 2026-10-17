@@ -68,39 +68,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    MandatePayResponse:
-      properties:
-        charge_id:
-          type: string
-          title: Charge Id
-        amount_minor:
-          type: integer
-          title: Amount Minor
-        currency:
-          type: string
-          title: Currency
-        tx_id:
-          type: string
-          title: Tx Id
-        chain:
-          type: string
-          title: Chain
-        remaining_balance_minor:
-          type: integer
-          title: Remaining Balance Minor
-        access_token:
-          type: string
-          title: Access Token
-      type: object
-      required:
-      - charge_id
-      - amount_minor
-      - currency
-      - tx_id
-      - chain
-      - remaining_balance_minor
-      - access_token
-      title: MandatePayResponse
     MandatePayRequest:
       properties:
         tenant_id:
@@ -157,6 +124,39 @@ components:
       - msg
       - type
       title: ValidationError
+    MandatePayResponse:
+      properties:
+        charge_id:
+          type: string
+          title: Charge Id
+        amount_minor:
+          type: integer
+          title: Amount Minor
+        currency:
+          type: string
+          title: Currency
+        tx_id:
+          type: string
+          title: Tx Id
+        chain:
+          type: string
+          title: Chain
+        remaining_balance_minor:
+          type: integer
+          title: Remaining Balance Minor
+        access_token:
+          type: string
+          title: Access Token
+      type: object
+      required:
+      - charge_id
+      - amount_minor
+      - currency
+      - tx_id
+      - chain
+      - remaining_balance_minor
+      - access_token
+      title: MandatePayResponse
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633

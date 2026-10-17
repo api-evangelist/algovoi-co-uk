@@ -298,6 +298,32 @@ components:
       - msg
       - type
       title: ValidationError
+    ValidationError_2:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     MppVerifyResponse:
       properties:
         verified:
@@ -346,32 +372,6 @@ components:
       - network
       - resource_id
       title: MppVerifyRequest
-    ValidationError_2:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     Rfc9421VerifyResponse:
       properties:
         valid:
@@ -481,31 +481,6 @@ components:
       - msg
       - type
       title: ValidationError
-    ActionRefRequest:
-      properties:
-        agent_id:
-          type: string
-          title: Agent Id
-          description: DID or URL identifying the agent (e.g. did:web:api.example.com)
-        action_type:
-          type: string
-          title: Action Type
-          description: Dot-namespaced action class (e.g. payment.authorize)
-        scope:
-          type: string
-          title: Scope
-          description: Chain-scoped target (e.g. base:0xabc...)
-        timestamp_ms:
-          type: integer
-          title: Timestamp Ms
-          description: Unix timestamp in integer milliseconds — NOT float
-      type: object
-      required:
-      - agent_id
-      - action_type
-      - scope
-      - timestamp_ms
-      title: ActionRefRequest
     Rfc9421VerifyRequest:
       properties:
         method:
@@ -558,6 +533,31 @@ components:
       - headers
       - public_key_hex
       title: Rfc9421VerifyRequest
+    ActionRefRequest:
+      properties:
+        agent_id:
+          type: string
+          title: Agent Id
+          description: DID or URL identifying the agent (e.g. did:web:api.example.com)
+        action_type:
+          type: string
+          title: Action Type
+          description: Dot-namespaced action class (e.g. payment.authorize)
+        scope:
+          type: string
+          title: Scope
+          description: Chain-scoped target (e.g. base:0xabc...)
+        timestamp_ms:
+          type: integer
+          title: Timestamp Ms
+          description: Unix timestamp in integer milliseconds — NOT float
+      type: object
+      required:
+      - agent_id
+      - action_type
+      - scope
+      - timestamp_ms
+      title: ActionRefRequest
 x-refined-from:
 - algovoi-co-uk-audit-verifier-openapi.json
 - algovoi-co-uk-clinic-openapi.json

@@ -495,97 +495,14 @@ paths:
         authMode: api_key
 components:
   schemas:
-    SubscriptionUpdate:
+    CancelSubscriptionBody:
       properties:
-        notify_channels:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Notify Channels
-        notify_lead_hours:
-          anyOf:
-          - type: integer
-            maximum: 720.0
-            minimum: 1.0
-          - type: 'null'
-          title: Notify Lead Hours
-        failed_payment_policy:
-          anyOf:
-          - $ref: '#/components/schemas/FailedPaymentPolicy'
-          - type: 'null'
-        cancel_at_period_end:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Cancel At Period End
-        metadata:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Metadata
-      additionalProperties: false
+        at_period_end:
+          type: boolean
+          title: At Period End
+          default: false
       type: object
-      title: SubscriptionUpdate
-      description: 'PATCH-style partial update. Some fields (chain, currency, cadence) are
-
-        deliberately immutable post-creation — change those by cancelling and
-
-        creating a new subscription.'
-    CustomerRef:
-      properties:
-        email:
-          anyOf:
-          - type: string
-            format: email
-          - type: 'null'
-          title: Email
-        wallet_address:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          title: Wallet Address
-        metadata:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Metadata
-      additionalProperties: false
-      type: object
-      title: CustomerRef
-      description: 'Embedded customer ref accepted by subscription create. Either email or
-
-        wallet_address is required; both is fine.'
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: CancelSubscriptionBody
     HTTPValidationError:
       properties:
         detail:
@@ -595,29 +512,95 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    FailedPaymentPolicy:
+    SubscriptionInvoiceResponse:
       properties:
-        max_retries:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        subscription_id:
+          type: string
+          format: uuid
+          title: Subscription Id
+        amount_minor_at_send:
           type: integer
-          maximum: 20.0
-          minimum: 0.0
-          title: Max Retries
-          default: 3
-        intervals_hours:
-          items:
-            type: integer
-          type: array
-          title: Intervals Hours
-        on_fail:
+          title: Amount Minor At Send
+        currency_at_send:
+          type: string
+          title: Currency At Send
+        fx_rate_at_send:
+          anyOf:
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Fx Rate At Send
+        crypto_amount_microunits_expected:
+          type: integer
+          title: Crypto Amount Microunits Expected
+        due_at:
+          type: string
+          format: date-time
+          title: Due At
+        payment_link_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payment Link Token
+        link_sent_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Link Sent At
+        paid_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Paid At
+        paid_amount_microunits:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Paid Amount Microunits
+        paid_tx_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paid Tx Id
+        status:
           type: string
           enum:
-          - cancel
-          - past_due
-          title: On Fail
-          default: cancel
-      additionalProperties: false
+          - pending
+          - paid
+          - missed
+          - retrying
+          title: Status
+        attempts:
+          type: integer
+          title: Attempts
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
       type: object
-      title: FailedPaymentPolicy
+      required:
+      - id
+      - subscription_id
+      - amount_minor_at_send
+      - currency_at_send
+      - fx_rate_at_send
+      - crypto_amount_microunits_expected
+      - due_at
+      - payment_link_token
+      - link_sent_at
+      - paid_at
+      - paid_amount_microunits
+      - paid_tx_id
+      - status
+      - attempts
+      - created_at
+      title: SubscriptionInvoiceResponse
     SubscriptionCreate:
       properties:
         customer_id:
@@ -735,103 +718,58 @@ components:
       - cadence
       title: SubscriptionCreate
       description: Request body for POST /v1/subscriptions.
-    SubscriptionInvoiceResponse:
+    CustomerRef:
       properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        subscription_id:
-          type: string
-          format: uuid
-          title: Subscription Id
-        amount_minor_at_send:
-          type: integer
-          title: Amount Minor At Send
-        currency_at_send:
-          type: string
-          title: Currency At Send
-        fx_rate_at_send:
+        email:
           anyOf:
           - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            format: email
           - type: 'null'
-          title: Fx Rate At Send
-        crypto_amount_microunits_expected:
-          type: integer
-          title: Crypto Amount Microunits Expected
-        due_at:
+          title: Email
+        wallet_address:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          title: Wallet Address
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+      additionalProperties: false
+      type: object
+      title: CustomerRef
+      description: 'Embedded customer ref accepted by subscription create. Either email or
+
+        wallet_address is required; both is fine.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
-          format: date-time
-          title: Due At
-        payment_link_token:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Payment Link Token
-        link_sent_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Link Sent At
-        paid_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Paid At
-        paid_amount_microunits:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Paid Amount Microunits
-        paid_tx_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Paid Tx Id
-        status:
+          title: Message
+        type:
           type: string
-          enum:
-          - pending
-          - paid
-          - missed
-          - retrying
-          title: Status
-        attempts:
-          type: integer
-          title: Attempts
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - id
-      - subscription_id
-      - amount_minor_at_send
-      - currency_at_send
-      - fx_rate_at_send
-      - crypto_amount_microunits_expected
-      - due_at
-      - payment_link_token
-      - link_sent_at
-      - paid_at
-      - paid_amount_microunits
-      - paid_tx_id
-      - status
-      - attempts
-      - created_at
-      title: SubscriptionInvoiceResponse
-    CancelSubscriptionBody:
-      properties:
-        at_period_end:
-          type: boolean
-          title: At Period End
-          default: false
-      type: object
-      title: CancelSubscriptionBody
+      - loc
+      - msg
+      - type
+      title: ValidationError
     SubscriptionResponse:
       properties:
         id:
@@ -970,6 +908,68 @@ components:
       - metadata
       - created_at
       title: SubscriptionResponse
+    FailedPaymentPolicy:
+      properties:
+        max_retries:
+          type: integer
+          maximum: 20.0
+          minimum: 0.0
+          title: Max Retries
+          default: 3
+        intervals_hours:
+          items:
+            type: integer
+          type: array
+          title: Intervals Hours
+        on_fail:
+          type: string
+          enum:
+          - cancel
+          - past_due
+          title: On Fail
+          default: cancel
+      additionalProperties: false
+      type: object
+      title: FailedPaymentPolicy
+    SubscriptionUpdate:
+      properties:
+        notify_channels:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Notify Channels
+        notify_lead_hours:
+          anyOf:
+          - type: integer
+            maximum: 720.0
+            minimum: 1.0
+          - type: 'null'
+          title: Notify Lead Hours
+        failed_payment_policy:
+          anyOf:
+          - $ref: '#/components/schemas/FailedPaymentPolicy'
+          - type: 'null'
+        cancel_at_period_end:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Cancel At Period End
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+      additionalProperties: false
+      type: object
+      title: SubscriptionUpdate
+      description: 'PATCH-style partial update. Some fields (chain, currency, cadence) are
+
+        deliberately immutable post-creation — change those by cancelling and
+
+        creating a new subscription.'
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633

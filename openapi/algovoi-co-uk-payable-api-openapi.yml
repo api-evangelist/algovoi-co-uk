@@ -249,6 +249,84 @@ paths:
               schema: {}
 components:
   schemas:
+    PayableRfc9421VerifyRequest:
+      properties:
+        method:
+          type: string
+          title: Method
+        authority:
+          type: string
+          title: Authority
+        path:
+          type: string
+          title: Path
+        scheme:
+          type: string
+          title: Scheme
+          default: https
+        headers:
+          additionalProperties:
+            type: string
+          type: object
+          title: Headers
+        body_b64:
+          type: string
+          title: Body B64
+          default: ''
+        public_key_hex:
+          type: string
+          title: Public Key Hex
+        require_content_digest:
+          type: boolean
+          title: Require Content Digest
+          default: true
+        mode:
+          type: string
+          title: Mode
+          default: rfc9421
+      additionalProperties: false
+      type: object
+      required:
+      - method
+      - authority
+      - path
+      - headers
+      - public_key_hex
+      title: PayableRfc9421VerifyRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PayableReceiptVerifyRequest:
+      properties:
+        jws:
+          type: string
+          title: Jws
+        expected_payment_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expected Payment Hash
+        receipt_required:
+          type: boolean
+          title: Receipt Required
+          default: false
+        jwks:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Jwks
+      additionalProperties: false
+      type: object
+      required:
+      - jws
+      title: PayableReceiptVerifyRequest
     NegotiateRequest:
       properties:
         chains:
@@ -326,83 +404,5 @@ components:
       - msg
       - type
       title: ValidationError
-    PayableReceiptVerifyRequest:
-      properties:
-        jws:
-          type: string
-          title: Jws
-        expected_payment_hash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Expected Payment Hash
-        receipt_required:
-          type: boolean
-          title: Receipt Required
-          default: false
-        jwks:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Jwks
-      additionalProperties: false
-      type: object
-      required:
-      - jws
-      title: PayableReceiptVerifyRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    PayableRfc9421VerifyRequest:
-      properties:
-        method:
-          type: string
-          title: Method
-        authority:
-          type: string
-          title: Authority
-        path:
-          type: string
-          title: Path
-        scheme:
-          type: string
-          title: Scheme
-          default: https
-        headers:
-          additionalProperties:
-            type: string
-          type: object
-          title: Headers
-        body_b64:
-          type: string
-          title: Body B64
-          default: ''
-        public_key_hex:
-          type: string
-          title: Public Key Hex
-        require_content_digest:
-          type: boolean
-          title: Require Content Digest
-          default: true
-        mode:
-          type: string
-          title: Mode
-          default: rfc9421
-      additionalProperties: false
-      type: object
-      required:
-      - method
-      - authority
-      - path
-      - headers
-      - public_key_hex
-      title: PayableRfc9421VerifyRequest
 x-discovery:
   ownershipProofs: []

@@ -72,19 +72,6 @@ components:
       - expires_at
       - license_kid
       title: ActivateResponse
-    ActivateRequest:
-      properties:
-        operator_did:
-          type: string
-          title: Operator Did
-        nonce:
-          type: string
-          title: Nonce
-      type: object
-      required:
-      - operator_did
-      - nonce
-      title: ActivateRequest
     ValidationError:
       properties:
         loc:
@@ -111,6 +98,19 @@ components:
       - msg
       - type
       title: ValidationError
+    ActivateRequest:
+      properties:
+        operator_did:
+          type: string
+          title: Operator Did
+        nonce:
+          type: string
+          title: Nonce
+      type: object
+      required:
+      - operator_did
+      - nonce
+      title: ActivateRequest
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633

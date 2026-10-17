@@ -33,70 +33,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ReceiptVerifyRequest:
-      properties:
-        jws:
-          type: string
-          title: Jws
-          description: Compact JWS string (header.payload.signature) as returned by /compliance/screen (compliance_receipt_jws field) or /verify (settlement_attestation_jws field).
-        expected_payment_hash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Expected Payment Hash
-          description: 'If supplied, the receipt''s payment_hash field must equal this value. Use to bind a receipt to a specific transaction. Format: ''sha256:<hex>''.'
-        receipt_required:
-          type: boolean
-          title: Receipt Required
-          description: If True, treat a missing JWS as a MISSING_ENVELOPE error rather than a format error.
-          default: false
-        jwks:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Jwks
-          description: 'Optional external JWKS dict ({''keys'': [...]}) for verifying receipts signed by a third-party provider. If omitted, AlgoVoi''s own platform key is used.'
-      type: object
-      required:
-      - jws
-      title: ReceiptVerifyRequest
-      description: Request body for POST /v1/receipt/verify.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     ReceiptVerifyResponse:
       properties:
         verified:
@@ -177,5 +113,69 @@ components:
       - verified
       title: ReceiptVerifyResponse
       description: Verification result.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ReceiptVerifyRequest:
+      properties:
+        jws:
+          type: string
+          title: Jws
+          description: Compact JWS string (header.payload.signature) as returned by /compliance/screen (compliance_receipt_jws field) or /verify (settlement_attestation_jws field).
+        expected_payment_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expected Payment Hash
+          description: 'If supplied, the receipt''s payment_hash field must equal this value. Use to bind a receipt to a specific transaction. Format: ''sha256:<hex>''.'
+        receipt_required:
+          type: boolean
+          title: Receipt Required
+          description: If True, treat a missing JWS as a MISSING_ENVELOPE error rather than a format error.
+          default: false
+        jwks:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Jwks
+          description: 'Optional external JWKS dict ({''keys'': [...]}) for verifying receipts signed by a third-party provider. If omitted, AlgoVoi''s own platform key is used.'
+      type: object
+      required:
+      - jws
+      title: ReceiptVerifyRequest
+      description: Request body for POST /v1/receipt/verify.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
 x-discovery:
   ownershipProofs: []

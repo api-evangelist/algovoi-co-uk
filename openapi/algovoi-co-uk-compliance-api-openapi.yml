@@ -171,6 +171,73 @@ paths:
         authMode: api_key
 components:
   schemas:
+    ScreenRequest:
+      properties:
+        recipient_address:
+          type: string
+          maxLength: 128
+          minLength: 4
+          title: Recipient Address
+        network:
+          type: string
+          maxLength: 64
+          minLength: 4
+          title: Network
+        amount_microunits:
+          anyOf:
+          - type: integer
+            minimum: 0.0
+          - type: 'null'
+          title: Amount Microunits
+        asset:
+          anyOf:
+          - type: string
+            maxLength: 128
+          - type: 'null'
+          title: Asset
+      type: object
+      required:
+      - recipient_address
+      - network
+      title: ScreenRequest
+    SettlementEvidenceResponse:
+      properties:
+        settled_payment_ref:
+          type: string
+          title: Settled Payment Ref
+        status:
+          type: string
+          title: Status
+        network:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Network
+        round:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Round
+        captured_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Captured At
+        last_error:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Error
+        chain_binding:
+          anyOf:
+          - $ref: '#/components/schemas/ChainBinding'
+          - type: 'null'
+      type: object
+      required:
+      - settled_payment_ref
+      - status
+      title: SettlementEvidenceResponse
+      description: Status of chain-evidence capture for a settled payment.
     ReceiptVerifyResponse:
       properties:
         verified:
@@ -236,90 +303,6 @@ components:
       - verified
       title: ReceiptVerifyResponse
       description: Verification result.
-    ReceiptVerifyRequest:
-      properties:
-        jws:
-          type: string
-          title: Jws
-          description: Compact JWS string (header.payload.signature) as returned by /compliance/screen (compliance_receipt_jws field) or /verify (settlement_attestation_jws field).
-        expected_payment_hash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Expected Payment Hash
-          description: 'If supplied, the receipt''s payment_hash field must equal this value. Use to bind a receipt to a specific transaction. Format: ''sha256:<hex>''.'
-        receipt_required:
-          type: boolean
-          title: Receipt Required
-          description: If True, treat a missing JWS as a MISSING_ENVELOPE error rather than a format error.
-          default: false
-        jwks:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Jwks
-          description: 'Optional external JWKS dict ({''keys'': [...]}) for verifying receipts signed by a third-party provider. If omitted, AlgoVoi''s own platform key is used.'
-      type: object
-      required:
-      - jws
-      title: ReceiptVerifyRequest
-      description: Request body for POST /v1/receipt/verify.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ScreenRequest:
-      properties:
-        recipient_address:
-          type: string
-          maxLength: 128
-          minLength: 4
-          title: Recipient Address
-        network:
-          type: string
-          maxLength: 64
-          minLength: 4
-          title: Network
-        amount_microunits:
-          anyOf:
-          - type: integer
-            minimum: 0.0
-          - type: 'null'
-          title: Amount Microunits
-        asset:
-          anyOf:
-          - type: string
-            maxLength: 128
-          - type: 'null'
-          title: Asset
-      type: object
-      required:
-      - recipient_address
-      - network
-      title: ScreenRequest
     HTTPValidationError:
       properties:
         detail:
@@ -440,65 +423,35 @@ components:
       - verdict_id
       - network_normalised
       title: ScreenResponse
-    SettlementEvidenceResponse:
+    ReceiptVerifyRequest:
       properties:
-        settled_payment_ref:
+        jws:
           type: string
-          title: Settled Payment Ref
-        status:
-          type: string
-          title: Status
-        network:
+          title: Jws
+          description: Compact JWS string (header.payload.signature) as returned by /compliance/screen (compliance_receipt_jws field) or /verify (settlement_attestation_jws field).
+        expected_payment_hash:
           anyOf:
           - type: string
           - type: 'null'
-          title: Network
-        round:
+          title: Expected Payment Hash
+          description: 'If supplied, the receipt''s payment_hash field must equal this value. Use to bind a receipt to a specific transaction. Format: ''sha256:<hex>''.'
+        receipt_required:
+          type: boolean
+          title: Receipt Required
+          description: If True, treat a missing JWS as a MISSING_ENVELOPE error rather than a format error.
+          default: false
+        jwks:
           anyOf:
-          - type: integer
+          - additionalProperties: true
+            type: object
           - type: 'null'
-          title: Round
-        captured_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Captured At
-        last_error:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Last Error
-        chain_binding:
-          anyOf:
-          - $ref: '#/components/schemas/ChainBinding'
-          - type: 'null'
+          title: Jwks
+          description: 'Optional external JWKS dict ({''keys'': [...]}) for verifying receipts signed by a third-party provider. If omitted, AlgoVoi''s own platform key is used.'
       type: object
       required:
-      - settled_payment_ref
-      - status
-      title: SettlementEvidenceResponse
-      description: Status of chain-evidence capture for a settled payment.
-    ChainBinding:
-      properties:
-        scheme:
-          type: string
-          title: Scheme
-          default: avm-proofpack/1
-        bundle_sha256:
-          type: string
-          title: Bundle Sha256
-          description: sha256 hex of the canonical bundle file bytes
-        bundle:
-          additionalProperties: true
-          type: object
-          title: Bundle
-          description: The avm-proofpack state-proof evidence bundle
-      type: object
-      required:
-      - bundle_sha256
-      - bundle
-      title: ChainBinding
-      description: Offline-verifiable chain evidence for a settled payment.
+      - jws
+      title: ReceiptVerifyRequest
+      description: Request body for POST /v1/receipt/verify.
     TrustQueryResponse:
       properties:
         trust_outcome:
@@ -527,6 +480,27 @@ components:
       - composite_hash
       - receipt_count
       title: TrustQueryResponse
+    ChainBinding:
+      properties:
+        scheme:
+          type: string
+          title: Scheme
+          default: avm-proofpack/1
+        bundle_sha256:
+          type: string
+          title: Bundle Sha256
+          description: sha256 hex of the canonical bundle file bytes
+        bundle:
+          additionalProperties: true
+          type: object
+          title: Bundle
+          description: The avm-proofpack state-proof evidence bundle
+      type: object
+      required:
+      - bundle_sha256
+      - bundle
+      title: ChainBinding
+      description: Offline-verifiable chain evidence for a settled payment.
     TrustQueryRequest:
       properties:
         receipts:
@@ -538,6 +512,32 @@ components:
           default: []
       type: object
       title: TrustQueryRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633

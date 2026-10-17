@@ -257,59 +257,6 @@ paths:
         authMode: api_key
 components:
   schemas:
-    shared__schemas__recurr__ChallengeResponse:
-      properties:
-        nonce:
-          type: string
-          title: Nonce
-        message:
-          type: string
-          title: Message
-        expires_at:
-          type: string
-          format: date-time
-          title: Expires At
-      type: object
-      required:
-      - nonce
-      - message
-      - expires_at
-      title: ChallengeResponse
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     shared__schemas__recurr__VerifyRequest:
       properties:
         nonce:
@@ -373,6 +320,15 @@ components:
       - wallet_address
       - chain
       title: VerifyResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     SubscriptionInvoiceResponse:
       properties:
         id:
@@ -462,6 +418,32 @@ components:
       - attempts
       - created_at
       title: SubscriptionInvoiceResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     SubscriptionResponse:
       properties:
         id:
@@ -600,6 +582,24 @@ components:
       - metadata
       - created_at
       title: SubscriptionResponse
+    shared__schemas__recurr__ChallengeResponse:
+      properties:
+        nonce:
+          type: string
+          title: Nonce
+        message:
+          type: string
+          title: Message
+        expires_at:
+          type: string
+          format: date-time
+          title: Expires At
+      type: object
+      required:
+      - nonce
+      - message
+      - expires_at
+      title: ChallengeResponse
 x-discovery:
   ownershipProofs:
   - eb10b2d7fb1e2fcbea7a4c5b031e339daacc7cf37d1fb569c58849287c121633

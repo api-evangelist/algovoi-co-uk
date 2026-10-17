@@ -128,15 +128,27 @@ paths:
         authMode: api_key
 components:
   schemas:
-    HTTPValidationError:
+    CustomerCreate:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          title: Email
+        wallet_address:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          title: Wallet Address
+        metadata:
+          additionalProperties: true
+          type: object
+          title: Metadata
+      additionalProperties: false
       type: object
-      title: HTTPValidationError
+      title: CustomerCreate
     CustomerResponse:
       properties:
         id:
@@ -181,27 +193,15 @@ components:
       - created_at
       - deleted_at
       title: CustomerResponse
-    CustomerCreate:
+    HTTPValidationError:
       properties:
-        email:
-          anyOf:
-          - type: string
-            format: email
-          - type: 'null'
-          title: Email
-        wallet_address:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          title: Wallet Address
-        metadata:
-          additionalProperties: true
-          type: object
-          title: Metadata
-      additionalProperties: false
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      title: CustomerCreate
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
