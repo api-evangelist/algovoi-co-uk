@@ -68,9 +68,232 @@ edges:
     detected: '2026-10-15'
   detected_by: sweep-ai-agents.py
   first_seen: '2026-10-15'
+- partner_name: crates.io
+  partner: crates-io
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Rust)
+  evidence: https://crates.io/crates/algovoi-rfc9421-verifier
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: crates.io (public registry JSON)
+    spec_file: null
+    language: Rust
+    packages:
+    - name: algovoi-rfc9421-verifier
+      version: 0.1.0
+      released: '2026-08-10'
+      released_field: updated_at
+      lapsed: false
+      page: https://crates.io/crates/algovoi-rfc9421-verifier
+      repo_leg: github-org:chopmob-cloud
+      publisher_leg: org:chopmob-cloud
+      matched_by: github-org
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: Go module proxy
+  partner: null
+  partner_match: null
+  type: register
+  direction: provider-built
+  category: official SDK (Go)
+  evidence: https://pkg.go.dev/github.com/chopmob-cloud/algovoi-rfc9421-verifier-go
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: Go module proxy (public registry JSON)
+    spec_file: null
+    language: Go
+    packages:
+    - name: github.com/chopmob-cloud/algovoi-rfc9421-verifier-go
+      version: v0.1.0
+      released: '2026-08-10'
+      released_field: Time
+      lapsed: false
+      page: https://pkg.go.dev/github.com/chopmob-cloud/algovoi-rfc9421-verifier-go
+      repo_leg: github-org:chopmob-cloud
+      publisher_leg: org:chopmob-cloud
+      matched_by: github-org
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: npm registry
+  partner: npm
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (JavaScript/TypeScript)
+  evidence: https://www.npmjs.com/package/@algovoi/atb
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@algovoi/atb'
+      version: 0.1.2
+      released: '2026-06-11'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/atb
+      repo_leg: domain:algovoi.co.uk
+      publisher_leg: email:algovoi.co.uk
+      matched_by: domain
+    - name: '@algovoi/key-credential-binding'
+      version: 0.1.2
+      released: '2026-08-08'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/key-credential-binding
+      repo_leg: github-org:chopmob-cloud
+      publisher_leg: org:algovoi
+      matched_by: github-org
+    - name: '@algovoi/pef'
+      version: 0.1.2
+      released: '2026-06-22'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/pef
+      repo_leg: github-org:chopmob-cloud
+      publisher_leg: org:algovoi
+      matched_by: github-org
+    - name: '@algovoi/plugin-elizaos'
+      version: 0.1.1
+      released: '2026-06-02'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/plugin-elizaos
+      repo_leg: domain:algovoi.co.uk
+      publisher_leg: email:algovoi.co.uk
+      matched_by: domain
+    - name: '@algovoi/receipt-sentinel'
+      version: 0.1.0
+      released: '2026-05-31'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/receipt-sentinel
+      repo_leg: domain:algovoi.co.uk
+      publisher_leg: email:algovoi.co.uk
+      matched_by: domain
+    - name: '@algovoi/receipt-verifier'
+      version: 0.1.1
+      released: '2026-06-30'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/receipt-verifier
+      repo_leg: domain:algovoi.co.uk
+      publisher_leg: org:algovoi
+      matched_by: domain
+    - name: '@algovoi/reference-agent'
+      version: 0.1.0
+      released: '2026-05-28'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/reference-agent
+      repo_leg: domain:algovoi.co.uk
+      publisher_leg: org:algovoi
+      matched_by: domain
+    - name: '@algovoi/rfc9421-ecdsa'
+      version: 0.1.0
+      released: '2026-08-09'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/rfc9421-ecdsa
+      repo_leg: github-org:chopmob-cloud
+      publisher_leg: org:algovoi
+      matched_by: github-org
+    - name: '@algovoi/rfc9421-signer'
+      version: 0.2.0
+      released: '2026-08-08'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/rfc9421-signer
+      repo_leg: github-org:chopmob-cloud
+      publisher_leg: org:algovoi
+      matched_by: github-org
+    - name: '@algovoi/rfc9421-verifier'
+      version: 0.4.4
+      released: '2026-08-15'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/rfc9421-verifier
+      repo_leg: github-org:chopmob-cloud
+      publisher_leg: org:algovoi
+      matched_by: github-org
+    - name: '@algovoi/settlement-attestation'
+      version: 0.1.1
+      released: '2026-05-26'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/settlement-attestation
+      repo_leg: github-org:chopmob-cloud
+      publisher_leg: org:algovoi
+      matched_by: github-org
+    - name: '@algovoi/substrate'
+      version: 0.5.1
+      released: '2026-07-21'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/substrate
+      repo_leg: domain:algovoi.co.uk
+      publisher_leg: org:algovoi
+      matched_by: domain
+    - name: '@algovoi/substrate-pqc'
+      version: 0.1.2
+      released: '2026-05-27'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/substrate-pqc
+      repo_leg: github-org:chopmob-cloud
+      publisher_leg: org:algovoi
+      matched_by: github-org
+    - name: '@algovoi/use-wallet-algovoi'
+      version: 1.0.2
+      released: '2026-08-07'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/use-wallet-algovoi
+      repo_leg: github-org:chopmob-cloud
+      publisher_leg: email:algovoi.co.uk
+      matched_by: domain
+    - name: '@algovoi/webhook-verifier'
+      version: 0.2.0
+      released: '2026-06-30'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@algovoi/webhook-verifier
+      repo_leg: domain:algovoi.co.uk
+      publisher_leg: email:algovoi.co.uk
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
 generated: '2026-10-15'
 method: searched
 source:
 - https://a2aregistry.org/api/agents
 checked:
 - https://a2aregistry.org/api/agents
+- https://api.nuget.org/v3
+- https://crates.io/api/v1
+- https://proxy.golang.org
+- https://pypi.org/pypi
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
