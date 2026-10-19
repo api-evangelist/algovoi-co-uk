@@ -48,8 +48,6 @@ tags:
 - Cryptocurrency
 - Blockchain
 - Compliance
-- Digital Signature
-- Post-Quantum Cryptography
 - Verification
 - Fintech
 - Agent-Native
@@ -65,8 +63,6 @@ tags_raw:
 - Cryptocurrency
 - Blockchain
 - Compliance
-- Digital Signatures
-- Post-Quantum Cryptography
 - Verification
 - Fintech
 - Agent-native
@@ -3763,3 +3759,6 @@ x-a2a:
   grade: "conformant"
   protocol_version: "0.3.0"
   control: 404
+x-tags-removed:
+- Post-Quantum Cryptography
+- Digital Signature
