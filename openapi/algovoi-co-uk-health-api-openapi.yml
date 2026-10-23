@@ -28,3 +28,9 @@ x-refined-from:
 - algovoi-co-uk-audit-verifier-openapi.json
 - algovoi-co-uk-clinic-openapi.json
 - algovoi-co-uk-gateway-openapi.json
+x-provenance:
+  method: harvested
+  publisher: AlgoVoi
+  source: https://agent-trust-bench.algovoi.co.uk/openapi.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)

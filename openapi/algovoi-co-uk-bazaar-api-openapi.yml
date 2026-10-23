@@ -47,3 +47,9 @@ x-discovery:
   resources:
   - https://api.algovoi.co.uk/mpp/probe
   resourcesCatalog: https://api.algovoi.co.uk/discovery/resources
+x-provenance:
+  method: harvested
+  publisher: AlgoVoi
+  source: https://agent-trust-bench.algovoi.co.uk/openapi.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)

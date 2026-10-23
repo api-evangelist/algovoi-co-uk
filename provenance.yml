@@ -30,6 +30,9 @@ artifacts:
   authentication/algovoi-co-uk-authentication.yml:
     method: searched
     evidence: declared in the artifact
+  capabilities/algovoi-co-uk-capability-edges.yml:
+    method: unknown
+    evidence: no authorship recorded
   changelog/algovoi-co-uk-changelog.yml:
     method: searched
     evidence: declared in the artifact
@@ -51,7 +54,13 @@ artifacts:
   front-door-ai/2026-09-17.yml:
     method: unknown
     evidence: no authorship recorded
-  kin/checks-2026-09-24T161608.yml:
+  integrations/_index.yml:
+    method: generated
+    evidence: carries an API Evangelist house phrase
+  integrations/algovoi-co-uk-integration-edges.yml:
+    method: unknown
+    evidence: no authorship recorded
+  kin/checks-2026-10-11T110117.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-09-19T193153.yml:
@@ -84,6 +93,21 @@ artifacts:
   kin/score-2026-09-24T161608.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T210408.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T232841.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T000835.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T024842.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-11T110117.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
   lifecycle/algovoi-co-uk-lifecycle.yml:
     method: searched
     evidence: declared in the artifact
@@ -113,9 +137,17 @@ artifacts:
     evidence: declared in the artifact
   openapi/_original/algovoi-co-uk-agent-trust-bench-openapi.json:
     method: harvested
+    evidence: byte-identical to https://agent-trust-bench.algovoi.co.uk/openapi.json (sha256 1150cdfbf68b,
+      fetched 2026-10-19)
+  openapi/_original/algovoi-co-uk-agent-trust-bench-openapi.yml:
+    method: harvested
+    evidence: the same operations as https://agent-trust-bench.algovoi.co.uk/openapi.json (sha256 1150cdfbf68b,
+      fetched 2026-10-19)
+  openapi/_original/algovoi-co-uk-audit-verifier-openapi.json:
+    method: harvested
     evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
       to the provider's source is unverified
-  openapi/_original/algovoi-co-uk-audit-verifier-openapi.json:
+  openapi/_original/algovoi-co-uk-audit-verifier-openapi.yml:
     method: harvested
     evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
       to the provider's source is unverified
@@ -123,44 +155,268 @@ artifacts:
     method: harvested
     evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
       to the provider's source is unverified
+  openapi/_original/algovoi-co-uk-clinic-openapi.yml:
+    method: harvested
+    evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
+      to the provider's source is unverified
   openapi/_original/algovoi-co-uk-gateway-openapi.json:
+    method: harvested
+    evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
+      to the provider's source is unverified
+  openapi/_original/algovoi-co-uk-gateway-openapi.yml:
     method: harvested
     evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
       to the provider's source is unverified
   openapi/_original/algovoi-co-uk-pay-openapi.json:
     method: harvested
-    evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
-      to the provider's source is unverified
-  openapi/algovoi-co-uk-agent-trust-bench-openapi.yml:
+    evidence: byte-identical to https://pay.algovoi.co.uk/openapi.json (sha256 f755a77ac5ad, fetched 2026-10-04)
+  openapi/_original/algovoi-co-uk-pay-openapi.yml:
+    method: harvested
+    evidence: the same operations as https://pay.algovoi.co.uk/openapi.json (sha256 f755a77ac5ad, fetched
+      2026-10-04)
+  openapi/algovoi-co-uk-a2a-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
-  openapi/algovoi-co-uk-audit-verifier-openapi.yml:
+  openapi/algovoi-co-uk-agent-auth-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
-  openapi/algovoi-co-uk-clinic-openapi.yml:
+  openapi/algovoi-co-uk-algovoi-audit-verifier-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
-  openapi/algovoi-co-uk-gateway-openapi.yml:
+  openapi/algovoi-co-uk-algovoi-verifiable-comms-agent-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
-  openapi/algovoi-co-uk-pay-openapi.yml:
+  openapi/algovoi-co-uk-ap2-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-atb-license-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-bazaar-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-checkout-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-compliance-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-customers-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-discovery-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-health-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-mandate-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-mandate-portal-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-mesh-federation-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-meta-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-mpp-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-payable-a2a-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-payable-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-payable-identity-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-payment-links-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-payouts-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-profiles-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-public-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-public-resource-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-recurr-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-recurr-public-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-recurring-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-recurring-contracts-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-recurring-hosted-auth-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-resources-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-signup-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-subscriptions-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-suite-store-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-verify-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-well-known-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-x402-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/algovoi-co-uk-x402-protected-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  overlays/algovoi-co-uk-a2a-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-agent-auth-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
   overlays/algovoi-co-uk-agent-trust-bench-overlay.yaml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/algovoi-co-uk-algovoi-audit-verifier-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-algovoi-verifiable-comms-agent-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-ap2-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-atb-license-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
   overlays/algovoi-co-uk-audit-verifier-overlay.yaml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/algovoi-co-uk-bazaar-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-checkout-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
   overlays/algovoi-co-uk-clinic-overlay.yaml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/algovoi-co-uk-compliance-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-customers-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-discovery-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
   overlays/algovoi-co-uk-gateway-overlay.yaml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/algovoi-co-uk-health-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-mandate-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-mandate-portal-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-mesh-federation-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-meta-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-mpp-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
   overlays/algovoi-co-uk-pay-overlay.yaml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/algovoi-co-uk-payable-a2a-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-payable-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-payable-identity-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-payment-links-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-payouts-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-profiles-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-public-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-public-resource-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-recurr-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-recurr-public-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-recurring-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-recurring-contracts-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-recurring-hosted-auth-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-resources-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-signup-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-subscriptions-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-suite-store-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-verify-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-well-known-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-x402-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/algovoi-co-uk-x402-protected-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
   packages/algovoi-co-uk-packages.yml:
     method: searched
     evidence: declared in the artifact
