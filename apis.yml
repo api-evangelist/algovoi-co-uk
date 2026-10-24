@@ -1752,6 +1752,8 @@ apis:
   humanURL: https://docs.algovoi.co.uk/algovoi-pay
   baseURL: https://pay.algovoi.co.uk
   tags:
+  - Payable
+  tags_raw:
   - payable
   properties:
   - type: OpenAPI
